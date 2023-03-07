@@ -1,17 +1,31 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
+import React, { useState } from 'react';
+import { render } from 'react-dom';
+import { ConfigProvider, DatePicker, message } from 'antd';
+// 由于 antd 组件的默认文案是英文，所以需要修改为中文
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
+import zhCN from 'antd/locale/zh_CN';
+import 'antd/dist/reset.css';
 import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+dayjs.locale('zh-cn');
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const App = () => {
+  const [date, setDate] = useState(null);
+  const handleChange = (value) => {
+    message.info(`您选择的日期是: ${value ? value.format('YYYY年MM月DD日') : '未选择'}`);
+    setDate(value);
+  };
+  return (
+    <ConfigProvider locale={zhCN}>
+      <div style={{ width: 400, margin: '100px auto' }}>
+        <DatePicker onChange={handleChange} />
+        <div style={{ marginTop: 16 }}>
+          当前日期：{date ? date.format('YYYY年MM月DD日') : '未选择'}
+        </div>
+      </div>
+    </ConfigProvider>
+  );
+};
+
+render(<App />, document.getElementById('root'));

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { render } from 'react-dom';
 import { ConfigProvider, DatePicker, message } from 'antd';
+import IndexLayout from './IndexLayout'
 // 由于 antd 组件的默认文案是英文，所以需要修改为中文
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
@@ -17,14 +18,18 @@ const App = () => {
     setDate(value);
   };
   return (
-    <ConfigProvider locale={zhCN}>
+    <>
+     {/* <ConfigProvider locale={zhCN}>
       <div style={{ width: 400, margin: '100px auto' }}>
         <DatePicker onChange={handleChange} />
         <div style={{ marginTop: 16 }}>
           当前日期：{date ? date.format('YYYY年MM月DD日') : '未选择'}
         </div>
       </div>
-    </ConfigProvider>
+    </ConfigProvider> */}
+    <IndexLayout></IndexLayout>
+    </>
+   
   );
 };
 

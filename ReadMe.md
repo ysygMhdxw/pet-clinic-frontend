@@ -2,30 +2,20 @@
 
 ## 运行项目
 
-In the project directory, you can run:
+### `npm run install`
+### `npm run start`
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+# Finished
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Unfinished
+* 登录界面
+* 注册界面
+* 前台3D导览界面
+* 前台职能学习界面
+* 前台病例学习界面
+* 前台测试学习界面
 
 
 # 项目目录说明
@@ -38,6 +28,9 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
     * `index.html`：React应用程序的HTML模板
     * `favicon.ico`：应用程序的图标
 * `src/`：包含应用程序源代码
+    *  `src\components`：前端组件
+        * IndexLayout.js 前端导航框架
+    * `src\views`：前端页面
     * `App.js`：应用程序的主组件，包含应用程序的逻辑
     * `index.js`：应用程序的入口文件，渲染应用程序到DOM
     * `index.css`：全局CSS样式文件

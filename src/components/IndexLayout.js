@@ -1,6 +1,7 @@
 import { UserOutlined, PieChartOutlined, DesktopOutlined, TeamOutlined, OneToOneOutlined, FolderViewOutlined, ReadOutlined } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme, Avatar } from 'antd';
 import { useState } from 'react';
+import React from 'react';
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -11,33 +12,36 @@ function getItem(label, key, icon, children) {
   };
 }
 const items = [
-  getItem('导览展示', '1', <PieChartOutlined />),
-  getItem('职能学习', '2', <DesktopOutlined />, [
-    getItem('角色扮演', '3', <UserOutlined />, [
-      getItem('角色1', '4'),
-      getItem('角色2', '5'),
-      getItem('角色3', '6')
+  getItem('导览展示', '导览展示', <PieChartOutlined />),
+  getItem('职能学习', '职能学习', <DesktopOutlined />, [
+    getItem('角色扮演', '角色扮演', <UserOutlined />, [
+      getItem('前台', '前台'),
+      getItem('医助', '医助'),
+      getItem('兽医师', '兽医师')
     ]),
-    getItem('病例学习', '7', <FolderViewOutlined />),
+    getItem('病例学习', '病例学习', <FolderViewOutlined />),
   ]),
-  getItem('测试学习', '8', <UserOutlined />, [
-    getItem('做题', '9', <ReadOutlined />),
-    getItem('考试', '10', <OneToOneOutlined />),
-    getItem('比赛', '11', <TeamOutlined />),
+  getItem('测试学习', '测试学习', <UserOutlined />, [
+    getItem('做题', '做题', <ReadOutlined />),
+    getItem('考试', '考试', <OneToOneOutlined />),
+    getItem('比赛', '比赛', <TeamOutlined />),
   ])
 ];
+
 const IndexLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedKeyPath, setSelectedKeysPath] = useState([])
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
   return (
     <Layout
       style={{
         minHeight: '100vh',
       }}
     >
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      <Sider collapsible collapsed={collapsed} onCollapse={(value) => { setCollapsed(value) }}>
         <div
           style={{
             height: 32,
@@ -45,7 +49,9 @@ const IndexLayout = () => {
             background: 'rgba(255, 255, 255, 0.2)',
           }}
         />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} onClick={({ keyPath }) => {
+          setSelectedKeysPath(keyPath)
+        }} />
       </Sider>
       <Layout className="site-layout">
         <Header
@@ -75,8 +81,9 @@ const IndexLayout = () => {
               margin: '16px 0',
             }}
           >
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            {selectedKeyPath[2] == undefined ? '' : <Breadcrumb.Item>{selectedKeyPath[2]}</Breadcrumb.Item>}
+            {selectedKeyPath[1] == undefined ? '' : <Breadcrumb.Item>{selectedKeyPath[1]}</Breadcrumb.Item>}
+            {selectedKeyPath[0] == undefined ? '' : <Breadcrumb.Item>{selectedKeyPath[0]}</Breadcrumb.Item>}
           </Breadcrumb>
           <div
             style={{

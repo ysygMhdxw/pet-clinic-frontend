@@ -1,16 +1,24 @@
 import PropTypes from 'prop-types';
 import { ContextString } from '../utils/enums';
+import { CaseManagement } from './caseManagement';
 
-ContextComponents.propTypes = {
-    contextString: PropTypes.String
-};
+
 export const ContextComponents = (props) => {
-    if (props.contextString == ContextString.caseManagement) {
+    if (props.contextString == ContextString.caseLearning) {
         return (
             <>
-
+                <CaseManagement />
             </>
         )
     }
 
+    return (
+        <>
+            context
+        </>)
+
 }
+
+ContextComponents.propTypes = {
+    contextString: PropTypes.string
+};

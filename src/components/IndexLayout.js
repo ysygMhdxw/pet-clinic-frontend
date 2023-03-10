@@ -1,8 +1,10 @@
-import { UserOutlined, PieChartOutlined, DesktopOutlined, TeamOutlined, OneToOneOutlined, FolderViewOutlined, ReadOutlined } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme, Avatar } from 'antd';
-import { useState } from 'react';
-import React from 'react';
-const { Header, Content, Footer, Sider } = Layout;
+import { DesktopOutlined, FolderViewOutlined, OneToOneOutlined, PieChartOutlined, ReadOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Content, Footer } from 'antd/es/layout/layout';
+import Sider from 'antd/es/layout/Sider';
+import React, { useState } from 'react';
+import { ContextComponents } from './ContextComponents';
+const { Header } = Layout;
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -31,6 +33,7 @@ const items = [
 const IndexLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKeyPath, setSelectedKeysPath] = useState([])
+  const [contextVal, setContextVal] = useState("")
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -51,6 +54,7 @@ const IndexLayout = () => {
         />
         <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} onClick={({ keyPath }) => {
           setSelectedKeysPath(keyPath)
+          setContextVal(keyPath[0])
         }} />
       </Sider>
       <Layout className="site-layout">
@@ -92,7 +96,7 @@ const IndexLayout = () => {
               background: colorBgContainer,
             }}
           >
-            正文内容
+            <ContextComponents contextString={contextVal} />
           </div>
         </Content>
         <Footer

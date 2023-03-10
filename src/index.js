@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 // 由于 antd 组件的默认文案是英文，所以需要修改为中文
 import 'antd/dist/reset.css';
 import dayjs from 'dayjs';
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/" element={<IndexLayout />}></Route>
       </Routes>
     </BrowserRouter>
+
   );
 };
 

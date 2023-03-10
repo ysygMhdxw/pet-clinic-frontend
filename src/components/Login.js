@@ -1,6 +1,7 @@
 import { EyeTwoTone, UserOutlined, EyeInvisibleOutlined} from '@ant-design/icons';
-import { Layout, Input, Button, Form} from 'antd';
-const {Header, Content, Footer} = Layout;
+import { Layout, Input, Button, Form, Typography} from 'antd';
+const { Content, Footer} = Layout;
+const {Title} = Typography;
 import React from 'react';
 //import { useState } from 'react';
 
@@ -10,10 +11,8 @@ const Login = () => {
     
     return (
         <Layout className="layout">
-          <Header>
-            <div style={{textAlign: 'center'}}>login in</div>
-          </Header>
           <Content style={{padding:'130px 500px'}}>
+          <Title level={3} type="secondary">虚拟宠物医院学习系统</Title>
           <Input size="large" type="text" placeholder="用户名" id="username" name="username" prefix={<UserOutlined className="site-form-item-icon" />} />
           <br/>
           <br/>

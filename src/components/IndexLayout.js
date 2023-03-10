@@ -3,7 +3,7 @@ import { Avatar, Breadcrumb, Layout, Menu, theme } from 'antd';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import React, { useState } from 'react';
-import { ContextComponents } from './contextComponents';
+import { ContextComponents } from './ContextComponents';
 const { Header } = Layout;
 function getItem(label, key, icon, children) {
   return {

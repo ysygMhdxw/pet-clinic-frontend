@@ -1,21 +1,27 @@
 import React from 'react';
 import { render } from 'react-dom';
-//import IndexLayout from './components/IndexLayout';
-import Login from './components/Login';
 // 由于 antd 组件的默认文案是英文，所以需要修改为中文
+import 'antd/dist/reset.css';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
-import 'antd/dist/reset.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './index.css';
+import { HomePage } from './pages/HomePage';
+
 
 dayjs.locale('zh-cn');
 
 const App = () => {
   return (
-    <>
-      {/* <IndexLayout></IndexLayout> */}
-      <Login></Login>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />}></Route>
+      </Routes>
+    </BrowserRouter>
+    // <>
+    //   <IndexLayout />
+    // </>
+
   );
 };
 

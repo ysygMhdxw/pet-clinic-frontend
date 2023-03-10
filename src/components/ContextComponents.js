@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 import { ContextString } from '../utils/enums';
 import { CaseLearning } from './caseLearning';
 
@@ -20,5 +20,5 @@ export const ContextComponents = (props) => {
 }
 
 ContextComponents.propTypes = {
-    contextString: PropTypes.string
+    contextString: propTypes.string
 };

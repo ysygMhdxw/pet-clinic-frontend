@@ -5,6 +5,7 @@ import 'antd/dist/reset.css';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Login from './components/Login';
 import './index.css';
 import { HomePage } from './pages/HomePage';
 
@@ -16,6 +17,8 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+
       </Routes>
     </BrowserRouter>
     // <>

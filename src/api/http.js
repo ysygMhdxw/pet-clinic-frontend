@@ -6,8 +6,8 @@ import qs from 'querystring'
 /**
  * get
  */
-export function httpGet(url, params) {
-    const result = fetch(url, { params: params })
+export function httpGet(url) {
+    const result = fetch(url)
     return result
 }
 /**

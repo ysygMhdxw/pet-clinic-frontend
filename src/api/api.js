@@ -14,13 +14,13 @@ const api = {
         const url = base.ownUrl + base.getCaseCategoriesUrl
         return httpGet(url)
     },
-    getCaseByDiseaseName(params) {
-        const url = base.ownUrl + base.getCaseByDiseaseName
-        return httpGet(url, params)
+    getCaseByDiseaseName(disease_name) {
+        const url = `${base.ownUrl}${base.getCaseByDiseaseName}/${disease_name}`
+        return httpGet(url)
     },
-    getCaseByCaseId(params) {
-        const url = base.ownUrl + base.getCaseByCaseId
-        return httpGet(url, params)
+    getCaseByCaseId(case_id) {
+        const url = `${base.ownUrl}${base.getCaseByCaseId}/${case_id}`
+        return httpGet(url)
     }
 
 }

@@ -7,85 +7,6 @@ const x = 3;
 const y = 2;
 const z = 1;
 const defaultData = [];
-// const sampleData =
-//     [
-//         {
-//             title: "传染病",
-//             key: "infectious_diseases",
-//             children: [
-//                 {
-//                     title: "犬瘟热",
-//                     key: "canine_distemper"
-//                 },
-//                 {
-//                     title: "犬细小病毒",
-//                     key: "canine_parvovirus"
-//                 },
-//                 {
-//                     title: "犬传染性肝炎",
-//                     key: "canine_infectious_hepatitis"
-//                 },
-//                 {
-//                     title: "犬冠状病毒",
-//                     key: "canine_coronavirus"
-//                 },
-//                 {
-//                     title: "猫泛白细胞减少症",
-//                     key: "feline_panleukopenia"
-//                 },
-//                 {
-//                     title: "猫病毒性病气管炎",
-//                     key: "feline_viral_rhinotracheitis"
-//                 },
-//                 {
-//                     title: "皮肤真菌感染",
-//                     key: "fungal_skin_infection"
-//                 }
-//             ]
-//         },
-//         {
-//             title: "寄生虫病",
-//             key: "parasitic_diseases",
-//             children: [
-//                 {
-//                     title: "蛔虫病",
-//                     key: "ascariasis"
-//                 },
-//                 {
-//                     title: "钩虫病",
-//                     key: "hookworm_infection"
-//                 },
-
-//             ]
-//         },
-//         {
-//             title: "内科",
-//             key: "internal_medicine",
-//             children: [
-//                 {
-//                     title: "口炎",
-//                     key: "stomatitis"
-//                 },
-//                 {
-//                     title: "肠炎",
-//                     key: "enteritis"
-//                 },
-//                 {
-//                     title: "肠便秘",
-//                     key: "constipation"
-//                 },
-//                 {
-//                     title: "胰腺炎",
-//                     key: "pancreatitis"
-//                 },
-//                 {
-//                     title: "肝炎",
-//                     key: "hepatitis"
-//                 },
-
-//             ]
-//         }
-//     ]
 
 const generateData = (_level, _preKey, _tns) => {
     const preKey = _preKey || '0';
@@ -213,7 +134,7 @@ const CaseCategory = (props) => {
     function getNodeName(selectedKeys, { node }) {
         console.log(selectedKeys);
         console.log(node);
-        props.setCaseName(node.title)
+        props.setCaseName(node.key)
         props.setTableFlg(true)
     }
 

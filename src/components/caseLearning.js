@@ -15,7 +15,7 @@ export const CaseLearning = () => {
                 </Col>
                 <Col span={1}>
                 </Col>
-                <Col >
+                <Col span={12}>
                     {caseName === "" ? <p></p> :
                         <CaseTable caseName={caseName} />}
                 </Col>

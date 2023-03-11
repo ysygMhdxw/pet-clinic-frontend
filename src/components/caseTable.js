@@ -5,9 +5,11 @@ import api from '../api/api';
 import { CaseDisplay } from './caseDisplay';
 
 
+
 export const CaseTable = (props) => {
     const [tableData, setTableData] = useState([])
     const [displayFlg, setDisplayFlg] = useState(false)
+    const [caseInfo, setCaseInfo] = useState()
     const columns = [
         {
             title: '病例编号',
@@ -32,28 +34,30 @@ export const CaseTable = (props) => {
         {
             title: '操作',
             key: 'action',
-            render: () => (
+            render: (record) => (
                 <Space size="middle">
-                    <a onClick={() => { setDisplayFlg(true) }}
+                    <a onClick={() => {
+                        Promise.all([console.log(record),
+                        setCaseInfo(record)]).then(() => {
+                            setDisplayFlg(true);
+                        });
+                    }}
                     >查看病例详情</a>
                 </Space>
             ),
         },
     ];
 
-    useEffect(() => {
-        api.getCaseByDiseaseName({ caseName: props.caseName }).then(res => res.json())
-            .then(
-                (result) => {
-                    console.log(result);
-                    console.log("case_info");
-                    setTableData(result.case_info)
-                },
-                (error) => {
-                    console.log(error);
-                }
-            )
+    async function getCasesData() {
+        const res = await api.getCaseByDiseaseName({ caseName: props.caseName })
+        const data = await res.json()
+        console.log(data);
+        console.log("case_info");
+        setTableData(data.case_info)
         setDisplayFlg(false)
+    }
+    useEffect(() => {
+        getCasesData()
     }, [props]);
 
     if (!displayFlg) {
@@ -67,8 +71,11 @@ export const CaseTable = (props) => {
     else {
         return (
             <>
-                <h1 style={{ marginBottom: "10" }}>{props.caseName}<Divider type='vertical'></Divider>病例详情信息</h1>
-                <CaseDisplay />
+                <div>
+                    <h1 style={{ marginBottom: "10" }}>{props.caseName}<Divider type='vertical'></Divider>病例详情信息</h1>
+                </div>
+
+                <CaseDisplay caseInfo={caseInfo} />
             </>
         )
 

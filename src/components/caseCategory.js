@@ -1,13 +1,92 @@
 import { Input, Tree } from 'antd';
-import { useMemo, useState } from 'react';
+import propTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import api from '../api/api';
 const { Search } = Input;
 const x = 3;
 const y = 2;
 const z = 1;
 const defaultData = [];
-// const sampleData=[
-//     {title:""}
-// ]
+// const sampleData =
+//     [
+//         {
+//             title: "传染病",
+//             key: "infectious_diseases",
+//             children: [
+//                 {
+//                     title: "犬瘟热",
+//                     key: "canine_distemper"
+//                 },
+//                 {
+//                     title: "犬细小病毒",
+//                     key: "canine_parvovirus"
+//                 },
+//                 {
+//                     title: "犬传染性肝炎",
+//                     key: "canine_infectious_hepatitis"
+//                 },
+//                 {
+//                     title: "犬冠状病毒",
+//                     key: "canine_coronavirus"
+//                 },
+//                 {
+//                     title: "猫泛白细胞减少症",
+//                     key: "feline_panleukopenia"
+//                 },
+//                 {
+//                     title: "猫病毒性病气管炎",
+//                     key: "feline_viral_rhinotracheitis"
+//                 },
+//                 {
+//                     title: "皮肤真菌感染",
+//                     key: "fungal_skin_infection"
+//                 }
+//             ]
+//         },
+//         {
+//             title: "寄生虫病",
+//             key: "parasitic_diseases",
+//             children: [
+//                 {
+//                     title: "蛔虫病",
+//                     key: "ascariasis"
+//                 },
+//                 {
+//                     title: "钩虫病",
+//                     key: "hookworm_infection"
+//                 },
+
+//             ]
+//         },
+//         {
+//             title: "内科",
+//             key: "internal_medicine",
+//             children: [
+//                 {
+//                     title: "口炎",
+//                     key: "stomatitis"
+//                 },
+//                 {
+//                     title: "肠炎",
+//                     key: "enteritis"
+//                 },
+//                 {
+//                     title: "肠便秘",
+//                     key: "constipation"
+//                 },
+//                 {
+//                     title: "胰腺炎",
+//                     key: "pancreatitis"
+//                 },
+//                 {
+//                     title: "肝炎",
+//                     key: "hepatitis"
+//                 },
+
+//             ]
+//         }
+//     ]
+
 const generateData = (_level, _preKey, _tns) => {
     const preKey = _preKey || '0';
     const tns = _tns || defaultData;
@@ -30,6 +109,7 @@ const generateData = (_level, _preKey, _tns) => {
         tns[index].children = [];
         return generateData(level, key, tns[index].children);
     });
+
 };
 generateData(z);
 const dataList = [];
@@ -45,6 +125,7 @@ const generateList = (data) => {
             generateList(node.children);
         }
     }
+
 };
 generateList(defaultData);
 const getParentKey = (key, tree) => {
@@ -61,10 +142,11 @@ const getParentKey = (key, tree) => {
     }
     return parentKey;
 };
-const CaseCategory = () => {
+const CaseCategory = (props) => {
     const [expandedKeys, setExpandedKeys] = useState([]);
     const [searchValue, setSearchValue] = useState('');
     const [autoExpandParent, setAutoExpandParent] = useState(true);
+    const [treeData, setTreeData] = useState([])
     const onExpand = (newExpandedKeys) => {
         setExpandedKeys(newExpandedKeys);
         setAutoExpandParent(false);
@@ -83,39 +165,62 @@ const CaseCategory = () => {
         setSearchValue(value);
         setAutoExpandParent(true);
     };
-    const treeData = useMemo(() => {
-        const loop = (data) =>
-            data.map((item) => {
-                console.log(item);
-                const strTitle = item.title;
-                const index = strTitle.indexOf(searchValue);
-                const beforeStr = strTitle.substring(0, index);
-                const afterStr = strTitle.slice(index + searchValue.length);
-                const title =
-                    index > -1 ? (
-                        <span>
-                            {beforeStr}
-                            <span className="site-tree-search-value">{searchValue}</span>
-                            {afterStr}
-                        </span>
-                    ) : (
-                        <span>{strTitle}</span>
-                    );
-                if (item.children) {
-                    return {
-                        title,
-                        key: item.key,
-                        children: loop(item.children),
-                    };
-                }
-                return {
-                    title,
-                    key: item.key,
-                };
-            });
-        return loop(defaultData);
-    }, [searchValue]);
+    // const treeData = useMemo(() => {
+    //     const loop = (data) =>
+    //         data.map((item) => {
+    //             const strTitle = item.title;
+    //             const index = strTitle.indexOf(searchValue);
+    //             const beforeStr = strTitle.substring(0, index);
+    //             const afterStr = strTitle.slice(index + searchValue.length);
+    //             const title =
+    //                 index > -1 ? (
+    //                     <span>
+    //                         {beforeStr}
+    //                         <span className="site-tree-search-value">{searchValue}</span>
+    //                         {afterStr}
+    //                     </span>
+    //                 ) : (
+    //                     <span>{strTitle}</span>
+    //                 );
+    //             if (item.children) {
+    //                 return {
+    //                     title,
+    //                     key: item.key,
+    //                     children: loop(item.children),
+    //                 };
+    //             }
+    //             return {
+    //                 title,
+    //                 key: item.key,
+    //             };
+    //         });
+    //     return loop(defaultData);
+    // }, [searchValue]);
 
+    function getTreeData() {
+        api.getCaseCategories()
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    console.log(result);
+                    setTreeData(result.case_categories)
+                },
+                (error) => {
+                    console.log(error);
+                }
+            )
+    }
+    function getNodeName(selectedKeys, { node }) {
+        console.log(selectedKeys);
+        console.log(node);
+        props.setCaseName(node.title)
+        props.setTableFlg(true)
+    }
+
+    useEffect(() => {
+        getTreeData()
+        console.log(treeData);
+    }, [searchValue]);
     return (
         <div>
             <Search
@@ -130,8 +235,14 @@ const CaseCategory = () => {
                 expandedKeys={expandedKeys}
                 autoExpandParent={autoExpandParent}
                 treeData={treeData}
+                onSelect={getNodeName}
             />
         </div>
     );
 };
 export default CaseCategory;
+
+CaseCategory.propTypes = {
+    setCaseName: propTypes.func,
+    setTableFlg: propTypes.func
+};

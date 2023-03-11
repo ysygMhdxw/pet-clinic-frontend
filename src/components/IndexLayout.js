@@ -3,7 +3,7 @@ import { Avatar, Breadcrumb, Layout, Menu, theme } from 'antd';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import React, { useState } from 'react';
-import { ContextComponents } from './ContextComponents';
+import { ContextComponents } from './contextComponents';
 const { Header } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -33,7 +33,7 @@ const items = [
 const IndexLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKeyPath, setSelectedKeysPath] = useState([])
-  const [contextVal, setContextVal] = useState("病例学习")
+  const [contextVal, setContextVal] = useState("导览展示")
   const {
     token: { colorBgContainer },
   } = theme.useToken();

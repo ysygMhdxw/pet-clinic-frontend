@@ -1,7 +1,7 @@
 /**
  * 封装请求
  */
-import qs from 'querystring'
+import qs from 'qs'
 
 /**
  * get

@@ -1,18 +1,21 @@
 import { EyeTwoTone, UserOutlined, EyeInvisibleOutlined} from '@ant-design/icons';
-import { Layout, Input, Button, Form, Typography} from 'antd';
-const { Content, Footer} = Layout;
-const {Title} = Typography;
+import { Layout, Input, Button, Form,  Typography} from 'antd';
+const { Header, Content, Footer} = Layout;
+const { Title } = Typography;
 import React from 'react';
 //import { useState } from 'react';
 
-const Login = () => {
+export const Register = () => {
     // const [username, setUsername] = useState('');
     // const [password, setPass] = useState('');
     
     return (
         <Layout className="layout">
-          <Content style={{padding:'130px 500px'}}>
-          <Title level={3} type="secondary">虚拟宠物医院学习系统</Title>
+          <Header style={{padding:'40px 0'}}>
+            
+          </Header>
+          <Content style={{padding:'100px 500px'}}>
+          <Title level={3} type="secondary" >  虚拟宠物医院学习系统  </Title>
           <Input size="large" type="text" placeholder="用户名" id="username" name="username" prefix={<UserOutlined className="site-form-item-icon" />} />
           <br/>
           <br/>
@@ -21,24 +24,24 @@ const Login = () => {
           />
           <br/>
           <br/>
-          <Form.Item direction="vertical">
+          <Form.Item>
           <Button
-            size="large"
+            size="default"
             shape="round"
             block
             style={{
               marginBottom: 12,
             }}
           >
-            提交
+            注册
           </Button>
-          <Button size="large"
+          <Button size="default"
             shape="round"
             block
             style={{
               marginBottom: 12,
             }}>
-            注册
+            已有账号？
           </Button>
           </Form.Item>
         </Content>
@@ -52,5 +55,4 @@ const Login = () => {
           </Layout>
     );
 };
-export default Login;
 

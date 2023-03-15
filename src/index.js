@@ -7,6 +7,8 @@ import 'dayjs/locale/zh-cn';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './index.css';
 import { HomePage } from './pages/HomePage';
+import { Login } from './pages/login';
+import { Register } from './pages/register';
 
 
 dayjs.locale('zh-cn');
@@ -16,6 +18,8 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+        <Route path="/register" element={<Register />}></Route>
       </Routes>
     </BrowserRouter>
     // <>

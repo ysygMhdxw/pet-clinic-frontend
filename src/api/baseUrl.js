@@ -7,8 +7,8 @@ const base = {
     // Login
 
     // Case Learning
-    getCaseCategoriesUrl: "/case/categories",
-    getCaseByDiseaseName: "/cases",
+    getCaseCategoriesUrl: "/case/category",
+    getCaseByDiseaseName: "/case",
     getCaseByCaseId: "/one/case"
 }
 

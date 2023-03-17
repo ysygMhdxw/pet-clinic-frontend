@@ -1,9 +1,10 @@
-import { DesktopOutlined, FolderViewOutlined, OneToOneOutlined, PieChartOutlined, ReadOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
+import { ClusterOutlined, ContactsOutlined, DatabaseOutlined, DesktopOutlined, DollarOutlined, FolderViewOutlined, GroupOutlined, MedicineBoxOutlined, OneToOneOutlined, PieChartOutlined, ProjectOutlined, ReadOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Breadcrumb, Layout, Menu, theme } from 'antd';
 import { Content, Footer } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
+import propTypes from 'prop-types';
 import React, { useState } from 'react';
-import { ContextComponents } from './ContextComponents';
+import { ContextComponents } from './contextComponents';
 const { Header } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -13,7 +14,7 @@ function getItem(label, key, icon, children) {
     label,
   };
 }
-const items = [
+const frontItems = [
   getItem('导览展示', '导览展示', <PieChartOutlined />),
   getItem('职能学习', '职能学习', <DesktopOutlined />, [
     getItem('角色扮演', '角色扮演', <UserOutlined />, [
@@ -29,85 +30,186 @@ const items = [
     getItem('比赛', '比赛', <TeamOutlined />),
   ])
 ];
+const backItems = [
+  getItem('病例管理', '病例管理', <PieChartOutlined />),
+  getItem('测试管理', '测试管理', <DesktopOutlined />),
+  getItem('系统管理', '系统管理', <UserOutlined />, [
+    getItem('用户管理', '用户管理', <ReadOutlined />),
+    getItem('职能学习管理', '职能学习管理', <OneToOneOutlined />),
+    getItem('基本结构和功能管理', '基本结构和功能管理', <TeamOutlined />, [
+      getItem('科室管理', '科室管理', <GroupOutlined />),
+      getItem('人员管理', '人员管理', <ContactsOutlined />),
+      getItem('药品管理', '药品管理', <MedicineBoxOutlined />),
+      getItem('疫苗管理', '疫苗管理', <ReadOutlined />),
+      getItem('档案管理', '档案管理', <DatabaseOutlined />),
+      getItem('收费管理', '收费管理', <DollarOutlined />),
+      getItem('化验项目管理', '化验项目管理', <ProjectOutlined />),
+      getItem('住院管理', '住院管理', <ClusterOutlined />),
 
-const IndexLayout = () => {
+    ]),
+  ])
+];
+
+const IndexLayout = (props) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedKeyPath, setSelectedKeysPath] = useState([])
+  const [selectedFrontKeyPath, setSelectedFrontKeysPath] = useState([])
+  const [selectedBackKeyPath, setSelectedBackKeysPath] = useState([])
+
   const [contextVal, setContextVal] = useState("导览展示")
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
-  return (
-    <Layout
-      style={{
-        minHeight: '100vh',
-      }}
-    >
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => { setCollapsed(value) }}>
-        <div
-          style={{
-            height: 32,
-            margin: 16,
-            background: 'rgba(255, 255, 255, 0.2)',
-          }}
-        />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} onClick={({ keyPath }) => {
-          setSelectedKeysPath(keyPath)
-          setContextVal(keyPath[0])
-        }} />
-      </Sider>
-      <Layout className="site-layout">
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-          }}
-        >
+  if (props.isFrontendFlg) {
+    return (
+      <Layout
+        style={{
+          minHeight: '100vh',
+        }}
+      >
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => { setCollapsed(value) }}>
           <div
             style={{
-              display: "flex",
-              paddingRight: "10%",
-              paddingTop: "0.5%"
-            }}>
-            <Avatar style={{
-              marginLeft: "auto",
-            }} size={50} icon={<UserOutlined />} />
-          </div>
-        </Header>
-        <Content
-          style={{
-            margin: '0 16px',
-          }}
-        >
-          <Breadcrumb
-            style={{
-              margin: '16px 0',
+              height: 32,
+              margin: 16,
+              background: 'rgba(255, 255, 255, 0.2)',
             }}
-          >
-            {selectedKeyPath[2] == undefined ? '' : <Breadcrumb.Item>{selectedKeyPath[2]}</Breadcrumb.Item>}
-            {selectedKeyPath[1] == undefined ? '' : <Breadcrumb.Item>{selectedKeyPath[1]}</Breadcrumb.Item>}
-            {selectedKeyPath[0] == undefined ? '' : <Breadcrumb.Item>{selectedKeyPath[0]}</Breadcrumb.Item>}
-          </Breadcrumb>
-          <div
+          />
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={frontItems} onClick={({ keyPath }) => {
+            setSelectedFrontKeysPath(keyPath)
+            setContextVal(keyPath[0])
+          }} />
+        </Sider>
+        <Layout className="site-layout">
+          <Header
             style={{
-              padding: 24,
-              minHeight: 360,
+              padding: 0,
               background: colorBgContainer,
             }}
           >
-            <ContextComponents contextString={contextVal} />
-          </div>
-        </Content>
-        <Footer
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          虚拟宠物医院学习系统 ©2023 Created by G14
-        </Footer>
+            <div
+              style={{
+                display: "flex",
+                paddingRight: "10%",
+                paddingTop: "0.5%"
+              }}>
+              <Avatar style={{
+                marginLeft: "auto",
+              }} size={50} icon={<UserOutlined />} />
+            </div>
+          </Header>
+          <Content
+            style={{
+              margin: '0 16px',
+            }}
+          >
+            <Breadcrumb
+              style={{
+                margin: '16px 0',
+              }}
+            >
+              {selectedFrontKeyPath[2] == undefined ? '' : <Breadcrumb.Item>{selectedFrontKeyPath[2]}</Breadcrumb.Item>}
+              {selectedFrontKeyPath[1] == undefined ? '' : <Breadcrumb.Item>{selectedFrontKeyPath[1]}</Breadcrumb.Item>}
+              {selectedFrontKeyPath[0] == undefined ? '' : <Breadcrumb.Item>{selectedFrontKeyPath[0]}</Breadcrumb.Item>}
+            </Breadcrumb>
+            <div
+              style={{
+                padding: 24,
+                minHeight: 360,
+                background: colorBgContainer,
+              }}
+            >
+              <ContextComponents contextString={contextVal} />
+            </div>
+          </Content>
+          <Footer
+            style={{
+              textAlign: 'center',
+            }}
+          >
+            虚拟宠物医院学习系统 ©2023 Created by G14
+          </Footer>
+        </Layout>
       </Layout>
-    </Layout>
-  );
+    );
+  }
+  else {
+    return (
+      <Layout
+        style={{
+          minHeight: '100vh',
+        }}
+      >
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => { setCollapsed(value) }}>
+          <div
+            style={{
+              height: 32,
+              margin: 16,
+              padding: 10,
+              background: 'rgba(255, 255, 255, 0.2)',
+            }}
+          />
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={backItems} onClick={({ keyPath }) => {
+            setSelectedBackKeysPath(keyPath)
+            setContextVal(keyPath[0])
+          }} />
+        </Sider>
+        <Layout className="site-layout">
+          <Header
+            style={{
+              padding: 0,
+              background: colorBgContainer,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                paddingRight: "10%",
+                paddingTop: "0.5%"
+              }}>
+              <Avatar style={{
+                marginLeft: "auto",
+              }} size={50} icon={<UserOutlined />} />
+            </div>
+          </Header>
+          <Content
+            style={{
+              margin: '0 16px',
+            }}
+          >
+            <Breadcrumb
+              style={{
+                margin: '16px 0',
+              }}
+            >
+              {selectedBackKeyPath[3] == undefined ? '' : <Breadcrumb.Item>{selectedBackKeyPath[3]}</Breadcrumb.Item>}
+              {selectedBackKeyPath[2] == undefined ? '' : <Breadcrumb.Item>{selectedBackKeyPath[2]}</Breadcrumb.Item>}
+              {selectedBackKeyPath[1] == undefined ? '' : <Breadcrumb.Item>{selectedBackKeyPath[1]}</Breadcrumb.Item>}
+              {selectedBackKeyPath[0] == undefined ? '' : <Breadcrumb.Item>{selectedBackKeyPath[0]}</Breadcrumb.Item>}
+            </Breadcrumb>
+            <div
+              style={{
+                padding: 24,
+                minHeight: 360,
+                background: colorBgContainer,
+              }}
+            >
+              <ContextComponents contextString={contextVal} />
+            </div>
+          </Content>
+          <Footer
+            style={{
+              textAlign: 'center',
+            }}
+          >
+            虚拟宠物医院学习系统 ©2023 Created by G14
+          </Footer>
+        </Layout>
+      </Layout>
+    );
+  }
 };
 export default IndexLayout;
+
+IndexLayout.propTypes = {
+  isFrontendFlg: propTypes.bool
+};

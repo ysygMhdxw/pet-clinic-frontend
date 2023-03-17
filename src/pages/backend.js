@@ -1,9 +1,10 @@
 import IndexLayout from "../components/IndexLayout"
 
-export const HomePage = () => {
+export const Backend = () => {
     return (
         <>
-            <IndexLayout />
+            <IndexLayout isFrontendFlg={false} />
+
         </>
     )
 }

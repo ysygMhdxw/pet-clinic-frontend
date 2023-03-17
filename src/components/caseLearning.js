@@ -6,16 +6,15 @@ import { CaseTable } from './caseTable'
 
 export const CaseLearning = () => {
     const [caseName, setCaseName] = useState("");
-    const [, setTableFlg] = useState(false)
     return (
         <div>
             <Row>
                 <Col span={6}>
-                    <CaseCategory setCaseName={setCaseName} setTableFlg={setTableFlg} />
+                    <CaseCategory setCaseName={setCaseName} />
                 </Col>
                 <Col span={1}>
                 </Col>
-                <Col span={12}>
+                <Col span={15}>
                     {caseName === "" ? <p></p> :
                         <CaseTable caseName={caseName} />}
                 </Col>

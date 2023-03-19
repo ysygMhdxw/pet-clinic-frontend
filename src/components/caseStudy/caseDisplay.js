@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 export const CaseDisplay = (props) => {
     const caseInfo = props.caseInfo
     useEffect(() => {
-
     }, [props]);
     return (
         <div>
@@ -24,7 +23,6 @@ export const CaseDisplay = (props) => {
                 <Descriptions.Item label="宠物主人姓名">{caseInfo.owner_name}</Descriptions.Item>
                 <Descriptions.Item label="宠物主人电话">{caseInfo.owner_phone}</Descriptions.Item>
                 {/* <Descriptions.Item label="治疗费用">{caseInfo.expense}</Descriptions.Item> */}
-
 
                 <Descriptions.Item label="主要病症">
                     <div>

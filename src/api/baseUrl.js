@@ -3,13 +3,20 @@
  */
 const base = {
     // http://iwenwiki.com/api/blueberryapi/getChengpinInfo.php
-    ownUrl: 'http://127.0.0.1:4523/m1/2420754-0-default',
+    ownUrl: 'http://127.0.0.1:4523/m1/2420754-0-default/',
+    // front end
     // Login
 
     // Case Learning
-    getCaseCategoriesUrl: "/case/category",
-    getCaseByDiseaseName: "/case",
-    getCaseByCaseId: "/one/case"
+    getCaseCategory: "case/category/",
+    getCaseByDiseaseName: "case/name/",
+    getCaseByCaseId: "case/number/",
+
+    // basicStructureAndFunctionManagement
+    // departmentManagement
+    getDepartment:"management/department/"
+
+
 }
 
 export default base

@@ -8,7 +8,7 @@ import React from 'react';
 export const Register = () => {
     // const [username, setUsername] = useState('');
     // const [password, setPass] = useState('');
-    
+
     return (
         <Layout className="layout">
           <Header style={{padding:'40px 0'}}>

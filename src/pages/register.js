@@ -1,4 +1,4 @@
-import { EyeTwoTone, UserOutlined, EyeInvisibleOutlined} from '@ant-design/icons';
+import { UserOutlined} from '@ant-design/icons';
 import { Layout, Input, Button, Form,  Typography} from 'antd';
 const { Header, Content, Footer} = Layout;
 const { Title } = Typography;
@@ -36,37 +36,43 @@ export const Register = () => {
             >
               <Input prefix={<UserOutlined/>} placeholder="Username" size="large"/>
             </Form.Item>
-            <Form.Item
+              <Form.Item
               name="password"
               rules={[
                 {
                   required: true,
-                  message: 'Please input your Password!',
+                  message: 'Please input your password!',
                 },
               ]}
+              // hasFeedback
             >
-              <Input.Password
-                type="password"
+              <Input.Password type="password"
                 placeholder="Password"
-                size="large"
-                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-              />
+                size="large"/>
             </Form.Item>
+
             <Form.Item
-              name="password"
+              name="confirm"
+              dependencies={['password']}
+              // hasFeedback
               rules={[
                 {
                   required: true,
-                  message: 'Please input your Password!',
+                  message: 'Please confirm your password!',
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                  },
+                }),
               ]}
             >
-              <Input.Password
-                type="password"
+              <Input.Password type="password"
                 placeholder="Confirm Password"
-                size="large"
-                iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-              />
+                size="large"/>
             </Form.Item>
             <Form.Item>
               <Button  type="primary" htmlType="submit" size="default" block style={{

@@ -12,7 +12,7 @@ export const CaseDisplay = (props) => {
 
                 bordered
                 column={{
-                    xxl: 1,
+                    xxl: 2,
 
                 }}
             >
@@ -23,7 +23,7 @@ export const CaseDisplay = (props) => {
                 <Descriptions.Item label="宠物年龄">{caseInfo.pet_age}</Descriptions.Item>
                 <Descriptions.Item label="宠物主人姓名">{caseInfo.owner_name}</Descriptions.Item>
                 <Descriptions.Item label="宠物主人电话">{caseInfo.owner_phone}</Descriptions.Item>
-                <Descriptions.Item label="治疗费用">{caseInfo.expense}</Descriptions.Item>
+                {/* <Descriptions.Item label="治疗费用">{caseInfo.expense}</Descriptions.Item> */}
 
 
                 <Descriptions.Item label="主要病症">

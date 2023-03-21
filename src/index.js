@@ -6,7 +6,9 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './index.css';
-import { HomePage } from './pages/HomePage';
+import AuthSelection from './pages/authSelection';
+import { Backend } from './pages/backend';
+import { Frontend } from './pages/frontend';
 import { Login } from './pages/login';
 import { Register } from './pages/register';
 
@@ -17,7 +19,9 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />}></Route>
+        <Route path="/" element={<AuthSelection />}></Route>
+        <Route path="/frontend" element={<Frontend />}></Route>
+        <Route path="/backend" element={<Backend />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
       </Routes>

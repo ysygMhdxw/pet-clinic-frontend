@@ -3,7 +3,7 @@
  */
 
 import base from './baseUrl'
-import { httpGet } from './http'
+import {httpDelete, httpGet, httpPost, httpPut} from './http'
 
 const api = {
     // getLogin(params) {
@@ -24,9 +24,22 @@ const api = {
     },
 
     getDepartment(){
-        const url=`${base.ownUrl}${base.getDepartment}$`
+        const url=`${base.ownUrl}${base.getDepartment}`
         return httpGet(url)
+    },
+    deleteDepartment(department_id){
+        const url=`${base.ownUrl}${base.getDepartment}${department_id}/`
+        return httpDelete(url)
+    },
+    editDepartment(department){
+        const url=`${base.ownUrl}${base.getDepartment}`
+        return httpPut(url,department)
+    },
+    addDepartment(department){
+        const url=`${base.ownUrl}${base.getDepartment}`
+        return httpPost(url,department)
     }
+
 
 }
 

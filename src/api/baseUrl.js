@@ -14,7 +14,7 @@ const base = {
 
     // basicStructureAndFunctionManagement
     // departmentManagement
-    getDepartment:"management/department/"
+    getDepartment:"management/department/",
 
 
 }

@@ -1,4 +1,4 @@
-import {Button, message} from "antd";
+import {Button, message, Popconfirm} from "antd";
 import api from "../../api/api";
 import React, {useEffect, useState} from "react";
 import {
@@ -9,6 +9,9 @@ import {
 } from "@ant-design/pro-components";
 import {PlusOutlined} from "@ant-design/icons";
 
+function random(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
 
 const waitTime = (time = 100) => {
     return new Promise((resolve) => {
@@ -17,17 +20,24 @@ const waitTime = (time = 100) => {
         }, time);
     });
 };
+
+
 export const DepartmentManagement = () => {
+    const [messageApi, contextHolder] = message.useMessage();
+    const info = (msg) => {
+        messageApi.info(msg);
+    };
     const [departmentData, setDepartmentData] = useState([])
     const [editableKeys, setEditableRowKeys] = useState([]);
-    const [dataSource, setDataSource] = useState([]);
+    // const [dataSource, setDataSource] = useState([]);
     const columns = [
         {
             title: '科室编号',
             dataIndex: 'id',
-            formItemProps: (form, { rowIndex }) => {
+            key: 'id',
+            formItemProps: (form, {rowIndex}) => {
                 return {
-                    rules: rowIndex > 1 ? [{ required: true, message: '此项为必填项' }] : [],
+                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
                 };
             },
             // 第一行不允许编辑
@@ -38,10 +48,11 @@ export const DepartmentManagement = () => {
         },
         {
             title: '科室名称',
+            key: 'name',
             dataIndex: 'name',
-            formItemProps: (form, { rowIndex }) => {
+            formItemProps: (form, {rowIndex}) => {
                 return {
-                    rules: rowIndex > 1 ? [{ required: true, message: '此项为必填项' }] : [],
+                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
                 };
             },
             editable: (text, record, index) => {
@@ -67,14 +78,26 @@ export const DepartmentManagement = () => {
                 >
                     编辑
                 </a>,
-                <a
+                <Popconfirm
                     key="delete"
-                    onClick={() => {
-                        setDataSource(dataSource.filter((item) => item.id !== record.id));
-                    }}
+                    placement="top"
+                    title={"删除数据"}
+                    description={"确认删除此条数据？删除后将无法恢复。"}
+                    onConfirm={async () => {
+                        setDepartmentData(departmentData.filter((item) => item.id !== record.id));
+                        deleteDepartmentById(record.id);
+                        info("删除成功！");
+                        await waitTime(500);
+                    }
+                    }
+                    okText="Yes"
+                    cancelText="No"
                 >
-                    删除
-                </a>,
+                    <a>
+                        删除
+                    </a>
+                </Popconfirm>
+                ,
             ],
         },
     ];
@@ -88,14 +111,32 @@ export const DepartmentManagement = () => {
         const data = await res.json()
         setDepartmentData(data.departmentlist)
         console.log(data.departmentlist);
-        console.log("department data");
     }
+
+    async function deleteDepartmentById(department_id) {
+        const res = await api.deleteDepartment(department_id)
+        const data = await res.json()
+        console.log(data.department.id)
+    }
+
+    async function editDepartment(department) {
+        const res = await api.editDepartment(department)
+        const data = await res.json()
+        console.log(data.department.id)
+    }
+    async function addDepartment(department) {
+        const res = await api.addDepartment(department)
+        const data = await res.json()
+        console.log(data)
+    }
+
 
     return (
         <>
+            {contextHolder}
             <h1 style={{marginBottom: "1"}}>科室管理</h1>
-            <div style={{display:"flex",margin:"10px"}}>
-                <div style={{marginLeft:"auto"}}>
+            <div style={{display: "flex", margin: "10px"}}>
+                <div style={{marginLeft: "auto"}}>
                     <ModalForm
                         labelWidth="auto"
                         trigger={
@@ -105,9 +146,12 @@ export const DepartmentManagement = () => {
                             </Button>
                         }
                         onFinish={async (values) => {
-                            await waitTime(2000);
+                            await waitTime(1000);
+                            addDepartment({id: random(0, 10000000),...values})
                             console.log(values);
-                            message.success('提交成功');
+                            getDepartmentData();
+                            message.success('新建成功');
+                            return true;
                         }}
                     >
                         <ProForm.Group>
@@ -149,13 +193,21 @@ export const DepartmentManagement = () => {
                     success: true,
                 })}
                 value={departmentData}
-                onChange={setDataSource}
+                onChange={setDepartmentData}
                 editable={{
                     type: 'multiple',
                     editableKeys,
-                    onSave: async (rowKey, data, row) => {
-                        console.log(rowKey, data, row);
-                        await waitTime(2000);
+                    // eslint-disable-next-line no-unused-vars
+                    onSave: async (rowKey, data, _row) => {
+                        editDepartment(data)
+                        info("修改成功！")
+                        await waitTime(500);
+                    },
+                    // eslint-disable-next-line no-unused-vars
+                    onDelete: async (rowKey, data, _row) => {
+                        deleteDepartmentById(data.id)
+                        info("删除成功！")
+                        await waitTime(500);
                     },
                     onChange: setEditableRowKeys,
                 }}

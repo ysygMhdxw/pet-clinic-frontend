@@ -10,6 +10,7 @@ export function httpGet(url) {
     const result = fetch(url)
     return result
 }
+
 /**
  * post
  */
@@ -29,7 +30,7 @@ export function httpPost(url, params) {
 /**
  * put
  */
-export function httpPut(url,params) {
+export function httpPut(url, params) {
     const result = fetch(url, {
         method: 'PUT',
         headers: {

@@ -20,7 +20,7 @@ const base = {
 
 
     // Questions and Tests
-    getQuestionList: "/quiz/question/"
+    getQuestionList: "quiz/question/"
 
 
 }

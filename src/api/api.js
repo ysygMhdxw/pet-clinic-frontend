@@ -3,7 +3,7 @@
  */
 
 import base from './baseUrl'
-import { httpDelete, httpGet, httpPost, httpPut } from './http'
+import {httpDelete, httpGet, httpPost, httpPut} from './http'
 
 const api = {
     // getLogin(params) {

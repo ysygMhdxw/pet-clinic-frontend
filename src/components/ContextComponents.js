@@ -1,6 +1,7 @@
 import propTypes from 'prop-types';
 import { ContextString } from '../utils/enums';
 import { CaseLearning } from './caseLearning';
+import { CaseQuestions } from './Test/caseQuestions';
 
 
 export const ContextComponents = (props) => {
@@ -8,6 +9,13 @@ export const ContextComponents = (props) => {
         return (
             <>
                 <CaseLearning />
+            </>
+        )
+    }
+    else if (props.contextString == ContextString.takeQuestions){
+        return(
+            <>
+                <CaseQuestions/>
             </>
         )
     }

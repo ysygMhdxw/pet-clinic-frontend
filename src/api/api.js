@@ -21,6 +21,10 @@ const api = {
     getCaseByCaseId(case_id) {
         const url = `${base.ownUrl}${base.getCaseByCaseId}/${case_id}`
         return httpGet(url)
+    },
+    getQuestionList(){
+        const url =`${base.ownUrl}${base.getQuestionList}`
+        return httpGet(url)
     }
 
 }

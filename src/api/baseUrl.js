@@ -7,9 +7,15 @@ const base = {
     // Login
 
     // Case Learning
+
     getCaseCategoriesUrl: "/case/category",
-    getCaseByDiseaseName: "/case",
-    getCaseByCaseId: "/one/case"
+    getCaseByDiseaseName: "/cases",
+    getCaseByCaseId: "/one/case",
+
+
+    // Questions and Tests
+    getQuestionList:"/quiz/question/"
+
 }
 
 export default base

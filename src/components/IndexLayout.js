@@ -14,14 +14,15 @@ import {
     TeamOutlined,
     UserOutlined
 } from '@ant-design/icons';
-import {Avatar, Breadcrumb, Layout, Menu, theme} from 'antd';
-import {Content, Footer} from 'antd/es/layout/layout';
+import { Avatar, Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Content, Footer } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import propTypes from 'prop-types';
-import React, {useState} from 'react';
-import {ContextComponents} from './contextComponents';
 
-const {Header} = Layout;
+import React, { useState } from 'react';
+import { ContextComponents } from './ContextComponents';
+
+const { Header } = Layout;
 
 function getItem(label, key, icon, children) {
     return {
@@ -33,36 +34,36 @@ function getItem(label, key, icon, children) {
 }
 
 const frontItems = [
-    getItem('导览展示', '导览展示', <PieChartOutlined/>),
-    getItem('职能学习', '职能学习', <DesktopOutlined/>, [
-        getItem('角色扮演', '角色扮演', <UserOutlined/>, [
+    getItem('导览展示', '导览展示', <PieChartOutlined />),
+    getItem('职能学习', '职能学习', <DesktopOutlined />, [
+        getItem('角色扮演', '角色扮演', <UserOutlined />, [
             getItem('前台', '前台'),
             getItem('医助', '医助'),
             getItem('兽医师', '兽医师')
         ]),
-        getItem('病例学习', '病例学习', <FolderViewOutlined/>),
+        getItem('病例学习', '病例学习', <FolderViewOutlined />),
     ]),
-    getItem('测试学习', '测试学习', <UserOutlined/>, [
-        getItem('做题', '做题', <ReadOutlined/>),
-        getItem('考试', '考试', <OneToOneOutlined/>),
-        getItem('比赛', '比赛', <TeamOutlined/>),
+    getItem('测试学习', '测试学习', <UserOutlined />, [
+        getItem('做题', '做题', <ReadOutlined />),
+        getItem('考试', '考试', <OneToOneOutlined />),
+        getItem('比赛', '比赛', <TeamOutlined />),
     ])
 ];
 const backItems = [
-    getItem('病例管理', '病例管理', <PieChartOutlined/>),
-    getItem('测试管理', '测试管理', <DesktopOutlined/>),
-    getItem('系统管理', '系统管理', <UserOutlined/>, [
-        getItem('用户管理', '用户管理', <ReadOutlined/>),
-        getItem('职能学习管理', '职能学习管理', <OneToOneOutlined/>),
-        getItem('基本结构和功能管理', '基本结构和功能管理', <TeamOutlined/>, [
-            getItem('科室管理', '科室管理', <GroupOutlined/>),
-            getItem('人员管理', '人员管理', <ContactsOutlined/>),
-            getItem('药品管理', '药品管理', <MedicineBoxOutlined/>),
-            getItem('疫苗管理', '疫苗管理', <ReadOutlined/>),
-            getItem('档案管理', '档案管理', <DatabaseOutlined/>),
-            getItem('收费管理', '收费管理', <DollarOutlined/>),
-            getItem('化验项目管理', '化验项目管理', <ProjectOutlined/>),
-            getItem('住院管理', '住院管理', <ClusterOutlined/>),
+    getItem('病例管理', '病例管理', <PieChartOutlined />),
+    getItem('测试管理', '测试管理', <DesktopOutlined />),
+    getItem('系统管理', '系统管理', <UserOutlined />, [
+        getItem('用户管理', '用户管理', <ReadOutlined />),
+        getItem('职能学习管理', '职能学习管理', <OneToOneOutlined />),
+        getItem('基本结构和功能管理', '基本结构和功能管理', <TeamOutlined />, [
+            getItem('科室管理', '科室管理', <GroupOutlined />),
+            getItem('人员管理', '人员管理', <ContactsOutlined />),
+            getItem('药品管理', '药品管理', <MedicineBoxOutlined />),
+            getItem('疫苗管理', '疫苗管理', <ReadOutlined />),
+            getItem('档案管理', '档案管理', <DatabaseOutlined />),
+            getItem('收费管理', '收费管理', <DollarOutlined />),
+            getItem('化验项目管理', '化验项目管理', <ProjectOutlined />),
+            getItem('住院管理', '住院管理', <ClusterOutlined />),
 
         ]),
     ])
@@ -75,7 +76,7 @@ export const IndexLayout = (props) => {
 
     const [contextVal, setContextVal] = useState("导览展示")
     const {
-        token: {colorBgContainer},
+        token: { colorBgContainer },
     } = theme.useToken();
     if (props.isFrontendFlg) {
         return (
@@ -95,10 +96,10 @@ export const IndexLayout = (props) => {
                         }}
                     />
                     <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={frontItems}
-                          onClick={({keyPath}) => {
-                              setSelectedFrontKeysPath(keyPath)
-                              setContextVal(keyPath[0])
-                          }}/>
+                        onClick={({ keyPath }) => {
+                            setSelectedFrontKeysPath(keyPath)
+                            setContextVal(keyPath[0])
+                        }} />
                 </Sider>
                 <Layout className="site-layout">
                     <Header
@@ -115,7 +116,7 @@ export const IndexLayout = (props) => {
                             }}>
                             <Avatar style={{
                                 marginLeft: "auto",
-                            }} size={50} icon={<UserOutlined/>}/>
+                            }} size={50} icon={<UserOutlined />} />
                         </div>
                     </Header>
                     <Content
@@ -142,7 +143,7 @@ export const IndexLayout = (props) => {
                                 background: colorBgContainer,
                             }}
                         >
-                            <ContextComponents contextString={contextVal}/>
+                            <ContextComponents contextString={contextVal} />
                         </div>
                     </Content>
                     <Footer
@@ -174,10 +175,10 @@ export const IndexLayout = (props) => {
                         }}
                     />
                     <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={backItems}
-                          onClick={({keyPath}) => {
-                              setSelectedBackKeysPath(keyPath)
-                              setContextVal(keyPath[0])
-                          }}/>
+                        onClick={({ keyPath }) => {
+                            setSelectedBackKeysPath(keyPath)
+                            setContextVal(keyPath[0])
+                        }} />
                 </Sider>
                 <Layout className="site-layout">
                     <Header
@@ -194,7 +195,7 @@ export const IndexLayout = (props) => {
                             }}>
                             <Avatar style={{
                                 marginLeft: "auto",
-                            }} size={50} icon={<UserOutlined/>}/>
+                            }} size={50} icon={<UserOutlined />} />
                         </div>
                     </Header>
                     <Content
@@ -223,7 +224,7 @@ export const IndexLayout = (props) => {
                                 background: colorBgContainer,
                             }}
                         >
-                            <ContextComponents contextString={contextVal}/>
+                            <ContextComponents contextString={contextVal} />
                         </div>
                     </Content>
                     <Footer

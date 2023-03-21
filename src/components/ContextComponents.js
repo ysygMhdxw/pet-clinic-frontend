@@ -1,8 +1,9 @@
 import propTypes from 'prop-types';
 import { ContextString } from '../utils/enums';
-import {CaseLearning} from "./caseStudy/caseLearning";
-import {DepartmentManagement} from "./basicStructureAndFunctionManagement/departmentManagement";
 
+import { DepartmentManagement } from "./basicStructureAndFunctionManagement/departmentManagement";
+import { CaseLearning } from "./caseStudy/caseLearning";
+import { CaseQuestions } from './Test/caseQuestions';
 
 
 export const ContextComponents = (props) => {
@@ -13,11 +14,18 @@ export const ContextComponents = (props) => {
             </>
         )
     }
-    else if(props.contextString===ContextString.departmentManagement){
-        return <DepartmentManagement/>
+    else if (props.contextString === ContextString.departmentManagement) {
+        return <DepartmentManagement />
     }
-    else if(props.contextString===ContextString.personnelManagement){
+    else if (props.contextString === ContextString.personnelManagement) {
         // return <TestComponents/>
+    }
+    else if (props.contextString == ContextString.takeQuestions) {
+        return (
+            <>
+                <CaseQuestions />
+            </>
+        )
     }
     return (
         <>

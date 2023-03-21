@@ -8,13 +8,19 @@ const base = {
     // Login
 
     // Case Learning
+
     getCaseCategory: "case/category/",
     getCaseByDiseaseName: "case/name/",
     getCaseByCaseId: "case/number/",
 
     // basicStructureAndFunctionManagement
     // departmentManagement
-    getDepartment:"management/department/",
+    getDepartment: "management/department/",
+
+
+
+    // Questions and Tests
+    getQuestionList: "/quiz/question/"
 
 
 }

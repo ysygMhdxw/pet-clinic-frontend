@@ -74,7 +74,6 @@ export const CaseTable = (props) => {
                     <h1 style={{marginBottom: "10"}}>{props.caseName}<Divider type='vertical'></Divider>病例详情信息
                     </h1>
                 </div>
-
                 <CaseDisplay caseInfo={caseInfo}/>
             </>
         )

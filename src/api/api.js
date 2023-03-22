@@ -10,6 +10,10 @@ const api = {
         const url = base.ownUrl + base.login
         return httpPost(url, params)
     },
+    getAllCases(){
+        const url=base.ownUrl + base.getAllCases
+        return httpGet(url)
+    },
     getCaseCategories() {
         const url = base.ownUrl + base.getCaseCategory
         return httpGet(url)
@@ -22,7 +26,14 @@ const api = {
         const url = `${base.ownUrl}${base.getCaseByCaseId}${case_id}/`
         return httpGet(url)
     },
-
+    deleteCaseByCaseId(case_id){
+        const url = `${base.ownUrl}${base.getAllCases}${case_id}/`
+        return httpDelete(url)
+    },
+    addCase(case_data){
+        const url = `${base.ownUrl}${base.getAllCases}`
+        return httpPost(url,case_data)
+    },
 
     getDepartment() {
         const url = `${base.ownUrl}${base.getDepartment}`

@@ -10,10 +10,7 @@ export const CaseDisplay = (props) => {
             <Descriptions
 
                 bordered
-                column={{
-                    xxl: 2,
-
-                }}
+                column={1}
             >
                 <Descriptions.Item label="病例编号">{caseInfo.case_number}</Descriptions.Item>
                 <Descriptions.Item label="病种名称">{caseInfo.disease_type}</Descriptions.Item>
@@ -26,46 +23,46 @@ export const CaseDisplay = (props) => {
 
                 <Descriptions.Item label="主要病症">
                     <div>
-                        症状描述：{caseInfo.symptom.text}
+                        症状描述：{caseInfo.symptom_text}
                         <br />
                         <Image
                             width={200}
                             height={200}
                             src="error"
-                            fallback={caseInfo.symptom.pic}
+                            fallback={caseInfo.symptom_pic}
                         />
                         <br />
-                        视频url：{caseInfo.symptom.video}
+                        视频url：{caseInfo.symptom_video}
                         <br />
                     </div>
                 </Descriptions.Item>
                 <Descriptions.Item label="诊断结果">
                     <div>
-                        诊断结果：{caseInfo.diagnosis_result.text}
+                        诊断结果：{caseInfo.diagnosis_text}
                         <br />
                         <Image
                             width={200}
                             height={200}
                             src="error"
-                            fallback={caseInfo.diagnosis_result.pic}
+                            fallback={caseInfo.diagnosis_pic}
                         />
                         <br />
-                        视频url：{caseInfo.diagnosis_result.video}
+                        视频url：{caseInfo.diagnosis_video}
                         <br />
                     </div>
                 </Descriptions.Item>
                 <Descriptions.Item label="治疗方案">
                     <div>
-                        治疗方案：{caseInfo.treatment.text}
+                        治疗方案：{caseInfo.treatment_text}
                         <br />
                         <Image
                             width={200}
                             height={200}
                             src="error"
-                            fallback={caseInfo.treatment.pic}
+                            fallback={caseInfo.treatment_pic}
                         />
                         <br />
-                        视频url：{caseInfo.treatment.video}
+                        视频url：{caseInfo.treatment_video}
                         <br />
                     </div>
                 </Descriptions.Item>

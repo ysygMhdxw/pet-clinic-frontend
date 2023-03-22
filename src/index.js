@@ -11,6 +11,7 @@ import { Backend } from './pages/backend';
 import { Frontend } from './pages/frontend';
 import { Login } from './pages/login';
 import { Register } from './pages/register';
+import { Question } from './components/Test/questionCard';
 
 
 dayjs.locale('zh-cn');
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/backend" element={<Backend />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
+        <Route path="/question" element={<Question />}></Route>
       </Routes>
     </BrowserRouter>
     // <>

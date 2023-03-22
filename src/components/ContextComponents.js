@@ -9,6 +9,7 @@ import {VaccineManagement} from "./basicStructureAndFunctionManagement/vaccineMa
 import {CaseManagement} from "./caseManagement/caseManagement";
 
 
+
 export const ContextComponents = (props) => {
     if (props.contextString === ContextString.caseLearning) {
         return (

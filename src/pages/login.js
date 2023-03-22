@@ -1,17 +1,24 @@
-
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Layout, Typography, Col, Row } from 'antd';
-import React from 'react';
-const { Header, Content, Footer } = Layout;
 
+import React from 'react';
+import api from "../api/api";
+
+const {Header, Content, Footer} = Layout;
 const { Title } = Typography;
 
 export const Login = () => {
 
-  const onFinish = (values) => {
-    console.log('Received values of form: ', values);
-  };
+    const onFinish = (values) => {
+        login(values)
+        console.log('Received values of form: ', values);
+    }
 
+    async function login(values) {
+        const res = await api.getLogin(values)
+        const data = await res.json()
+        console.log(data);
+    }
 
   return (
     <Layout className="layout">
@@ -78,5 +85,6 @@ export const Login = () => {
       </Footer>
     </Layout>
   );
+
 };
 

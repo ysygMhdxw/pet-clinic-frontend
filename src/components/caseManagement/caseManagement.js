@@ -124,26 +124,26 @@ export const CaseManagement = () => {
 
     async function getCaseData() {
         const res = await api.getAllCases()
-        const data = await res.json()
+        const data = res.data
         setCaseData(data.cases)
         console.log(data.cases);
     }
 
     async function deleteCaseById(case_id) {
         const res = await api.deleteCaseByCaseId(case_id)
-        const data = await res.json()
+        const data = res.data
         console.log(data.case_id)
     }
 
     async function editCase(caseData) {
         const res = await api.editDepartment(caseData)
-        const data = await res.json()
+        const data =  res.data
         console.log(data)
     }
 
     async function addCase(caseData) {
         const res = await api.addCase(caseData)
-        const data = await res.json()
+        const data =  res.data
         console.log(data)
     }
 

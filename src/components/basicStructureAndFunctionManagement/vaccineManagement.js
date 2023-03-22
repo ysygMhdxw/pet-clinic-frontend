@@ -118,26 +118,26 @@ export const VaccineManagement = () => {
 
     async function getVaccineData() {
         const res = await api.getMedicine()
-        const data = await res.json()
+        const data = res.data
         setVaccineData(data.medicinelist)
         console.log(data.medicinelist);
     }
 
     async function deleteVaccineById(medicine_id) {
         const res = await api.deleteMedicine(medicine_id)
-        const data = await res.json()
+        const data = res.data
         console.log(data.medicinelist.id)
     }
 
     async function editVaccine(medicine) {
         const res = await api.editMedicine(medicine)
-        const data = await res.json()
+        const data = res.data
         console.log(data)
     }
 
     async function addVaccine(medicine) {
         const res = await api.addMedicine(medicine)
-        const data = await res.json()
+        const data = res.data
         console.log(data)
     }
 

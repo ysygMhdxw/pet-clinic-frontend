@@ -1,32 +1,23 @@
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {Button, Form, Input, Layout, Typography, Col, Row, Space, Image} from 'antd';
-import React from 'react';
-import api from "../api/api";
+import api, {storeToken} from "../api/api";
+import {useNavigate} from "react-router-dom";
 
 const {Header, Content, Footer} = Layout;
 const {Title} = Typography;
 
 export const Login = () => {
-
+    const navigate=useNavigate()
         const onFinish = (values) => {
-            login(values).then((res) => {
-                    if (res.data.resCode === 0) {
-                        this.props.history.push("../fontend");
-                    }
-                },
-                (err) => {
-                    this.props.addFlashMessage({
-                        type: "danger",
-                        text: err.response.data.errors
-                    })
-                })
+            login(values)
+            navigate('/frontend');
             console.log('Received values of form: ', values);
         }
 
         async function login(values) {
             const res = await api.getLogin(values)
-            const data = await res.json()
-            console.log(data);
+            const data = res.data
+            storeToken(data.access);
         }
 
         return (
@@ -80,7 +71,7 @@ export const Login = () => {
                                         />
                                     </Form.Item>
                                     <Form.Item
-                                        name="密码"
+                                        name="password"
                                         rules={[
                                             {
                                                 required: true,

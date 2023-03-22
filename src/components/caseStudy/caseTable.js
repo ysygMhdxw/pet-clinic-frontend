@@ -49,7 +49,7 @@ export const CaseTable = (props) => {
 
     async function getCasesData() {
         const res = await api.getCaseByDiseaseName(props.caseName)
-        const data = await res.json()
+        const data = res.data
         console.log(data);
         console.log("case_info");
         setTableData(data.cases)

@@ -108,25 +108,25 @@ export const DepartmentManagement = () => {
 
     async function getDepartmentData() {
         const res = await api.getDepartment()
-        const data = await res.json()
+        const data = res.data
         setDepartmentData(data.departmentlist)
         console.log(data.departmentlist);
     }
 
     async function deleteDepartmentById(department_id) {
         const res = await api.deleteDepartment(department_id)
-        const data = await res.json()
+        const data = res.data
         console.log(data.department.id)
     }
 
     async function editDepartment(department) {
         const res = await api.editDepartment(department)
-        const data = await res.json()
+        const data = res.data
         console.log(data.department.id)
     }
     async function addDepartment(department) {
         const res = await api.addDepartment(department)
-        const data = await res.json()
+        const data = res.data
         console.log(data)
     }
 

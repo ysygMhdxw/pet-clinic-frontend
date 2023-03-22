@@ -44,19 +44,11 @@ export const CaseCategory = (props) => {
         setAutoExpandParent(true);
     };
 
-    function getTreeData() {
-        api.getCaseCategories()
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    console.log(result);
-                    setTreeData(result.case_categories)
-                },
-                (error) => {
-                    console.log(error);
-                }
-            )
-    }
+     async function getTreeData() {
+         const responce = await api.getCaseCategories()
+         const data=responce.data
+         setTreeData(data.case_categories)
+     }
     function getNodeName(selectedKeys, { node }) {
         console.log(selectedKeys);
         console.log(node);

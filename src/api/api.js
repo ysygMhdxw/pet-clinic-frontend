@@ -5,6 +5,10 @@
 import base from './baseUrl'
 import { httpDelete, httpGet, httpPost, httpPut } from './http'
 
+export  const storeToken=(token)=>{
+    localStorage.setItem("token",token)
+}
+
 const api = {
     getLogin(params) {
         const url = base.ownUrl + base.login

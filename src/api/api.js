@@ -3,16 +3,20 @@
  */
 
 import base from './baseUrl'
-import {httpDelete, httpGet, httpPost, httpPut} from './http'
+import { httpDelete, httpGet, httpPost, httpPut } from './http'
 
 const api = {
     getLogin(params) {
         const url = base.ownUrl + base.login
         return httpPost(url, params)
     },
-    getAllCases(){
-        const url=base.ownUrl + base.getAllCases
-        return httpGet(url)
+    getAllCases() {
+        const url = base.ownUrl + base.getAllCases
+        return httpGet(url),
+    },
+    getRegister(params) {
+        const url = base.ownUrl + base.register
+        return httpPost(url, params)
     },
     getCaseCategories() {
         const url = base.ownUrl + base.getCaseCategory
@@ -26,13 +30,13 @@ const api = {
         const url = `${base.ownUrl}${base.getCaseByCaseId}${case_id}/`
         return httpGet(url)
     },
-    deleteCaseByCaseId(case_id){
+    deleteCaseByCaseId(case_id) {
         const url = `${base.ownUrl}${base.getAllCases}${case_id}/`
         return httpDelete(url)
     },
-    addCase(case_data){
+    addCase(case_data) {
         const url = `${base.ownUrl}${base.getAllCases}`
-        return httpPost(url,case_data)
+        return httpPost(url, case_data)
     },
 
     getDepartment() {

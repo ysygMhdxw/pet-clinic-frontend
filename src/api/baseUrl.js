@@ -6,6 +6,7 @@ const base = {
     ownUrl: 'http://127.0.0.1:4523/m1/2420754-0-default/',
     // front end
     // Login
+    login:"authentication/token/",
 
     // Case Learning
 
@@ -16,7 +17,8 @@ const base = {
     // basicStructureAndFunctionManagement
     // departmentManagement
     getDepartment: "management/department/",
-
+    //drugManagement
+    getMedicine:"management/medicine/",
 
 
     // Questions and Tests

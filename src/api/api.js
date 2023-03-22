@@ -6,10 +6,10 @@ import base from './baseUrl'
 import {httpDelete, httpGet, httpPost, httpPut} from './http'
 
 const api = {
-    // getLogin(params) {
-    //     const url = base.ownUrl + base.login
-    //     return httpPost(url, params)
-    // },
+    getLogin(params) {
+        const url = base.ownUrl + base.login
+        return httpPost(url, params)
+    },
     getCaseCategories() {
         const url = base.ownUrl + base.getCaseCategory
         return httpGet(url)
@@ -40,6 +40,23 @@ const api = {
         const url = `${base.ownUrl}${base.getDepartment}`
         return httpPost(url, department)
     },
+    getMedicine() {
+        const url = `${base.ownUrl}${base.getMedicine}`
+        return httpGet(url)
+    },
+    deleteMedicine(medicine_id) {
+        const url = `${base.ownUrl}${base.getMedicine}${medicine_id}/`
+        return httpDelete(url)
+    },
+    editMedicine(medicine) {
+        const url = `${base.ownUrl}${base.getMedicine}`
+        return httpPut(url, medicine)
+    },
+    addMedicine(medicine) {
+        const url = `${base.ownUrl}${base.getMedicine}`
+        return httpPost(url, medicine)
+    },
+
     getQuestionList() {
         const url = `${base.ownUrl}${base.getQuestionList}`
         return httpGet(url)

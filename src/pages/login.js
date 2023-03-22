@@ -1,15 +1,12 @@
 
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Layout, Typography } from 'antd';
+import { Button, Form, Input, Layout, Typography, Col, Row } from 'antd';
 import React from 'react';
 const { Header, Content, Footer } = Layout;
 
 const { Title } = Typography;
-//import { useState } from 'react';
 
 export const Login = () => {
-  // const [username, setUsername] = useState('');
-  // const [password, setPass] = useState('');
 
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
@@ -20,7 +17,10 @@ export const Login = () => {
     <Layout className="layout">
       <Header style={{ padding: '40px 0' }}>
       </Header>
-      <Content style={{ padding: '120px 470px' }}>
+      <Content style={{ padding: '120px' }}>
+      <Row>
+        <Col span={8}></Col>
+        <Col span={8}>
         <Title level={3} type="secondary">虚拟宠物医院学习系统</Title>
         <Form
           name="normal_login"
@@ -65,6 +65,9 @@ export const Login = () => {
             Or <a href="../register">register now!</a>
           </Form.Item>
         </Form>
+        </Col>
+        <Col span={8}></Col>
+        </Row>
       </Content>
       <Footer
         style={{

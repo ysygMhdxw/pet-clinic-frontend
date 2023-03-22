@@ -1,14 +1,35 @@
 import { UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Layout, Typography, Col, Row } from 'antd';
 import React from 'react';
+import api from "../api/api";
 const { Header, Content, Footer } = Layout;
 const { Title } = Typography;
 
 export const Register = () => {
 
   const onFinish = (values) => {
-    console.log('Received values of form: ', values);
+    let login_values={username:values.username, password:values.password}
+    register(login_values).then(
+      (res) => {
+        if (res.data.resCode === 0) {
+          this.props.history.push("../");
+        }
+      },
+      (err) =>{
+        this.props.addFlashMessage({
+            type: "danger",
+            text: err.response.data.errors
+        })
+      }
+    )
+    console.log('Received values of form: ', login_values);
   };
+
+  async function register(values) {
+    const res = await api.getRegister(values)
+    const data = await res.json()
+    console.log(data);
+}
   return (
     <Layout className="layout">
       <Header style={{ padding: '40px 0' }}>

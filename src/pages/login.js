@@ -10,7 +10,17 @@ const { Title } = Typography;
 export const Login = () => {
 
     const onFinish = (values) => {
-        login(values)
+        login(values).then((res) => {
+          if(res.data.resCode === 0){
+            this.props.history.push("../");
+          }
+        },
+        (err) =>{
+          this.props.addFlashMessage({
+              type: "danger",
+              text: err.response.data.errors
+          })
+        })
         console.log('Received values of form: ', values);
     }
 

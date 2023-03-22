@@ -7,6 +7,8 @@ const base = {
     // front end
     // Login
     login:"authentication/token/",
+    //register
+    register:"/authentication/user/",
 
     // Case Learning
 

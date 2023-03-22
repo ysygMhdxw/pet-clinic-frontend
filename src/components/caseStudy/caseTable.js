@@ -1,9 +1,8 @@
-import { Divider, Space, Table } from 'antd';
+import {Divider, Space, Table} from 'antd';
 import propTypes from 'prop-types';
-import { useEffect, useState } from 'react';
-import api from '../api/api';
-import { CaseDisplay } from './caseDisplay';
-
+import {useEffect, useState} from 'react';
+import {CaseDisplay} from "./caseDisplay";
+import api from "../../api/api";
 
 
 export const CaseTable = (props) => {
@@ -38,7 +37,7 @@ export const CaseTable = (props) => {
                 <Space size="middle">
                     <a onClick={() => {
                         Promise.all([console.log(record),
-                        setCaseInfo(record)]).then(() => {
+                            setCaseInfo(record)]).then(() => {
                             setDisplayFlg(true);
                         });
                     }}
@@ -49,13 +48,14 @@ export const CaseTable = (props) => {
     ];
 
     async function getCasesData() {
-        const res = await api.getCaseByDiseaseName({ caseName: props.caseName })
+        const res = await api.getCaseByDiseaseName(props.caseName)
         const data = await res.json()
         console.log(data);
         console.log("case_info");
-        setTableData(data.case_info)
+        setTableData(data.cases)
         setDisplayFlg(false)
     }
+
     useEffect(() => {
         getCasesData()
     }, [props]);
@@ -63,24 +63,22 @@ export const CaseTable = (props) => {
     if (!displayFlg) {
         return (
             <>
-                <h1 style={{ marginBottom: "10" }}>{props.caseName}<Divider type='vertical'></Divider>病例信息</h1>
-                <Table columns={columns} dataSource={tableData} />
+                <h1 style={{marginBottom: "10"}}>{props.caseName}<Divider type='vertical'></Divider>病例信息</h1>
+                <Table columns={columns} dataSource={tableData}/>
             </>
         )
-    }
-    else {
+    } else {
         return (
             <>
                 <div>
-                    <h1 style={{ marginBottom: "10" }}>{props.caseName}<Divider type='vertical'></Divider>病例详情信息</h1>
+                    <h1 style={{marginBottom: "10"}}>{props.caseName}<Divider type='vertical'></Divider>病例详情信息
+                    </h1>
                 </div>
-
-                <CaseDisplay caseInfo={caseInfo} />
+                <CaseDisplay caseInfo={caseInfo}/>
             </>
         )
 
     }
-
 
 
 }

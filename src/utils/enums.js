@@ -9,5 +9,20 @@ export const ContextString = {
     testLearning: "测试学习",
     takeQuestions: "做题",
     takeExam: "考试",
-    takeContest: "比赛"
+    takeContest: "比赛",
+    caseManagement:"病例管理",
+    testManagement:"测试管理",
+    systemManagement:"系统管理",
+    userManagement:"用户管理",
+    functionalLearningManagement:"职能学习管理",
+    basicStructureAndFunctionManagement:"基本结构和功能管理",
+    departmentManagement:"科室管理",
+    personnelManagement:"人员管理",
+    medicineManagement:"药品管理",
+    vaccineManagement:"疫苗管理",
+    fileManagement:"档案管理",
+    feeManagement:"收费管理",
+    laboratoryProjectManagement:"化验项目管理",
+    hospitalizationManagement:"住院管理"
+
 }

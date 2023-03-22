@@ -1,7 +1,7 @@
 import { Col, Row } from 'antd'
 import React, { useState } from 'react'
-import CaseCategory from './caseCategory'
 import { CaseTable } from './caseTable'
+import {CaseCategory} from "./caseCategory";
 
 
 export const CaseLearning = () => {
@@ -10,7 +10,7 @@ export const CaseLearning = () => {
         <div>
             <Row>
                 <Col span={6}>
-                    <CaseCategory setCaseName={setCaseName} />
+                    <CaseCategory setCaseName={setCaseName}/>
                 </Col>
                 <Col span={1}>
                 </Col>

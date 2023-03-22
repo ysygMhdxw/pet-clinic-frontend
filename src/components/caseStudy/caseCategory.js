@@ -1,7 +1,7 @@
 import { Input, Tree } from 'antd';
 import propTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import api from '../api/api';
+import api from "../../api/api";
 const { Search } = Input;
 
 const dataList = [];
@@ -20,7 +20,7 @@ const getParentKey = (key, tree) => {
     }
     return parentKey;
 };
-const CaseCategory = (props) => {
+export const CaseCategory = (props) => {
     const [expandedKeys, setExpandedKeys] = useState([]);
     const [searchValue, setSearchValue] = useState('');
     const [autoExpandParent, setAutoExpandParent] = useState(true);
@@ -61,7 +61,6 @@ const CaseCategory = (props) => {
         console.log(selectedKeys);
         console.log(node);
         props.setCaseName(node.key)
-        props.setTableFlg(true)
     }
 
     useEffect(() => {
@@ -87,9 +86,7 @@ const CaseCategory = (props) => {
         </div>
     );
 };
-export default CaseCategory;
 
 CaseCategory.propTypes = {
-    setCaseName: propTypes.func,
-    setTableFlg: propTypes.func
+    setCaseName: propTypes.func
 };

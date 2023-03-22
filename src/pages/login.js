@@ -1,5 +1,5 @@
 import { LockOutlined, UserOutlined} from '@ant-design/icons';
-import { Button, Form, Input, Layout, Typography } from 'antd';
+import { Button, Form, Input, Layout, Typography} from 'antd';
 const { Header, Content, Footer} = Layout;
 const {Title} = Typography;
 import React from 'react';

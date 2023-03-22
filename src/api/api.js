@@ -10,13 +10,13 @@ const api = {
         const url = base.ownUrl + base.login
         return httpPost(url, params)
     },
-    getAllCases() {
-        const url = base.ownUrl + base.getAllCases
-        return httpGet(url),
-    },
     getRegister(params) {
         const url = base.ownUrl + base.register
         return httpPost(url, params)
+    },
+    getAllCases() {
+        const url = base.ownUrl + base.getAllCases
+        return httpGet(url)
     },
     getCaseCategories() {
         const url = base.ownUrl + base.getCaseCategory

@@ -6,27 +6,26 @@ const base = {
     ownUrl: 'http://127.0.0.1:4523/m1/2420754-0-default/',
     // front end
     // Login
-    login:"authentication/token/",
+    login: "authentication/token/",
     //register
-    register:"/authentication/user/",
+    register: "authentication/user/",
 
     // Case Learning
-
-    getAllCases:"case/",
+    getAllCases: "case/",
     getCaseCategory: "case/category/",
     getCaseByDiseaseName: "case/name/",
     getCaseByCaseId: "case/number/",
 
+    // Questions and Tests
+    getQuestionList: "quiz/question/",
 
+
+    // back end
     // basicStructureAndFunctionManagement
     // departmentManagement
     getDepartment: "management/department/",
     //drugManagement
-    getMedicine:"management/medicine/",
-
-
-    // Questions and Tests
-    getQuestionList: "quiz/question/"
+    getMedicine: "management/medicine/",
 
 
 }

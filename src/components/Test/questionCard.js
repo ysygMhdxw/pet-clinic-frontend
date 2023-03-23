@@ -9,9 +9,11 @@ import propTypes from 'prop-types'
 export const Question = ( props ) => {
 
     console.log(props.questionDetail);
+    //question is an object includes all details
     let answers = [];
     // eslint-disable-next-line no-unused-vars
     const [question,setQuestion] = useState(props.questionDetail);
+    const [checkView,setCheckView] = useState(false);
     const questionType = question.question_type;
     switch (questionType){
         case '简答题':
@@ -29,16 +31,27 @@ export const Question = ( props ) => {
 
     return (
         <div>
-            < QuestionHeader setCardView={props.setCardView} />
+            < QuestionHeader 
+                setCardView={props.setCardView}
+                setCheckView={setCheckView} 
+                score={question.score}/>
             <Divider/>
             < QuestionText 
                 title={question.name} 
                 description={question.description}/>
             <Divider/>
-            {questionType == '简答题'?
-                < AnswerText /> :
-                < AnswerList answers={answers}/>    
-            }
+            {questionType == '简答题' && (
+                < AnswerText 
+                    answer={question.answer}
+                    checkView={checkView}/>)}
+            {questionType != '简答题' && 
+                (questionType == '多选题'?
+                <></> :
+                < AnswerList 
+                    answers={answers}
+                    checkView={checkView}
+                    correct_ind={questionType =='单选题'?question.answer-1:question.answer}/>    
+            )}
            
         </div>
     )

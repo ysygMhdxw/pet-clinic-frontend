@@ -16,7 +16,7 @@ export const QuestionList = ( props ) => {
 
   async function getQuestionsData(){
     const response = await api.getQuestionList();
-    const posts = await response.json();
+    const posts = response.data;
     var questions=[];
     for(const question of posts.single){
       question.question_type = "单选题"

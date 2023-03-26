@@ -19,6 +19,7 @@ const base = {
 
     // Questions and Tests
     getQuestionList: "quiz/question/",
+    getQuizList:"quiz/",
 
 
     // back end

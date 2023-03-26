@@ -6,7 +6,7 @@ import base from './baseUrl'
 import { httpDelete, httpGet, httpPost, httpPut } from './http'
 
 export  const storeToken=(token)=>{
-    localStorage.setItem("token",token)
+    localStorage.setItem("token","Token "+token)
 }
 
 const api = {
@@ -32,6 +32,10 @@ const api = {
     },
     getCaseByCaseId(case_id) {
         const url = `${base.ownUrl}${base.getCaseByCaseId}${case_id}/`
+        return httpGet(url)
+    },
+    getCaseCheckUpByCaseId(case_id){
+        const url = `${base.ownUrl}${base.getCaseCheckUpByCaseId}${case_id}/`
         return httpGet(url)
     },
     deleteCaseByCaseId(case_id) {

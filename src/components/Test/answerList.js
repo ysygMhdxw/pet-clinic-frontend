@@ -1,25 +1,25 @@
 import React from "react";
-import { Answer } from "./answer";
-import { Space } from "antd";
+import {Answer} from "./answer";
+import {Space} from "antd";
 import propTypes from 'prop-types';
 
-export const AnswerList = ( props ) => {
-  
+export const AnswerList = (props) => {
+
     return (
         <div>
-          <Space size='middle'>
-            {
-                props.answers.map( (text,ind) => (
-                    <Answer
-                        text = {text}
-                        key = {ind}
-                    /> ) 
-                )
-                
-            }
-          </Space>
+            <Space size='middle'>
+                {
+                    props.answers.map((text, ind) => (
+                        <Answer
+                            text={text}
+                            key={ind}
+                        />)
+                    )
+
+                }
+            </Space>
         </div>
-        
+
     )
 }
 

@@ -32,7 +32,7 @@ export const CaseManagement = () => {
     const [editableKeys, setEditableRowKeys] = useState([]);
     const [displayFlg, setDisplayFlg] = useState(true);
     // eslint-disable-next-line no-unused-vars
-    const [,setCaseInfo]=useState([]);
+    const [caseInfo, setCaseInfo] = useState([]);
     // const [dataSource, setDataSource] = useState([]);
     const columns = [
         {
@@ -137,13 +137,13 @@ export const CaseManagement = () => {
 
     async function editCase(caseData) {
         const res = await api.editDepartment(caseData)
-        const data =  res.data
+        const data = res.data
         console.log(data)
     }
 
     async function addCase(caseData) {
         const res = await api.addCase(caseData)
-        const data =  res.data
+        const data = res.data
         console.log(data)
     }
 
@@ -236,7 +236,7 @@ export const CaseManagement = () => {
         return (
             <div>
                 {/*<CaseDetail caseInfo={caseInfo}/>*/}
-                <CaseEditForm/>
+                <CaseEditForm caseId={caseInfo.id}/>
             </div>
         )
     }

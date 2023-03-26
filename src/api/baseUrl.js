@@ -15,6 +15,7 @@ const base = {
     getCaseCategory: "case/category/",
     getCaseByDiseaseName: "case/name/",
     getCaseByCaseId: "case/number/",
+    getCaseCheckUpByCaseId:"case/checkup/",
 
     // Questions and Tests
     getQuestionList: "quiz/question/",

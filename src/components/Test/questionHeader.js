@@ -1,16 +1,18 @@
-import { Button,Space  } from "antd"
+import {Button, Space} from "antd"
 import propTypes from 'prop-types'
 
-export const QuestionHeader = ( props ) =>{
+export const QuestionHeader = (props) => {
     return (
         <div>
             <Space
                 direction="vertical"
                 style={{
-                width: '100%',
-             }}>
+                    width: '100%',
+                }}>
                 <Button type="link" block
-                    onClick={()=>{props.setCardView(false)}}>
+                        onClick={() => {
+                            props.setCardView(false)
+                        }}>
                     返回
                 </Button>
             </Space>
@@ -18,5 +20,5 @@ export const QuestionHeader = ( props ) =>{
     )
 }
 QuestionHeader.propTypes = {
-    setCardView:propTypes.func,
+    setCardView: propTypes.func,
 }

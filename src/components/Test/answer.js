@@ -1,10 +1,10 @@
 import React from "react";
-import { Button } from "antd";
+import {Button} from "antd";
 import propTypes from 'prop-types';
 
-export const Answer = ( props ) =>{
+export const Answer = (props) => {
 
-    function answerResult(){
+    function answerResult() {
         console.log("answer result")
     }
 
@@ -12,11 +12,11 @@ export const Answer = ( props ) =>{
     return (
         <Button className="ansButton"
                 onClick={answerResult}>
-                {props.text}
+            {props.text}
         </Button>
     )
 }
 
 Answer.propTypes = {
     text: propTypes.string
-  }
+}

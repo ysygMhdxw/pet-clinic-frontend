@@ -1,4 +1,3 @@
-
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import propTypes from "prop-types";
@@ -43,11 +42,11 @@ export const VideoJS = (props) => {
 
     return (
         <div data-vjs-player>
-            <div ref={videoRef} />
+            <div ref={videoRef}/>
         </div>
     );
 }
 VideoJS.propTypes = {
-    options:propTypes.object,
-    onReady:propTypes.func
+    options: propTypes.object,
+    onReady: propTypes.func
 };

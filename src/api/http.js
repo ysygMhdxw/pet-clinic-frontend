@@ -10,7 +10,7 @@ axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
     const token = localStorage.getItem('token');
     if (token) {
-        config.headers.Authorization =  token;
+        config.headers.Authorization = token;
     }
     return config;
 }, function (error) {
@@ -42,7 +42,7 @@ export function httpGet(url) {
  */
 export function httpPost(url, params) {
     const result = axios.post(url,
-      qs.stringify(params)
+        qs.stringify(params)
     )
     return result
 }
@@ -51,7 +51,7 @@ export function httpPost(url, params) {
  * put
  */
 export function httpPut(url, params) {
-    const result = axios.put(url,  qs.stringify(params)
+    const result = axios.put(url, qs.stringify(params)
     )
     return result
 }

@@ -1,6 +1,7 @@
-import { Descriptions, Image } from 'antd';
+import {Descriptions, Image} from 'antd';
 import propTypes from 'prop-types';
-import { useEffect } from 'react';
+import {useEffect} from 'react';
+
 export const CaseDisplay = (props) => {
     const caseInfo = props.caseInfo
     useEffect(() => {
@@ -24,46 +25,46 @@ export const CaseDisplay = (props) => {
                 <Descriptions.Item label="主要病症">
                     <div>
                         症状描述：{caseInfo.symptom_text}
-                        <br />
+                        <br/>
                         <Image
                             width={200}
                             height={200}
                             src="error"
                             fallback={caseInfo.symptom_pic}
                         />
-                        <br />
+                        <br/>
                         视频url：{caseInfo.symptom_video}
-                        <br />
+                        <br/>
                     </div>
                 </Descriptions.Item>
                 <Descriptions.Item label="诊断结果">
                     <div>
                         诊断结果：{caseInfo.diagnosis_text}
-                        <br />
+                        <br/>
                         <Image
                             width={200}
                             height={200}
                             src="error"
                             fallback={caseInfo.diagnosis_pic}
                         />
-                        <br />
+                        <br/>
                         视频url：{caseInfo.diagnosis_video}
-                        <br />
+                        <br/>
                     </div>
                 </Descriptions.Item>
                 <Descriptions.Item label="治疗方案">
                     <div>
                         治疗方案：{caseInfo.treatment_text}
-                        <br />
+                        <br/>
                         <Image
                             width={200}
                             height={200}
                             src="error"
                             fallback={caseInfo.treatment_pic}
                         />
-                        <br />
+                        <br/>
                         视频url：{caseInfo.treatment_video}
-                        <br />
+                        <br/>
                     </div>
                 </Descriptions.Item>
             </Descriptions>

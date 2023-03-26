@@ -124,6 +124,7 @@ export const DepartmentManagement = () => {
         const data = res.data
         console.log(data.department.id)
     }
+
     async function addDepartment(department) {
         const res = await api.addDepartment(department)
         const data = res.data
@@ -147,7 +148,7 @@ export const DepartmentManagement = () => {
                         }
                         onFinish={async (values) => {
                             await waitTime(1000);
-                            addDepartment({id: random(0, 10000000),...values})
+                            addDepartment({id: random(0, 10000000), ...values})
                             console.log(values);
                             getDepartmentData();
                             message.success('新建成功');

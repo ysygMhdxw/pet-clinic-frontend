@@ -2,33 +2,25 @@ import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {Button, Form, Input, Layout, Typography, Col, Row, Image} from 'antd';
 import React from 'react';
 import api from "../api/api";
+import {useNavigate} from "react-router-dom";
 
 const {Header, Content, Footer} = Layout;
 const {Title} = Typography;
 
 export const Register = () => {
-
+    const navigate = useNavigate()
     const onFinish = (values) => {
-        let login_values = {username: values.username, password: values.password}
-        register(login_values).then(
-            (res) => {
-                if (res.data.resCode === 0) {
-                    this.props.history.push("../");
-                }
-            },
-            (err) => {
-                this.props.addFlashMessage({
-                    type: "danger",
-                    text: err.response.data.errors
-                })
-            }
-        )
+        let login_values = {username: values.username, password: values.password,superuser:false}
+        register(login_values)
         console.log('Received values of form: ', login_values);
     };
 
     async function register(values) {
         const res = await api.getRegister(values)
-        const data = await res.json()
+        const data = await res.data
+        if(data.success){
+            navigate('/');
+        }
         console.log(data);
     }
 

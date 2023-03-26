@@ -1,8 +1,9 @@
-import { Input, Tree } from 'antd';
+import {Input, Tree} from 'antd';
 import propTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import api from "../../api/api";
-const { Search } = Input;
+
+const {Search} = Input;
 
 const dataList = [];
 
@@ -30,7 +31,7 @@ export const CaseCategory = (props) => {
         setAutoExpandParent(false);
     };
     const onChange = (e) => {
-        const { value } = e.target;
+        const {value} = e.target;
         const newExpandedKeys = dataList
             .map((item) => {
                 if (item.title.indexOf(value) > -1) {
@@ -44,12 +45,13 @@ export const CaseCategory = (props) => {
         setAutoExpandParent(true);
     };
 
-     async function getTreeData() {
-         const responce = await api.getCaseCategories()
-         const data=responce.data
-         setTreeData(data.case_categories)
-     }
-    function getNodeName(selectedKeys, { node }) {
+    async function getTreeData() {
+        const responce = await api.getCaseCategories()
+        const data = responce.data
+        setTreeData(data.case_categories)
+    }
+
+    function getNodeName(selectedKeys, {node}) {
         console.log(selectedKeys);
         console.log(node);
         props.setCaseName(node.key)

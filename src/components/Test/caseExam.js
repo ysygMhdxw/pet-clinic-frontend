@@ -16,7 +16,9 @@ export const CaseExam = () => {
     async function getQustionsData() {
         for (let [type, arr] of Object.entries(questionCatalogue)) {
             for (let id of arr) {
+                console.log(type+" "+id)
                 const response = await api.getQuestion(type, id);
+               
                 const question = response.data.data;
                 question.question_type = typeMap[type];
                 questions.push(question);

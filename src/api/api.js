@@ -91,7 +91,7 @@ const api = {
     },
 
     getQuestion(type,id) {
-        const url = `${base.ownUrl}${base.getQuestionList}/${type}/${id}/`
+        const url = `${base.ownUrl}${base.getQuestionList}${type}/${id}/`
         return httpGet(url)
     }
 

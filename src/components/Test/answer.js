@@ -1,21 +1,20 @@
 import React from "react";
-import { Radio} from "antd";
+import {Radio} from "antd";
 import propTypes from 'prop-types';
 
-export const Answer = ( props ) =>{
-
+export const Answer = (props) => {
 
 
     return (
-        <Radio.Button 
+        <Radio.Button
             className="ansButton"
             value={props.ind}>
-                {props.text}
+            {props.text}
         </Radio.Button>
     )
 }
 
 Answer.propTypes = {
     text: propTypes.string,
-    ind:propTypes.number
-  }
+    ind: propTypes.number
+}

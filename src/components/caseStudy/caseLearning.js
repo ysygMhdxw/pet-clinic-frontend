@@ -1,6 +1,6 @@
-import { Col, Row } from 'antd'
-import React, { useState } from 'react'
-import { CaseTable } from './caseTable'
+import {Col, Row} from 'antd'
+import React, {useState} from 'react'
+import {CaseTable} from './caseTable'
 import {CaseCategory} from "./caseCategory";
 
 
@@ -16,7 +16,7 @@ export const CaseLearning = () => {
                 </Col>
                 <Col span={15}>
                     {caseName === "" ? <p></p> :
-                        <CaseTable caseName={caseName} />}
+                        <CaseTable caseName={caseName}/>}
                 </Col>
 
 

@@ -7,17 +7,19 @@ const {Header, Content, Footer} = Layout;
 const {Title} = Typography;
 
 export const Login = () => {
-    const navigate=useNavigate()
+        const navigate = useNavigate()
         const onFinish = (values) => {
             login(values)
-            navigate('/frontend');
             console.log('Received values of form: ', values);
         }
 
         async function login(values) {
             const res = await api.getLogin(values)
             const data = res.data
-            storeToken(data.access);
+            if (data.access) {
+                storeToken(data.access);
+                navigate('/select');
+            }
         }
 
         return (
@@ -25,8 +27,8 @@ export const Login = () => {
 
                 <Layout style={{
                     minHeight: '100vh',
-                    background:"https://gw.alipayobjects.com/zos/rmsportal/FfdJeJRQWjEeGTpqgBKj.png",
-                    backgroundImage:`url('https://gw.alipayobjects.com/zos/rmsportal/FfdJeJRQWjEeGTpqgBKj.png')`
+                    background: "https://gw.alipayobjects.com/zos/rmsportal/FfdJeJRQWjEeGTpqgBKj.png",
+                    backgroundImage: `url('https://gw.alipayobjects.com/zos/rmsportal/FfdJeJRQWjEeGTpqgBKj.png')`
                 }}>
                     <Header>
                     </Header>
@@ -106,7 +108,7 @@ export const Login = () => {
                     <Footer
                         style={{
                             textAlign: 'center',
-                            backgroundColor:"white"
+                            backgroundColor: "white"
                         }}
                     >
                         虚拟宠物医院学习系统 ©2023 Created by G14
@@ -119,4 +121,3 @@ export const Login = () => {
 
     }
 ;
-

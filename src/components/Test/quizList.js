@@ -35,7 +35,9 @@ export const QuizList = ( props ) => {
                 type = "link"
                 onClick={()=>
                   {props.setQuizView(true);
-                   props.setQuestionCatalogue(record.questions);}}>
+                   props.setQuestionCatalogue(record.questions);
+                   props.setQuizDuration(record.duration);}
+                   }>
                   进行考试 
               </Button>
             </Space>
@@ -69,5 +71,6 @@ export const QuizList = ( props ) => {
 
 QuizList.propTypes = {
   setQuizView: propTypes.func,
-  setQuestionCatalogue: propTypes.func
+  setQuestionCatalogue: propTypes.func,
+  setQuizDuration: propTypes.func,
 };

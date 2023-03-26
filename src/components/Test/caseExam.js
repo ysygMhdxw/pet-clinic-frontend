@@ -8,6 +8,7 @@ import api from '../../api/api';
 export const CaseExam = () => {
     const [quizView, setQuizView] = useState();
     const [questionCatalogue, setQuestionCatalogue] = useState('');
+    const [quizDuration,setQuizDuration] = useState();
     useEffect(() => {getQustionsData()},[questionCatalogue])
 
     let questions = [];
@@ -30,11 +31,13 @@ export const CaseExam = () => {
           {quizView == true?
            <Toggle
               questions = {questions}
-              setQuizView={setQuizView}/>
+              setQuizView={setQuizView}
+              duration = {quizDuration}/>
            :  
            <QuizList 
               setQuizView={setQuizView} 
-              setQuestionCatalogue={setQuestionCatalogue}/>}
+              setQuestionCatalogue={setQuestionCatalogue}
+              setQuizDuration = {setQuizDuration}/>}
         </div>
     )
 

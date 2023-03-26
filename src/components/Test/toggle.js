@@ -48,7 +48,8 @@ export const Toggle = ( props ) =>
             curIndex = {curIndex}
             totalIndex = {props.questions.length}
             setUserScore = {setUserScore}
-            userScore = {userScore}/> 
+            userScore = {userScore}
+            duration = {props.duration}/> 
             </>
         )}
         {curIndex == props.questions.length && (
@@ -79,5 +80,6 @@ export const Toggle = ( props ) =>
 
 Toggle.propTypes = {
     questions: propTypes.array,
-    setQuizView : propTypes.func
+    setQuizView : propTypes.func,
+    duration : propTypes.number
   };

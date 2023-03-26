@@ -5,7 +5,7 @@ const { Text } = Typography;
 export const AnswerListMutiple = ( props ) => {
 
     const [userAns, setUserAns] = useState([]);
-    console.log(props.multipleAns);
+    //console.log(props.multipleAns);
     const onChange = (checkedValues) => {
         //console.log('checked = ', checkedValues);
         setUserAns(checkedValues);

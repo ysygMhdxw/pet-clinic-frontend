@@ -1,5 +1,6 @@
 import { Button,Space,Col,Row  } from "antd"
 import propTypes from 'prop-types'
+import { CountDown } from "./countDown"
 
 export const ExamHeader = ( props ) =>{
     return (
@@ -17,7 +18,10 @@ export const ExamHeader = ( props ) =>{
                         第{props.curIndex+1}题 / 共{props.totalIndex}题
                     </Col>
                     <Col span={4}>
-                        剩余时间：
+                        <CountDown
+                         duration={props.duration}
+                         setCurIndex = {props.setCurIndex}
+                         totalIndex = {props.totalIndex}/>
                     </Col>
                     <Col span={4} offset={4} > 
                     <Button type="link" block
@@ -45,4 +49,5 @@ ExamHeader.propTypes = {
     isCorrect : propTypes.bool,
     setUserScore: propTypes.func,
     userScore: propTypes.number,
+    duration: propTypes.number,
 }

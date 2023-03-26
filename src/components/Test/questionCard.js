@@ -39,7 +39,7 @@ export const Question = ( props ) => {
             if(key.toString().indexOf("answer") != -1)
                 multipleAns.push(value)
         }
-        console.log(multipleAns);
+        //console.log(multipleAns);
     }
    
 
@@ -54,7 +54,8 @@ export const Question = ( props ) => {
              totalIndex = {props.totalIndex}
              isCorrect = {isCorrect}
              setUserScore = {props.setUserScore}
-             userScore = {props.userScore}/>
+             userScore = {props.userScore}
+             duration = {props.duration}/>
              :
              < QuestionHeader 
              setCardView={props.setCardView}
@@ -97,6 +98,7 @@ Question.propTypes = {
     totalIndex : propTypes.number,
     setUserScore : propTypes.func,
     userScore : propTypes.number,
+    duration :propTypes.number
     
 }
 

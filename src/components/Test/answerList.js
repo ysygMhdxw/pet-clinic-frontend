@@ -9,6 +9,7 @@ export const AnswerList = ( props ) => {
     const onChange = (e) => {
         setUserAns([props.answers[e.target.value]]);
         console.log(`radio checked:${e.target.value}`);
+        props.setIsCorrect(userAns==correct_ans);
       };
     
     const correct_ans = props.answers[props.correct_ind];
@@ -16,7 +17,7 @@ export const AnswerList = ( props ) => {
    
     return (
         <div>
-             <Radio.Group onChange={onChange}>
+             <Radio.Group onChange={onChange}  disabled={props.checkView?true:false}>
                 <Space size={"middle"}>
                 {
                 props.answers.map( (text,ind) => (
@@ -57,5 +58,6 @@ export const AnswerList = ( props ) => {
 AnswerList.propTypes = {
     answers: propTypes.array,
     checkView: propTypes.bool,
-    correct_ind: propTypes.number
+    correct_ind: propTypes.number,
+    setIsCorrect: propTypes.func,
 }

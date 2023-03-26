@@ -7,6 +7,7 @@ import {CaseQuestions} from './Test/caseQuestions';
 import {MedicineManagement} from "./basicStructureAndFunctionManagement/medicineManagement";
 import {VaccineManagement} from "./basicStructureAndFunctionManagement/vaccineManagement";
 import {CaseManagement} from "./caseManagement/caseManagement";
+import {CaseExam} from './Test/caseExam.js';
 
 
 
@@ -27,11 +28,10 @@ export const ContextComponents = (props) => {
         return <CaseManagement/>
     }
     else if (props.contextString === ContextString.takeQuestions) {
-        return (
-            <>
-                <CaseQuestions/>
-            </>
-        )
+        return  <CaseQuestions/>   
+    }
+    else if (props.contextString === ContextString.takeExam){
+        return <CaseExam/>
     }
     return (
         <>

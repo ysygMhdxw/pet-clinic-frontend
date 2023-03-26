@@ -7,9 +7,8 @@ import api from '../../api/api';
 export const CaseExam = () => {
     const [quizView, setQuizView] = useState();
     const [questionCatalogue, setQuestionCatalogue] = useState('');
-    useEffect(() => {
-        getQustionsData()
-    }, [questionCatalogue])
+    const [quizDuration,setQuizDuration] = useState();
+    useEffect(() => {getQustionsData()},[questionCatalogue])
 
     let questions = [];
     const typeMap = {single: '单选题', multi: '多选题', tof: '判断题', text: '简答题'};
@@ -26,15 +25,17 @@ export const CaseExam = () => {
     }
 
     return (
-        <div>
-            {quizView == true ?
-                <Toggle
-                    questions={questions}
-                    setQuizView={setQuizView}/>
-                :
-                <QuizList
-                    setQuizView={setQuizView}
-                    setQuestionCatalogue={setQuestionCatalogue}/>}
+      <div>
+          {quizView == true?
+           <Toggle
+              questions = {questions}
+              setQuizView={setQuizView}
+              duration = {quizDuration}/>
+           :  
+           <QuizList 
+              setQuizView={setQuizView} 
+              setQuestionCatalogue={setQuestionCatalogue}
+              setQuizDuration = {setQuizDuration}/>}
         </div>
     )
 

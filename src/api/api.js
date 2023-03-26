@@ -86,9 +86,8 @@ const api = {
         return httpGet(url)
     },
 
-    // eslint-disable-next-line no-unused-vars
     getQuestion(type,id) {
-        const url = `${base.ownUrl}${base.getQuestionList}/${type}/${id}`
+        const url = `${base.ownUrl}${base.getQuestionList}/${type}/${id}/`
         return httpGet(url)
     }
 

@@ -93,7 +93,23 @@ const api = {
     getQuestion(type,id) {
         const url = `${base.ownUrl}${base.getQuestionList}${type}/${id}/`
         return httpGet(url)
-    }
+    },
+    getPersonnel(){
+        const url = `${base.ownUrl}${base.getPersonnel}`
+        return httpGet(url)
+    },
+    deleteUsers(users){
+        const url=`${base.ownUrl}${base.getPersonnel}`
+        return httpDelete(url,{users:users})
+    },
+    editUser(user){
+        const url=`${base.ownUrl}${base.getPersonnel}`
+        return httpPost(url,user)
+    },
+    addUser(user){
+        const url=`${base.ownUrl}${base.getPersonnel}`
+        return httpPost(url,user)
+    },
 
 
 

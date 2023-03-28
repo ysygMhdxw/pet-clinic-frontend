@@ -18,6 +18,7 @@ export const ContextString = {
     basicStructureAndFunctionManagement:"基本结构和功能管理",
     departmentManagement:"科室管理",
     personnelManagement:"人员管理",
+    toolManagement:"器械管理",
     medicineManagement:"药品管理",
     vaccineManagement:"疫苗管理",
     fileManagement:"档案管理",

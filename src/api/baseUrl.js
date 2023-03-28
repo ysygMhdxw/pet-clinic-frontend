@@ -28,6 +28,8 @@ const base = {
     getDepartment: "management/department/",
     //drugManagement
     getMedicine: "management/medicine/",
+    //personnelManagement
+    getPersonnel:'authentication/user/',
 
 
 }

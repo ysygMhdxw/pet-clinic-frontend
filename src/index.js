@@ -10,6 +10,7 @@ import {Backend} from './pages/backend';
 import {Frontend} from './pages/frontend';
 import {Login} from './pages/login';
 import {Register} from './pages/register';
+
 dayjs.locale('zh-cn');
 import {createRoot} from 'react-dom/client';
 import propTypes from "prop-types";
@@ -32,21 +33,19 @@ function isLocalStorageAvailable() {
 }
 
 function AuthenticatedRoute(props) {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
         if (isLocalStorageAvailable()) {
             const token = localStorage.getItem('token');
             console.log(token)
             if (token) {
-                setIsAuthenticated(true);
+                props.setIsAuthenticated(true);
             }
         }
-    }, []);
 
-
-    if (!isAuthenticated) {
-        return <Login/>
+    }, [props.isAuthenticated]);
+    if (!props.isAuthenticated) {
+        return <Login setIsAuthenticated={props.setIsAuthenticated} isAuthenticated={props.isAuthenticated}/>
     }
 
     return props.element
@@ -55,19 +54,30 @@ function AuthenticatedRoute(props) {
 AuthenticatedRoute.propTypes = {
     path: propTypes.string,
     element: propTypes.object,
+    isAuthenticated: propTypes.bool,
+    setIsAuthenticated: propTypes.func
 }
 
 const App = () => {
 
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/select" element={<AuthenticatedRoute path="/select" element={<AuthSelection/>}/>}/>
-                <Route path="/frontend" element={<AuthenticatedRoute path="/frontend" element={<Frontend/>}/>}/>
-                <Route path="/backend" element={<AuthenticatedRoute path="/backend" element={<Backend/>}/>}/>
+                <Route path="/select" element={<AuthenticatedRoute isAuthenticated={isAuthenticated}
+                                                                   setIsAuthenticated={setIsAuthenticated}
+                                                                   path="/select" element={<AuthSelection/>}/>}/>
+                <Route path="/frontend" element={<AuthenticatedRoute isAuthenticated={isAuthenticated}
+                                                                     setIsAuthenticated={setIsAuthenticated}
+                                                                     path="/frontend" element={<Frontend/>}/>}/>
+                <Route path="/backend" element={<AuthenticatedRoute isAuthenticated={isAuthenticated}
+                                                                    setIsAuthenticated={setIsAuthenticated}
+                                                                    path="/backend" element={<Backend/>}/>}/>
                 <Route path="/register" element={<Register/>}/>
-                <Route path="/login" element={<Login/>}/>
-                <Route path="/" element={<Home/>}/>
+                <Route path="/login"
+                       element={<Login isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>}/>
+                <Route path="/"
+                       element={<Home isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>}/>
                 <Route path="*" element={<NotFoundPage/>}/>
             </Routes>
         </BrowserRouter>

@@ -5,13 +5,11 @@ import {
     ProFormText,
     ProFormTextArea,
 } from '@ant-design/pro-components';
-import {Button, Divider, message, Modal, Popconfirm, Upload} from 'antd';
-import React, {useEffect, useRef, useState} from 'react';
+import {Button, Divider, message, Popconfirm, Upload} from 'antd';
+import React, {useState} from 'react';
 import ImgCrop from "antd-img-crop";
 import {VideoJS} from "./videoPlayer";
 import videojs from "video.js";
-import propTypes from "prop-types";
-import api from "../../api/api";
 import {PlusOutlined} from "@ant-design/icons";
 
 const waitTime = (time = 100) => {
@@ -23,14 +21,49 @@ const waitTime = (time = 100) => {
 };
 
 
-export const CaseEditForm = (props) => {
+export const CaseNewForm = () => {
     const [messageApi, contextHolder] = message.useMessage();
-    const caseFormRef=useRef();
     const info = (msg) => {
         messageApi.info(msg);
     };
-    const [checkUpData, setCheckUpData] = useState([])
-    const [, setCaseData] = useState([])
+    const [checkUpData, setCheckUpData] = useState([
+        {
+            "id": null,
+            "case_number": null,
+            "checkup_item": null,
+            "checkup_text": null,
+            "checkup_pic1": null,
+            "checkup_pic2": null,
+            "checkup_pic3": null,
+            "checkup_video": null
+        }
+    ])
+    const [caseData, setCaseData] = useState({
+        "id": null,
+        "case_number": null,
+        "disease_type": null,
+        "disease_name": null,
+        "pet_name": null,
+        "pet_species": null,
+        "pet_age": null,
+        "owner_name": null,
+        "owner_phone": null,
+        "symptom_text": null,
+        "diagnosis_text": null,
+        "treatment_text": null,
+        "symptom_pic1": null,
+        "symptom_pic2": null,
+        "symptom_pic3": null,
+        "diagnosis_pic1": null,
+        "diagnosis_pic2": null,
+        "diagnosis_pic3": null,
+        "treatment_pic1": null,
+        "treatment_pic2": null,
+        "treatment_pic3": null,
+        "symptom_video": null,
+        "diagnosis_video": null,
+        "treatment_video": null
+    })
     const columns = [
         {
             title: '病例检查项目',
@@ -52,7 +85,7 @@ export const CaseEditForm = (props) => {
                 let recordList = [record.checkup_pic1, record.checkup_pic2, record.checkup_pic3]
                 let fileList = []
                 recordList.map((picUrl, index) => {
-                        if (picUrl !== "") {
+                        if (picUrl !== "" || picUrl!==null) {
                             fileList.push({
                                 uid: `pic-${index}`,
                                 name: `image${index}.png`,
@@ -62,7 +95,6 @@ export const CaseEditForm = (props) => {
                         }
                     }
                 );
-
                 return (
                     <div>
                         <ImgCrop
@@ -109,24 +141,64 @@ export const CaseEditForm = (props) => {
             editable: false,
             // eslint-disable-next-line no-unused-vars
             render: (text, record, rowIndex) => {
-                const checkupOptions = {
-                    autoplay: false,
-                    controls: true,
-                    responsive: true,
-                    fluid: true,
-                    sources: [{
-                        src: 'http://www.w3schools.com/html/mov_bbb.mp4',
-                        type: 'video/mp4'
-                    }]
-                };
+                let recordList = [record.checkup_video]
+                let fileList = []
+                recordList.map((picUrl, index) => {
+                        if (picUrl !== "" || picUrl!==null) {
+                            fileList.push({
+                                uid: `pic-${index}`,
+                                name: `image${index}.png`,
+                                status: 'done',
+                                url: picUrl,
+                            })
+                        }
+                    }
+                );
+                // const checkupOptions = {
+                //     autoplay: false,
+                //     controls: true,
+                //     responsive: true,
+                //     fluid: true,
+                //     sources: [{
+                //         src: 'http://www.w3schools.com/html/mov_bbb.mp4',
+                //         type: 'video/mp4'
+                //     }]
+                // };
                 return (
                     <div>
                         <div
                             style={{width: "100%"}}
                         >
-                            <VideoJS
-                                options={checkupOptions}
-                                onReady={handlePlayerReady}/>
+                            {/*<VideoJS*/}
+                            {/*    options={checkupOptions}*/}
+                            {/*    onReady={handlePlayerReady}/>*/}
+                            <Upload
+                                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                listType="picture-card"
+                                fileList={fileList}
+                                onPreview={onPreview}
+                                onRemove={(file) => {
+                                    if (file && file.uid) {
+                                        // 在这里执行删除文件的操作
+                                        console.log('删除文件', file);
+                                    } else {
+                                        console.error('无效的文件对象', file);
+                                    }
+                                    const newData = [...checkUpData];
+                                    const target = newData[rowIndex];
+                                    let targetList = [target.checkup_video]
+                                    if (targetList) {
+                                        targetList = targetList.filter(
+                                            (url) => url !== file.url
+                                        );
+                                        targetList[0] ? newData[rowIndex].checkup_video = targetList[0] : newData[rowIndex].checkup_video = "";
+                                        setCheckUpData(newData)
+                                    }
+                                }}
+                            >
+
+                                {fileList.length < 1 && '+ 点击上传'}
+                            </Upload>
                         </div>
                     </div>
                 )
@@ -172,54 +244,8 @@ export const CaseEditForm = (props) => {
         checkUpData.map((item) => item.id),
     );
 
-
-    useEffect(() => {
-            getCaseData()
-            getCaseCheckUpData()
-    }, [])
-
-    const newFileList = (record) => {
-        let newFile = []
-        record.map((picUrl, index) => {
-            if (picUrl !== "") {
-                newFile.push(
-                    {
-                        uid: `pic-${index}`,
-                        name: `image${index}.png`,
-                        status: 'done',
-                        url: picUrl,
-                    }
-                )
-            }
-        });
-        return newFile
-    }
-
-    async function getCaseData() {
-        const res = await api.getCaseByCaseId(props.caseId)
-        const data = res.data
-        setCaseData(data.case)
-        caseFormRef.current?.setFieldsValue(data.case)
-        setSymptomFileList(newFileList([data.case.symptom_pic1, data.case.symptom_pic2, data.case.symptom_pic3]))
-        setDiagnosisFileList(newFileList([data.case.diagnosis_pic1, data.case.diagnosis_pic2, data.case.diagnosis_pic3]))
-        setTreatmentFileList(newFileList([data.case.treatment_pic1, data.case.treatment_pic2, data.case.treatment_pic3]))
-        console.log("case")
-        console.log(data.case)
-        return data.case
-    }
-
-    async function getCaseCheckUpData() {
-        const res = await api.getCaseCheckUpByCaseId(props.caseId)
-        const data = res.data
-        setCheckUpData(data.checkups)
-        console.log("checkups")
-        console.log(data.checkups)
-        return data.checkups
-    }
-
     //video functions
     const playerRef = React.useRef(null);
-
     const videoJsOptions = {
         autoplay: false,
         controls: true,
@@ -230,7 +256,6 @@ export const CaseEditForm = (props) => {
             type: 'video/mp4'
         }]
     };
-
     const handlePlayerReady = (player) => {
         playerRef.current = player;
         // You can handle player events here, for example:
@@ -248,6 +273,23 @@ export const CaseEditForm = (props) => {
     const [treatmentFileList, setTreatmentFileList] = useState([]);
     const [newCheckUpPicList, setNewCheckUpPicList] = useState([]);
     const [newCheckUpVideoList, setNewCheckUpVideoList] = useState([]);
+    // eslint-disable-next-line no-unused-vars
+    const newFileList = (record) => {
+        let newFile = []
+        record.map((picUrl, index) => {
+            if (picUrl !== "") {
+                newFile.push(
+                    {
+                        uid: `pic-${index}`,
+                        name: `image${index}.png`,
+                        status: 'done',
+                        url: picUrl,
+                    }
+                )
+            }
+        });
+        return newFile
+    }
 
 
     const onPreview = async (file) => {
@@ -271,53 +313,54 @@ export const CaseEditForm = (props) => {
     const handleNewCheckUpVideoChange = ({fileList: newFileList}) => setNewCheckUpVideoList(newFileList);
 
 
-    const onVideoPreview = async (file) => {
-        if (file && file.url) {
-            const videoUrl = file.url;
-            const player = videojs('previewVideo', {
-                controls: true,
-                sources: [
-                    {
-                        src: videoUrl,
-                        type: 'video/mp4',
-                    },
-                    {
-                        src: videoUrl,
-                        type: 'video/webm',
-                    },
-                    {
-                        src: videoUrl,
-                        type: 'video/ogg',
-                    },
-                ],
-            });
-            player.play();
-            setPreviewVisible(true);
-            setPreviewVideoUrl(videoUrl);
-        }
-    };
+    // const onVideoPreview = async (file) => {
+    //     if (file && file.url) {
+    //         const videoUrl = file.url;
+    //         const player = videojs('previewVideo', {
+    //             controls: true,
+    //             sources: [
+    //                 {
+    //                     src: videoUrl,
+    //                     type: 'video/mp4',
+    //                 },
+    //                 {
+    //                     src: videoUrl,
+    //                     type: 'video/webm',
+    //                 },
+    //                 {
+    //                     src: videoUrl,
+    //                     type: 'video/ogg',
+    //                 },
+    //             ],
+    //         });
+    //         player.play();
+    //         setPreviewVisible(true);
+    //         setPreviewVideoUrl(videoUrl);
+    //     }
+    // };
 
-    const [previewVisible, setPreviewVisible] = useState(false);
-    const [previewVideoUrl, setPreviewVideoUrl] = useState('');
+    // const [previewVisible, setPreviewVisible] = useState(false);
+    // const [previewVideoUrl, setPreviewVideoUrl] = useState('');
 
     // eslint-disable-next-line no-unused-vars
-    const handlePreview = (file) => {
-        setPreviewVideoUrl(file.url || file.thumbUrl);
-        setPreviewVisible(true);
-    };
+    // const handlePreview = (file) => {
+    //     setPreviewVideoUrl(file.url || file.thumbUrl);
+    //     setPreviewVisible(true);
+    // };
 
-    const handleCancel = () => setPreviewVisible(false);
+    // const handleCancel = () => setPreviewVisible(false);
 
     return (
         <>
             {contextHolder}
             <ProForm
-                formRef={caseFormRef}
                 onFinish={async (values) => {
                     await waitTime(2000);
                     console.log(values);
+                    setCaseData(values)
                     message.success('提交成功');
                 }}
+                initialValues={caseData}
             >
                 <ProForm.Group>
                     <ProFormText
@@ -408,11 +451,13 @@ export const CaseEditForm = (props) => {
                             </ImgCrop>
                         </ProForm.Item>
                     </div>
+
                     <ProForm.Item
                         label="主要病症视频"
                         width="xl"
                         name="symptom_video"
                     >
+
                         <div
                             style={{width: "600px"}}
                         >
@@ -509,7 +554,16 @@ export const CaseEditForm = (props) => {
                         <div
                             style={{width: "600px"}}
                         >
-                            <VideoJS options={videoJsOptions} onReady={handlePlayerReady}/>
+                            {/*<VideoJS options={videoJsOptions} onReady={handlePlayerReady}/>*/}
+                            <Upload
+                                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                listType="picture-card"
+                                fileList={treatmentFileList}
+                                onChange={handleTreatmentChange}
+                                onPreview={onPreview}
+                            >
+                                {treatmentFileList.length < 1 && '+ 点击上传'}
+                            </Upload>
                         </div>
                     </ProForm.Item>
                 </ProForm.Group>
@@ -585,13 +639,13 @@ export const CaseEditForm = (props) => {
                                             accept="video/*"
                                             fileList={newCheckUpVideoList}
                                             onChange={handleNewCheckUpVideoChange}
-                                            onPreview={onVideoPreview}
+                                            // onPreview={onVideoPreview}
                                         >
                                             {newCheckUpVideoList.length < 1 && '+ 点击上传'}
                                         </Upload>
-                                        <Modal open={previewVisible} onCancel={handleCancel} footer={null}>
-                                            <video style={{width: '100%'}} src={previewVideoUrl} controls/>
-                                        </Modal>
+                                        {/*<Modal open={previewVisible} onCancel={handleCancel} footer={null}>*/}
+                                        {/*    <video style={{width: '100%'}} src={previewVideoUrl} controls/>*/}
+                                        {/*</Modal>*/}
                                     </ProForm.Item>
                                 </ProForm.Group>
                             </ModalForm>
@@ -632,8 +686,4 @@ export const CaseEditForm = (props) => {
         </>
     )
 
-};
-CaseEditForm.propTypes = {
-    caseId: propTypes.number,
-    isNewForm:propTypes.bool
 };

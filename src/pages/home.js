@@ -1,6 +1,8 @@
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import {Login} from "./login";
 import AuthSelection from "./authSelection";
+import propTypes from "prop-types";
+
 function isLocalStorageAvailable() {
     try {
         const testKey = 'test';
@@ -11,21 +13,25 @@ function isLocalStorageAvailable() {
         return false;
     }
 }
-export const Home = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+export const Home = (props) => {
+
 
     useEffect(() => {
-        if (isLocalStorageAvailable()) {
+       if (isLocalStorageAvailable()) {
             const token = localStorage.getItem('token');
             console.log(token)
             if (token) {
-                setIsAuthenticated(true);
+                props.setIsAuthenticated(true);
             }
         }
-    }, []);
-    if(!isAuthenticated){
-        return <Login/>
+    }, [props.isAuthenticated]);
+    if(!props.isAuthenticated){
+        return <Login isAuthenticated={props.isAuthenticated} setIsAuthenticated={props.setIsAuthenticated}/>
     }
     else return <AuthSelection/>
 
 }
+Home.propTypes = {
+    isAuthenticated: propTypes.bool,
+    setIsAuthenticated:propTypes.func
+};

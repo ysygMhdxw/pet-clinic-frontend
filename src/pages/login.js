@@ -2,11 +2,12 @@ import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {Button, Form, Input, Layout, Typography, Col, Row, Space, Image} from 'antd';
 import api, {storeToken} from "../api/api";
 import {useNavigate} from "react-router-dom";
+import propTypes from "prop-types";
 
 const {Header, Content, Footer} = Layout;
 const {Title} = Typography;
 
-export const Login = () => {
+export const Login = (props) => {
         const navigate = useNavigate()
         const onFinish = (values) => {
             login(values)
@@ -18,6 +19,7 @@ export const Login = () => {
             const data = res.data
             if (data.access) {
                 storeToken(data.access);
+                props.setIsAuthenticated(true);
                 navigate('/select');
             }
         }
@@ -121,3 +123,7 @@ export const Login = () => {
 
     }
 ;
+Login.propTypes = {
+    isAuthenticated: propTypes.bool,
+    setIsAuthenticated: propTypes.func
+};

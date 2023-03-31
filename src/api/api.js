@@ -38,9 +38,9 @@ const api = {
         const url = `${base.ownUrl}${base.getCaseCheckUpByCaseId}${case_id}/`
         return httpGet(url)
     },
-    deleteCaseByCaseId(case_id) {
-        const url = `${base.ownUrl}${base.getAllCases}${case_id}/`
-        return httpDelete(url)
+    deleteCasesByCaseIds(case_numbers) {
+        const url = `${base.ownUrl}${base.getAllCases}`
+        return httpDelete(url,{case_number_list:case_numbers})
     },
     addCase(case_data) {
         const url = `${base.ownUrl}${base.getAllCases}`
@@ -94,7 +94,7 @@ const api = {
         const url = `${base.ownUrl}${base.getQuestionList}${type}/${id}/`
         return httpGet(url)
     },
-    getPersonnel(){
+    getUsers(){
         const url = `${base.ownUrl}${base.getPersonnel}`
         return httpGet(url)
     },

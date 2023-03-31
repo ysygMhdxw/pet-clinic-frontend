@@ -2,7 +2,7 @@
 
 ## 运行项目
 
-### `npm run install`
+### `npm install`
 ### `npm run start`
 
 

@@ -4,11 +4,10 @@ import React, {useEffect, useState} from "react";
 import {
     EditableProTable,
     ModalForm,
-    ProForm,
-    ProFormText
 } from "@ant-design/pro-components";
 import {PlusOutlined} from "@ant-design/icons";
 import {CaseEditForm} from "./caseEditForm";
+import {CaseNewForm} from "./newCaseForm";
 
 function random(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -118,9 +117,28 @@ export const CaseManagement = () => {
         },
     ];
 
+    const [selectedRows, setSelectedRows] = useState([]);
+
+    const handleRowSelection = (selectedRowKeys, selectedRows) => {
+        console.log(selectedRows)
+        setSelectedRows(selectedRows);
+    };
+    const handleBatchDelete = () => {
+        if (selectedRows.length === 0) {
+            message.warning('请选择要删除的行！');
+            return;
+        }
+        const keys = selectedRows.map((row) => row.id);
+        const newData = caseData.filter((row) => !keys.includes(row.id));
+        setCaseData(newData);
+        setSelectedRows([]);
+        deleteCaseById(keys);
+        message.success('批量删除成功！');
+    };
+
     useEffect(() => {
-        getCaseData()
-    }, []);
+        if(displayFlg)getCaseData()
+    }, [displayFlg]);
 
     async function getCaseData() {
         const res = await api.getAllCases()
@@ -130,9 +148,9 @@ export const CaseManagement = () => {
     }
 
     async function deleteCaseById(case_id) {
-        const res = await api.deleteCaseByCaseId(case_id)
+        const res = await api.deleteCasesByCaseIds([case_id])
         const data = res.data
-        console.log(data.case_id)
+        console.log(data)
     }
 
     async function editCase(caseData) {
@@ -171,26 +189,13 @@ export const CaseManagement = () => {
                                 return true;
                             }}
                         >
-                            <ProForm.Group>
-                                <ProFormText
-                                    width="md"
-                                    name="name"
-                                    label="病例名称"
-                                    tooltip="最长为 24 位"
-                                    placeholder="请输入名称"
-                                />
-                                {/*<ProFormText width="md" name="company" label="我方公司名称" placeholder="请输入名称"/>*/}
-                            </ProForm.Group>
-                            <ProForm.Group>
-                                <ProFormText
-                                    name='description'
-                                    width="md"
-                                    label="病例简介"
-                                    placeholder="请输入科室简介"
-                                />
-                            </ProForm.Group>
-
+                            <CaseNewForm/>
                         </ModalForm>
+                    </div>
+                    <div style={{marginLeft: "2%"}}>
+                        <Button type="primary" onClick={handleBatchDelete}>
+                            批量删除
+                        </Button>
                     </div>
                 </div>
 
@@ -200,6 +205,10 @@ export const CaseManagement = () => {
                     maxLength={5}
                     scroll={{
                         x: 960,
+                    }}
+                    rowSelection={{
+                        type: 'checkbox',
+                        onChange: handleRowSelection
                     }}
                     recordCreatorProps={false}
                     loading={false}
@@ -236,6 +245,11 @@ export const CaseManagement = () => {
         return (
             <div>
                 {/*<CaseDetail caseInfo={caseInfo}/>*/}
+                <div style={{marginBottom: "5%"}}>
+                    <Button type={"primary"} onClick={() => {
+                        setDisplayFlg(true)
+                    }}>返回</Button>
+                </div>
                 <CaseEditForm caseId={caseInfo.id}/>
             </div>
         )

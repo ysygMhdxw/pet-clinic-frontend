@@ -155,7 +155,7 @@ export const UserManagement = () => {
     };
 
     async function getPersonnelData() {
-        const res = await api.getPersonnel()
+        const res = await api.getUsers()
         const data = res.data
         setUsersData(data.users)
         console.log(data.users);

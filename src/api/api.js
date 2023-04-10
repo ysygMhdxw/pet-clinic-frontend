@@ -3,7 +3,7 @@
  */
 
 import base from './baseUrl'
-import { httpDelete, httpGet, httpPost, httpPut } from './http'
+import { httpDelete, httpGet, httpPost, httpPut, Delete, Post } from './http'
 
 export  const storeToken=(token)=>{
     localStorage.setItem("token","Token "+token)
@@ -94,6 +94,17 @@ const api = {
         const url = `${base.ownUrl}${base.getQuestionList}${type}/${id}/`
         return httpGet(url)
     },
+
+    deleteQuestions(questions){
+        const url = `${base.ownUrl}${base.getQuestionList}`
+        return Delete(url,questions)
+    },
+
+    addQuestions(questions){
+        const url = `${base.ownUrl}${base.getQuestionList}`
+        return Post(url,questions)
+    },
+
     getUsers(){
         const url = `${base.ownUrl}${base.getPersonnel}`
         return httpGet(url)

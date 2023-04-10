@@ -63,3 +63,31 @@ export function httpDelete(url) {
     const result = axios.delete(url)
     return result
 }
+
+/**
+ * delete
+ * 用body传参
+ */
+export function Delete(url,data){
+    const result  = axios({
+        method: 'delete',
+        url:url,
+        data:data
+    })
+    return result
+}
+
+
+
+/**
+ * post
+ * 用body传参
+ */
+export function Post(url,data){
+    const result  = axios({
+        method: 'post',
+        url:url,
+        data:data
+    })
+    return result
+}

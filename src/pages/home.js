@@ -14,8 +14,6 @@ function isLocalStorageAvailable() {
     }
 }
 export const Home = (props) => {
-
-
     useEffect(() => {
        if (isLocalStorageAvailable()) {
             const token = localStorage.getItem('token');

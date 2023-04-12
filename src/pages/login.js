@@ -16,9 +16,12 @@ export const Login = (props) => {
 
         async function login(values) {
             const res = await api.getLogin(values)
+            console.log(res.status)
             const data = res.data
+            console.log(data)
             if (data.access) {
                 storeToken(data.access);
+                console.log(data.access);
                 props.setIsAuthenticated(true);
                 navigate('/select');
             }

@@ -20,6 +20,7 @@
     "react-scripts": "5.0.1",
     "react-syntax-highlighter": "^15.5.0",
     "redux": "^4.2.1",
+    "run": "^1.4.0",
     "video-react": "^0.16.0",
     "video.js": "^8.0.4",
     "web-vitals": "^2.1.4"

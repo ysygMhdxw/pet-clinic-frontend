@@ -1,5 +1,5 @@
 import {Select, Steps, Card, Image} from 'antd';
-import {useCallback, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import propTypes from "prop-types";
 import api from "../../api/api";
 
@@ -8,51 +8,12 @@ const {Step} = Steps;
 
 const jobs = [
     {
-        name: '消毒流程',
-        picname:"Job A",
+        name: '',
         process: [
             {
-                title: '关闭手术室门窗',
-                description: '确保手术室内环境尽可能无菌',
-            },
-            {
-                title: '进行表面清洁',
-                description: '使用清洁剂对手术室进行表面清洁',
-            },
-            {
-                title: '进行彻底消毒',
-                description: '使用消毒剂对手术室进行彻底消毒',
-            },
-            {
-                title: '设置空气净化器',
-                description: '对手术室内空气进行净化',
-            },
-            {
-                title: '设置紫外线消毒灯',
-                description: '对手术室内空气和物品进行紫外线消毒',
-            },
-            {
-                title: '打开手术室门窗',
-                description: '进行通风换气',
+                name: '',
+                description: '',
             }
-        ],
-    },
-    {
-        name: '手术准备流程',
-        picname:"Job B",
-        process: [
-            {
-                title: '穿戴手术衣',
-                description: '确保手术人员穿戴符合规定的手术衣',
-            },
-            {
-                title: '进行手部消毒',
-                description: '对手术人员手部进行彻底消毒',
-            },
-            {
-                title: '戴口罩和手套',
-                description: '手术人员应戴上口罩和手套',
-            },
         ],
     },
 ];
@@ -70,20 +31,30 @@ export const RolePlay = (props) => {
         setCurrentStep(current);
     };
     // eslint-disable-next-line no-unused-vars
-    const getRoleInfo = useCallback(async () => {
-        const res = await api.getRoleInfo(props.roleName)
+    const getRoleInfo = (async () => {
+        let roleId=1;
+        if(props.roleName==="前台"){
+            roleId = 1
+        }
+        else if(props.roleName==="医助"){
+            roleId = 2
+        }
+        else roleId=3
+        const res = await api.getRoleInfo(roleId)
         if(res){
             const data = res.data
-            setRoleInfo({description: data.description, role: data.description})
+            setRoleInfo({description: data.description, role: data.role})
+            setSelectedJob(data.jobs[0])
             setJobInfo(data.jobs)
             console.log(data.jobs)
             console.log(jobInfo)
             console.log(data);
         }
-    }, []);
+    });
     useEffect(() => {
+        console.log(props.roleName)
         getRoleInfo();
-    }, [getRoleInfo,props])
+    }, [props])
 
 
     return (
@@ -94,7 +65,7 @@ export const RolePlay = (props) => {
             </div>
             <div style={{display: 'flex', alignItems: 'center', marginTop: 20}}>
                 <div style={{marginRight: 20}}>选择项目</div>
-                <Select defaultValue={selectedJob.name} style={{width: 120}} onChange={handleJobChange}>
+                <Select value={selectedJob.name} style={{width: 120}} onChange={handleJobChange}>
                     {jobInfo.map((job) => (
                         <Option key={job.name} value={job.name}>
                             {job.name}
@@ -111,10 +82,13 @@ export const RolePlay = (props) => {
                     </Steps>
                 </div>
                 <Card style={{width: "50%", display: "flex", justifyContent: "center"}}>
+                    { selectedJob.process[currentStep].name?
                     <Image
                         width={500}
                         src={`https://picsum.photos/seed/${selectedJob.process[currentStep].name}/400/300`}
-                    />
+                    />:""
+                }
+
                 </Card>
             </div>
         </div>

@@ -4,7 +4,7 @@
 const base = {
     // http://iwenwiki.com/api/blueberryapi/getChengpinInfo.php
     ownUrl: 'http://127.0.0.1:4523/m1/2420754-0-default/',
-    //ownUrl: 'http://127.0.0.1:8000/',
+    // ownUrl: 'http://127.0.0.1:8000/',
     // front end
     // Login
     login: "authentication/token/",
@@ -16,11 +16,12 @@ const base = {
     getCaseCategory: "case/category/",
     getCaseByDiseaseName: "case/name/",
     getCaseByCaseId: "case/number/",
-    getCaseCheckUpByCaseId:"case/checkup/",
+    getCaseCheckUpByCaseId: "case/checkup/",
+    getCaseByDiseaseType: "case/type/",
 
     // Questions and Tests
     getQuestionList: "quiz/question/",
-    getQuizList:"quiz/",
+    getQuizList: "quiz/",
 
 
     // back end
@@ -30,7 +31,7 @@ const base = {
     //drugManagement
     getMedicine: "management/medicine/",
     //personnelManagement
-    getPersonnel:'authentication/user/',
+    getPersonnel: 'authentication/user/',
 
 
 }

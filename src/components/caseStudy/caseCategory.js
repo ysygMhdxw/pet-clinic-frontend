@@ -54,7 +54,7 @@ export const CaseCategory = (props) => {
     function getNodeName(selectedKeys, {node}) {
         console.log(selectedKeys);
         console.log(node);
-        props.setCaseName(node.key)
+        props.setCaseName(node.title)
     }
 
     useEffect(() => {

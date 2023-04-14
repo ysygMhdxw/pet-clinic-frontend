@@ -1,5 +1,5 @@
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
-import {Button, Form, Input, Layout, Typography, Col, Row, Image} from 'antd';
+import {Button, Form, Input, Layout, Typography, Col, Row, Image, message} from 'antd';
 import React from 'react';
 import api from "../api/api";
 import {useNavigate} from "react-router-dom";
@@ -15,16 +15,37 @@ export const Register = () => {
         console.log('Received values of form: ', login_values);
     };
 
+    const [messageApi, contextHolder] = message.useMessage();
+    const showError = (msg) => {
+        messageApi.error(msg);
+    };
+    const success = (msg) => {
+        messageApi.success(msg);
+    };
     async function register(values) {
-        const res = await api.getRegister(values)
-        const data = await res.data
-        if(data.success){
-            navigate('/');
+        try {
+            const res = await api.getRegister(values);
+            const data = await res.data;
+            if (data.success) {
+                navigate('/');
+                success('注册成功，请登录');
+            } else {
+                throw new Error('注册失败：未返回成功状态');
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                showError('用户名已被注册，请更换用户名');
+            } else if (error.response && error.response.status === 500) {
+                showError('服务器错误，请稍后重试');
+            } else {
+                showError('网络错误，请检查网络连接');
+            }
         }
-        console.log(data);
     }
 
     return (
+        <div>
+            {contextHolder}
         <Layout className="layout" style={{
             minHeight: '100vh',
             background: "https://gw.alipayobjects.com/zos/rmsportal/FfdJeJRQWjEeGTpqgBKj.png",
@@ -132,6 +153,7 @@ export const Register = () => {
                 虚拟宠物医院学习系统 ©2023 Created by G14
             </Footer>
         </Layout>
+        </div>
     );
 };
 

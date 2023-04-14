@@ -44,7 +44,7 @@ export const VaccineManagement = () => {
             editable: (text, record, index) => {
                 return index !== 0;
             },
-            width: '15%',
+            width: '10%',
         },
         {
             title: '疫苗名称',
@@ -58,12 +58,13 @@ export const VaccineManagement = () => {
             editable: (text, record, index) => {
                 return index !== 0;
             },
-            width: '15%',
+            width: '10%',
         },
         {
             title: '疫苗种类',
             key: 'tag',
             dataIndex: 'tag',
+            width: '10%',
         },
         {
             title: '疫苗简介',
@@ -74,6 +75,7 @@ export const VaccineManagement = () => {
             title: '疫苗价格',
             key: 'price',
             dataIndex: 'price',
+            width: '10%',
         },
         {
             title: '操作',
@@ -119,7 +121,7 @@ export const VaccineManagement = () => {
     async function getVaccineData() {
         const res = await api.getMedicine()
         const data = res.data
-        setVaccineData(data.medicinelist)
+        setVaccineData(data.medicinelist.filter((item) => item.type=="疫苗"))
         console.log(data.medicinelist);
     }
 
@@ -215,11 +217,11 @@ export const VaccineManagement = () => {
                 recordCreatorProps={false}
                 loading={false}
                 columns={columns}
-                request={async () => ({
-                    data: [],
-                    total: 3,
-                    success: true,
-                })}
+                // request={async () => ({
+                //     data: [],
+                //     total: 3,
+                //     success: true,
+                // })}
                 value={vaccineData}
                 onChange={setVaccineData}
                 editable={{

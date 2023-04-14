@@ -16,13 +16,14 @@ import {
     TeamOutlined,
     UserOutlined
 } from '@ant-design/icons';
-import {Avatar, Breadcrumb, Layout, Menu, theme} from 'antd';
+import {Breadcrumb, Layout, Menu, theme} from 'antd';
 import {Content, Footer} from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import propTypes from 'prop-types';
 
 import React, {useState} from 'react';
 import {ContextComponents} from './ContextComponents';
+import {UserMenu} from "./userCenter/userMenu";
 
 const {Header} = Layout;
 
@@ -36,6 +37,7 @@ function getItem(label, key, icon, children) {
 }
 
 const frontItems = [
+    getItem('用户中心', '用户中心', <UserOutlined/>),
     getItem('导览展示', '导览展示', <PieChartOutlined/>),
     getItem('职能学习', '职能学习', <DesktopOutlined/>, [
         getItem('角色扮演', '角色扮演', <UserOutlined/>, [
@@ -52,6 +54,7 @@ const frontItems = [
     ])
 ];
 const backItems = [
+    getItem('用户中心', '用户中心', <UserOutlined/>),
     getItem('病例管理', '病例管理', <PieChartOutlined/>),
     getItem('测试管理', '测试管理', <DesktopOutlined/>,[
         getItem('题目管理','题目管理',<BookOutlined/>),
@@ -74,6 +77,7 @@ const backItems = [
     ])
 ];
 
+
 export const IndexLayout = (props) => {
     const [collapsed, setCollapsed] = useState(false);
     const [selectedFrontKeyPath, setSelectedFrontKeysPath] = useState([])
@@ -83,6 +87,8 @@ export const IndexLayout = (props) => {
     const {
         token: {colorBgContainer},
     } = theme.useToken();
+
+
     if (props.isFrontendFlg) {
         return (
             <Layout
@@ -116,12 +122,9 @@ export const IndexLayout = (props) => {
                         <div
                             style={{
                                 display: "flex",
-                                paddingRight: "10%",
-                                paddingTop: "0.5%"
+                                paddingRight: "5%",
                             }}>
-                            <Avatar style={{
-                                marginLeft: "auto",
-                            }} size={50} icon={<UserOutlined/>}/>
+                            <div style={{marginLeft:"auto"}}><UserMenu setContextVal={setContextVal}/></div>
                         </div>
                     </Header>
                     <Content
@@ -134,11 +137,11 @@ export const IndexLayout = (props) => {
                                 margin: '16px 0',
                             }}
                         >
-                            {selectedFrontKeyPath[2] == undefined ? '' :
+                            {selectedFrontKeyPath[2] === undefined ? '' :
                                 <Breadcrumb.Item>{selectedFrontKeyPath[2]}</Breadcrumb.Item>}
-                            {selectedFrontKeyPath[1] == undefined ? '' :
+                            {selectedFrontKeyPath[1] === undefined ? '' :
                                 <Breadcrumb.Item>{selectedFrontKeyPath[1]}</Breadcrumb.Item>}
-                            {selectedFrontKeyPath[0] == undefined ? '' :
+                            {selectedFrontKeyPath[0] === undefined ? '' :
                                 <Breadcrumb.Item>{selectedFrontKeyPath[0]}</Breadcrumb.Item>}
                         </Breadcrumb>
                         <div
@@ -146,8 +149,10 @@ export const IndexLayout = (props) => {
                                 padding: 24,
                                 minHeight: 360,
                                 background: colorBgContainer,
+
                             }}
                         >
+
                             <ContextComponents contextString={contextVal}/>
                         </div>
                     </Content>
@@ -195,12 +200,9 @@ export const IndexLayout = (props) => {
                         <div
                             style={{
                                 display: "flex",
-                                paddingRight: "10%",
-                                paddingTop: "0.5%"
+                                paddingRight: "5%",
                             }}>
-                            <Avatar style={{
-                                marginLeft: "auto",
-                            }} size={50} icon={<UserOutlined/>}/>
+                            <div style={{marginLeft:"auto"}}><UserMenu setContextVal={setContextVal}/></div>
                         </div>
                     </Header>
                     <Content
@@ -213,13 +215,13 @@ export const IndexLayout = (props) => {
                                 margin: '16px 0',
                             }}
                         >
-                            {selectedBackKeyPath[3] == undefined ? '' :
+                            {selectedBackKeyPath[3] === undefined ? '' :
                                 <Breadcrumb.Item>{selectedBackKeyPath[3]}</Breadcrumb.Item>}
-                            {selectedBackKeyPath[2] == undefined ? '' :
+                            {selectedBackKeyPath[2] === undefined ? '' :
                                 <Breadcrumb.Item>{selectedBackKeyPath[2]}</Breadcrumb.Item>}
-                            {selectedBackKeyPath[1] == undefined ? '' :
+                            {selectedBackKeyPath[1] === undefined ? '' :
                                 <Breadcrumb.Item>{selectedBackKeyPath[1]}</Breadcrumb.Item>}
-                            {selectedBackKeyPath[0] == undefined ? '' :
+                            {selectedBackKeyPath[0] === undefined ? '' :
                                 <Breadcrumb.Item>{selectedBackKeyPath[0]}</Breadcrumb.Item>}
                         </Breadcrumb>
                         <div

@@ -169,76 +169,78 @@ export const CaseManagement = () => {
         return (
             <>
                 {contextHolder}
-                <h1 style={{marginBottom: "1"}}>病例管理</h1>
-                <div style={{display: "flex", margin: "10px"}}>
-                    <div style={{marginLeft: "auto"}}>
-                        <ModalForm
-                            labelWidth="auto"
-                            trigger={
-                                <Button type="primary">
-                                    <PlusOutlined/>
-                                    新建病例
-                                </Button>
-                            }
-                            onFinish={async (values) => {
-                                await waitTime(1000);
-                                addCase({id: random(0, 10000000), ...values})
-                                console.log(values);
-                                getCaseData();
-                                message.success('新建成功');
-                                return true;
-                            }}
-                        >
-                            <CaseNewForm/>
-                        </ModalForm>
+                <div>
+                    <h1 style={{marginBottom: "1"}}>病例管理</h1>
+                    <div style={{display: "flex", margin: "10px"}}>
+                        <div style={{marginLeft: "auto"}}>
+                            <ModalForm
+                                labelWidth="auto"
+                                trigger={
+                                    <Button type="primary">
+                                        <PlusOutlined/>
+                                        新建病例
+                                    </Button>
+                                }
+                                onFinish={async (values) => {
+                                    await waitTime(1000);
+                                    addCase({id: random(0, 10000000), ...values})
+                                    console.log(values);
+                                    getCaseData();
+                                    message.success('新建成功');
+                                    return true;
+                                }}
+                            >
+                                <CaseNewForm/>
+                            </ModalForm>
+                        </div>
+                        <div style={{marginLeft: "2%"}}>
+                            <Button type="primary" onClick={handleBatchDelete}>
+                                批量删除
+                            </Button>
+                        </div>
                     </div>
-                    <div style={{marginLeft: "2%"}}>
-                        <Button type="primary" onClick={handleBatchDelete}>
-                            批量删除
-                        </Button>
-                    </div>
+                    <EditableProTable
+                        rowKey="id"
+                        headerTitle="病例基本信息"
+                        maxLength={5}
+                        scroll={{
+                            x: 960,
+                        }}
+                        rowSelection={{
+                            type: 'checkbox',
+                            onChange: handleRowSelection
+                        }}
+                        recordCreatorProps={false}
+                        loading={false}
+                        columns={columns}
+                        request={async () => ({
+                            data: [],
+                            total: 3,
+                            success: true,
+                        })}
+                        value={caseData}
+                        onChange={setCaseData}
+                        editable={{
+                            type: 'multiple',
+                            editableKeys,
+                            // eslint-disable-next-line no-unused-vars
+                            onSave: async (rowKey, data, _row) => {
+                                editCase(data)
+                                info("修改成功！")
+                                await waitTime(500);
+                            },
+                            // eslint-disable-next-line no-unused-vars
+                            onDelete: async (rowKey, data, _row) => {
+                                deleteCaseById(data.id)
+                                info("删除成功！")
+                                await waitTime(500);
+                            },
+                            onChange: setEditableRowKeys,
+                        }}
+                    />
+                    {/*<Table columns={columns} dataSource={caseData}/>*/}
                 </div>
 
-                <EditableProTable
-                    rowKey="id"
-                    headerTitle="病例基本信息"
-                    maxLength={5}
-                    scroll={{
-                        x: 960,
-                    }}
-                    rowSelection={{
-                        type: 'checkbox',
-                        onChange: handleRowSelection
-                    }}
-                    recordCreatorProps={false}
-                    loading={false}
-                    columns={columns}
-                    request={async () => ({
-                        data: [],
-                        total: 3,
-                        success: true,
-                    })}
-                    value={caseData}
-                    onChange={setCaseData}
-                    editable={{
-                        type: 'multiple',
-                        editableKeys,
-                        // eslint-disable-next-line no-unused-vars
-                        onSave: async (rowKey, data, _row) => {
-                            editCase(data)
-                            info("修改成功！")
-                            await waitTime(500);
-                        },
-                        // eslint-disable-next-line no-unused-vars
-                        onDelete: async (rowKey, data, _row) => {
-                            deleteCaseById(data.id)
-                            info("删除成功！")
-                            await waitTime(500);
-                        },
-                        onChange: setEditableRowKeys,
-                    }}
-                />
-                {/*<Table columns={columns} dataSource={caseData}/>*/}
             </>
         )
     } else {

@@ -17,6 +17,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-highlight-words": "^0.20.0",
+    "react-player": "^2.12.0",
     "react-scripts": "5.0.1",
     "react-syntax-highlighter": "^15.5.0",
     "redux": "^4.2.1",

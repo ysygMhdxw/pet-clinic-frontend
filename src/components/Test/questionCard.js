@@ -28,7 +28,7 @@ export const Question = ( props ) => {
             for (let [key, value] of Object.entries(question)){
                 if (key.toString().indexOf("option") != -1)
                     answers.push(value);}
-            console.log(answers);
+            //console.log(answers);
 
     }
     

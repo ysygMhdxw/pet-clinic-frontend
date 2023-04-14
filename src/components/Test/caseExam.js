@@ -16,14 +16,16 @@ export const CaseExam = () => {
     async function getQustionsData() {
         for (let [type, arr] of Object.entries(questionCatalogue)) {
             for (let id of arr) {
-                console.log(type+" "+id)
+                //console.log(type+" "+id)
                 const response = await api.getQuestion(type, id);
-               
-                const question = response.data.data;
-                question.question_type = typeMap[type];
+                //这个地方接口返回不一致
+                //后面应该统一成data hs改完再说
+                const question =  type==="single"?response.data.question : response.data.data;
+                question['question_type'] = typeMap[type];
                 questions.push(question);
             }
         }
+        console.log(questions)
     }
 
     return (

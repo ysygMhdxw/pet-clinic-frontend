@@ -34,8 +34,10 @@ export const ExamHeader = (props) => {
                                           onClick={() => {
                                               props.setCurIndex(props.curIndex + 1);
                                               props.setCheckView(false);
+                                              props.setValue(null);
                                               if (props.isCorrect) props.setUserScore(props.userScore + props.score)
-                                              console.log("current score: " + props.userScore)
+                                              props.setIsCorrect(false)
+                                              console.log(props.isCorrect)
                                           }}>
                         下一题
                     </Button></Col>
@@ -56,4 +58,6 @@ ExamHeader.propTypes = {
     setUserScore: propTypes.func,
     userScore: propTypes.number,
     duration: propTypes.number,
+    setValue: propTypes.func,
+    setIsCorrect: propTypes.func,
 }

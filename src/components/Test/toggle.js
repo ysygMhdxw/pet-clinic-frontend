@@ -13,6 +13,7 @@ export const Toggle = ( props ) =>
     const[curQuestion,setCurQuestion] = useState();
     const[userScore,setUserScore] = useState(0);
     useEffect(()=>{setCurQuestion(props.questions[curIndex])},[curIndex]);
+    useEffect(()=>{console.log("userScore:"+userScore)},[userScore]);
 
     function handleClick(){
         console.log(props.questions);

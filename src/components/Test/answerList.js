@@ -1,24 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Answer } from "./answer";
 import { Space, Radio, Typography, Row} from "antd";
 
 import propTypes from 'prop-types';
 const { Text } = Typography;
 export const AnswerList = ( props ) => {
-
-    const onChange = (e) => {
-        setUserAns(props.answers[e.target.value]);
-        console.log(`radio checked:${e.target.value}`);
-        console.log("user ans : "+userAns)
-        props.setIsCorrect(userAns==correct_ans);
-      };
-    
     const correct_ans = props.answers[props.correct_ind];
     const [userAns,setUserAns] = useState("无") ;
+    useEffect(() => {
+                        props.setIsCorrect(userAns==correct_ans)
+                        console.log("user ans : "+userAns)},[userAns])
+    const onChange = (e) => {
+        setUserAns(props.answers[e.target.value]);
+        props.setValue(e.target.value)
+       // console.log(`radio checked:${e.target.value}`);  
+      };
+    
+    
    
     return (
         <div>
-             <Radio.Group onChange={onChange}  disabled={props.checkView?true:false} defaultValue={0}>
+            
+             <Radio.Group  onChange={onChange}  disabled={props.checkView?true:false} value={props.value} >
                 <Space size={"middle"}>
                 {
                 props.answers.map( (text,ind) => (
@@ -61,4 +64,6 @@ AnswerList.propTypes = {
     checkView: propTypes.bool,
     correct_ind: propTypes.number,
     setIsCorrect: propTypes.func,
+    value: propTypes.number,
+    setValue: propTypes.func,
 }

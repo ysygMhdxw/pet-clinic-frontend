@@ -9,7 +9,8 @@ import { CaseLearning } from "./caseStudy/caseLearning";
 import { CaseExam } from './Test/caseExam.js';
 import { CaseQuestions } from './Test/caseQuestions';
 import {UserManagement} from "./personnelManagement/userManagement";
-import { TestManagement } from "./caseTestManagement/testManagement";
+import { QuestionManagement } from "./caseTestManagement/questionManagement";
+import { QuizManagement } from './caseTestManagement/quizManagement';
 
 
 export const ContextComponents = (props) => {
@@ -37,8 +38,11 @@ export const ContextComponents = (props) => {
     else if(props.contextString===ContextString.userManagement){
         return <UserManagement/>
     }
-    else if(props.contextString === ContextString.testManagement){
-        return <TestManagement/>
+    else if(props.contextString === ContextString.questionManagement){
+        return <QuestionManagement/>
+    }
+    else if(props.contextString === ContextString.quizManagement){
+        return <QuizManagement/>
     }
     return (
         <>

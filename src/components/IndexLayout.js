@@ -1,4 +1,6 @@
 import {
+    BellOutlined,
+    BookOutlined,
     ClusterOutlined,
     ContactsOutlined,
     DatabaseOutlined,
@@ -51,7 +53,10 @@ const frontItems = [
 ];
 const backItems = [
     getItem('病例管理', '病例管理', <PieChartOutlined/>),
-    getItem('测试管理', '测试管理', <DesktopOutlined/>),
+    getItem('测试管理', '测试管理', <DesktopOutlined/>,[
+        getItem('题目管理','题目管理',<BookOutlined/>),
+        getItem('考试管理','考试管理', <BellOutlined/>)
+    ]),
     getItem('系统管理', '系统管理', <UserOutlined/>, [
         getItem('用户管理', '用户管理', <ReadOutlined/>),
         getItem('职能学习管理', '职能学习管理', <OneToOneOutlined/>),

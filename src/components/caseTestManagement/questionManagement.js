@@ -20,7 +20,7 @@ const waitTime = (time = 100) => {
 
 const types = ["single","multi","tof","text"]
 
-export const TestManagement = () => {
+export const QuestionManagement = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const info = (msg) => {
         messageApi.info(msg);

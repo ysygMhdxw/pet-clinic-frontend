@@ -7,8 +7,9 @@ const { Text } = Typography;
 export const AnswerList = ( props ) => {
 
     const onChange = (e) => {
-        setUserAns([props.answers[e.target.value]]);
+        setUserAns(props.answers[e.target.value]);
         console.log(`radio checked:${e.target.value}`);
+        console.log("user ans : "+userAns)
         props.setIsCorrect(userAns==correct_ans);
       };
     
@@ -17,7 +18,7 @@ export const AnswerList = ( props ) => {
    
     return (
         <div>
-             <Radio.Group onChange={onChange}  disabled={props.checkView?true:false}>
+             <Radio.Group onChange={onChange}  disabled={props.checkView?true:false} defaultValue={0}>
                 <Space size={"middle"}>
                 {
                 props.answers.map( (text,ind) => (

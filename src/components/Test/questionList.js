@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import {SearchOutlined} from '@ant-design/icons';
-import {Button, Input, Space, Table, Select} from 'antd';
+import { ProTable } from '@ant-design/pro-components';
+import {Button, Input, Space,  Select} from 'antd';
 import {useRef, useState} from 'react';
 import propTypes from 'prop-types'
 import Highlighter from 'react-highlight-words';
@@ -19,22 +20,18 @@ export const QuestionList = (props) => {
         var questions = [];
         for (const question of posts.single) {
             question.question_type = "单选题"
-            console.log(question);
             questions.push(question);
         }
         for (const question of posts.multi) {
             question.question_type = "多选题"
-            console.log(question);
             questions.push(question);
         }
         for (const question of posts.tof) {
             question.question_type = "判断题"
-            console.log(question);
             questions.push(question);
         }
         for (const question of posts.text) {
             question.question_type = "简答题"
-            console.log(question);
             questions.push(question);
         }
         setQuestionData(questions);
@@ -256,23 +253,39 @@ export const QuestionList = (props) => {
 
     const columns = [
         {
-            title: '试题名称',
-            dataIndex: 'name',
-            key: 'name',
-            width: '20%',
-            ...getColumnSearchProps('name'),
+            title: '试题描述',
+            dataIndex: 'description',
+            key: 'description',
+            width: '40%',
+            ...getColumnSearchProps('description'),
         },
         {
             title: '病种',
             dataIndex: 'disease_type',
             key: 'disease_type',
-            width: '20%',
+            valueType: 'select',
+            valueEnum: {
+                infectious: { text: '传染病' },
+                internal: { text: '内科' },
+                surgery: {
+                  text: '常用手术'
+                },
+                parasitic: {
+                  text: '寄生虫病'
+                },
+                immunology: { text: '免疫' },
+                obstetric: { text: '外产科疾病' },
+              },
+            width: '15%',
+            
             ...getColumnSearchProps('disease_type'),
         },
         {
             title: '题目类型',
             dataIndex: 'question_type',
             key: 'question_type',
+            width: '15%',
+            
             ...getFixedSearchProps('question_type'),
         },
         {
@@ -287,7 +300,7 @@ export const QuestionList = (props) => {
                             props.setQuestionDetail(record);
                             console.log("change view")
                         }}>
-                        查看 {record.name}
+                        查看 
                     </Button>
                 </Space>
             ),
@@ -296,7 +309,7 @@ export const QuestionList = (props) => {
 
 
     return (
-        <Table columns={columns} dataSource={questionData}/>
+        <ProTable columns={columns} dataSource={questionData} search={false}/>
     )
 
 }

@@ -17,8 +17,7 @@ export const QuestionText = (props) => {
                     display: 'flex',
                 }}
             >
-                <Title level={3}>{props.title}</Title>
-                <Title level={5}>
+                <Title level={3}>
                     {props.description}
                 </Title>
             </Space>

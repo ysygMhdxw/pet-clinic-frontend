@@ -27,7 +27,6 @@ export const ExamHeader = (props) => {
                         <Button type="link" block
                                 onClick={() => {
                                     props.setCheckView(true);
-                                    if (props.isCorrect) props.setUserScore(props.userScore + props.score)
                                 }}>
                             查看答案
                         </Button></Col>
@@ -35,6 +34,8 @@ export const ExamHeader = (props) => {
                                           onClick={() => {
                                               props.setCurIndex(props.curIndex + 1);
                                               props.setCheckView(false);
+                                              if (props.isCorrect) props.setUserScore(props.userScore + props.score)
+                                              console.log("current score: " + props.userScore)
                                           }}>
                         下一题
                     </Button></Col>

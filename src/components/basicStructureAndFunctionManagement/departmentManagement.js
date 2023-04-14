@@ -24,8 +24,12 @@ const waitTime = (time = 100) => {
 
 export const DepartmentManagement = () => {
     const [messageApi, contextHolder] = message.useMessage();
-    const info = (msg) => {
-        messageApi.info(msg);
+
+    const success = (msg) => {
+        messageApi.success(msg);
+    };
+    const showError = (msg) => {
+        messageApi.error(msg);
     };
     const [departmentData, setDepartmentData] = useState([])
     const [editableKeys, setEditableRowKeys] = useState([]);
@@ -84,9 +88,10 @@ export const DepartmentManagement = () => {
                     title={"删除数据"}
                     description={"确认删除此条数据？删除后将无法恢复。"}
                     onConfirm={async () => {
-                        setDepartmentData(departmentData.filter((item) => item.id !== record.id));
-                        deleteDepartmentById(record.id);
-                        info("删除成功！");
+                        // setDepartmentData(departmentData.filter((item) => item.id !== record.id));
+                        deleteDepartmentById(record.id, (error) => {
+                            if (error) showError(error);
+                        });
                         await waitTime(500);
                     }
                     }
@@ -107,37 +112,78 @@ export const DepartmentManagement = () => {
     }, []);
 
     async function getDepartmentData() {
-        const res = await api.getDepartment()
-        const data = res.data
-        setDepartmentData(data.departmentlist)
-        console.log(data.departmentlist);
+        try {
+            const res = await api.getDepartment()
+            const data = res.data
+            setDepartmentData(data.departmentlist)
+            console.log(data.departmentlist);
+        } catch (error) {
+            console.error(error);
+            showError("不存在科室数据！");
+        }
     }
 
-    async function deleteDepartmentById(department_id) {
-        const res = await api.deleteDepartment(department_id)
-        const data = res.data
-        console.log(data.department.id)
+    async function deleteDepartmentById(department_ids, onError) {
+        try {
+            await api.deleteDepartment(department_ids);
+            await getDepartmentData();
+            success('删除成功！');
+        } catch (error) {
+            console.error(error);
+            onError("删除科室失败，请稍后重试！");
+        }
     }
 
-    async function editDepartment(department) {
-        const res = await api.editDepartment(department)
-        const data = res.data
-        console.log(data.department.id)
+    async function editDepartment(department, onError) {
+        try {
+            const res = await api.editDepartment(department);
+            const data = res.data
+            console.log(data)
+            await getDepartmentData();
+            success('修改科室成功！');
+        } catch (error) {
+            console.error(error);
+            onError("修改科室失败，请稍后重试！");
+        }
     }
 
     async function addDepartment(department) {
-        const res = await api.addDepartment(department)
-        const data = res.data
-        console.log(data)
+        try {
+            const res = await api.addDepartment(department)
+            const data = res.data
+            success("添加科室成功！")
+            console.log(data)
+        } catch (error) {
+            console.error(error);
+            showError("添加科室失败，请稍后重试！");
+        }
     }
 
+    // eslint-disable-next-line no-unused-vars
+    const [selectedRows, setSelectedRows] = useState([]);
+    const handleRowSelection = (selectedRowKeys, selectedRows) => {
+        console.log(selectedRows)
+        setSelectedRows(selectedRows);
+    };
+
+    const handleBatchDelete = () => {
+        if (selectedRows.length === 0) {
+            showError('请选择要删除的行！');
+            return;
+        }
+        const keys = selectedRows.map((row) => row.id);
+        deleteDepartmentById(keys, (error) => {
+            if (error) showError("批量删除失败，请稍后再试！");
+        });
+        setSelectedRows([]);
+    };
 
     return (
         <>
             {contextHolder}
             <h1 style={{marginBottom: "1"}}>科室管理</h1>
-            <div style={{display: "flex", margin: "10px"}}>
-                <div style={{marginLeft: "auto"}}>
+            <div style={{display: "flex", justifyContent: "flex-end", gap: "10px", marginRight: "3%"}}>
+                <div>
                     <ModalForm
                         labelWidth="auto"
                         trigger={
@@ -163,7 +209,7 @@ export const DepartmentManagement = () => {
                                 tooltip="最长为 24 位"
                                 placeholder="请输入名称"
                             />
-                            {/*<ProFormText width="md" name="company" label="我方公司名称" placeholder="请输入名称"/>*/}
+
                         </ProForm.Group>
                         <ProForm.Group>
                             <ProFormText
@@ -175,6 +221,16 @@ export const DepartmentManagement = () => {
                         </ProForm.Group>
 
                     </ModalForm>
+                </div>
+                <div>
+                    <Button type="primary" onClick={handleBatchDelete}>
+                        批量删除
+                    </Button>
+                </div>
+                <div>
+                    <Button type="primary">
+                        批量上传
+                    </Button>
                 </div>
             </div>
 
@@ -188,11 +244,10 @@ export const DepartmentManagement = () => {
                 recordCreatorProps={false}
                 loading={false}
                 columns={columns}
-                request={async () => ({
-                    data: [],
-                    total: 3,
-                    success: true,
-                })}
+                rowSelection={{
+                    type: 'checkbox',
+                    onChange: handleRowSelection
+                }}
                 value={departmentData}
                 onChange={setDepartmentData}
                 editable={{
@@ -200,14 +255,12 @@ export const DepartmentManagement = () => {
                     editableKeys,
                     // eslint-disable-next-line no-unused-vars
                     onSave: async (rowKey, data, _row) => {
-                        editDepartment(data)
-                        info("修改成功！")
+                        await editDepartment(data);
                         await waitTime(500);
                     },
                     // eslint-disable-next-line no-unused-vars
                     onDelete: async (rowKey, data, _row) => {
-                        deleteDepartmentById(data.id)
-                        info("删除成功！")
+                        await deleteDepartmentById(data.id);
                         await waitTime(500);
                     },
                     onChange: setEditableRowKeys,

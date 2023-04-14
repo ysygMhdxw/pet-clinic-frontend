@@ -51,8 +51,7 @@ export function httpPost(url, params) {
  * put
  */
 export function httpPut(url, params) {
-    const result = axios.put(url, qs.stringify(params)
-    )
+    const result = axios.put(url, qs.stringify(params))
     return result
 }
 
@@ -68,26 +67,38 @@ export function httpDelete(url) {
  * delete
  * 用body传参
  */
-export function Delete(url,data){
-    const result  = axios({
+export function Delete(url, data) {
+    const result = axios({
         method: 'delete',
-        url:url,
-        data:data
+        url: url,
+        data: data
     })
     return result
 }
-
 
 
 /**
  * post
  * 用body传参
  */
-export function Post(url,data){
-    const result  = axios({
+export function Post(url, data) {
+    const result = axios({
         method: 'post',
-        url:url,
-        data:data
+        url: url,
+        data: data
+    })
+    return result
+}
+
+/**
+ * put
+ * 用body传参
+ */
+export function Put(url, data) {
+    const result = axios({
+        method: 'put',
+        url: url,
+        data: data
     })
     return result
 }

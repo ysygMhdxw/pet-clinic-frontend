@@ -44,7 +44,7 @@ export const MedicineManagement = () => {
             editable: (text, record, index) => {
                 return index !== 0;
             },
-            width: '15%',
+            width: '10%',
         },
         {
             title: '药品名称',
@@ -58,12 +58,13 @@ export const MedicineManagement = () => {
             editable: (text, record, index) => {
                 return index !== 0;
             },
-            width: '15%',
+            width: '10%',
         },
         {
             title: '药品种类',
             key: 'tag',
             dataIndex: 'tag',
+            width: '10%',
         },
         {
             title: '药品简介',
@@ -74,6 +75,7 @@ export const MedicineManagement = () => {
             title: '药品价格',
             key: 'price',
             dataIndex: 'price',
+            width: '10%',
         },
         {
             title: '操作',
@@ -119,7 +121,7 @@ export const MedicineManagement = () => {
     async function getMedicineData() {
         const res = await api.getMedicine()
         const data = res.data
-        setMedicineData(data.medicinelist)
+        setMedicineData(data.medicinelist.filter((item) => item.type=="药品"))
         console.log(data.medicinelist);
     }
 
@@ -215,11 +217,11 @@ export const MedicineManagement = () => {
                 recordCreatorProps={false}
                 loading={false}
                 columns={columns}
-                request={async () => ({
-                    data: [],
-                    total: 3,
-                    success: true,
-                })}
+                // request={async () => ({
+                //     data: [],
+                //     total: 3,
+                //     success: true,
+                // })}
                 value={medicineData}
                 onChange={setMedicineData}
                 editable={{

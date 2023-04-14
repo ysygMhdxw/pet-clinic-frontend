@@ -3,13 +3,14 @@
  */
 const base = {
     // http://iwenwiki.com/api/blueberryapi/getChengpinInfo.php
-    ownUrl: 'http://127.0.0.1:4523/m1/2420754-0-default/',
-    // ownUrl: 'http://127.0.0.1:8000/',
+    // ownUrl: 'http://127.0.0.1:4523/m1/2420754-0-default/',
+    ownUrl: 'http://127.0.0.1:8000/',
     // front end
     // Login
     login: "authentication/token/",
     //register
-    register: "authentication/user/",
+    register: "authentication/user/register",
+    editPassword: "authentication/user/",
 
     // Case Learning
     getAllCases: "case/",
@@ -22,6 +23,9 @@ const base = {
     // Questions and Tests
     getQuestionList: "quiz/question/",
     getQuizList: "quiz/",
+
+    //Role Play
+    getRoleInfo:"role/",
 
 
     // back end

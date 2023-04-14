@@ -259,13 +259,7 @@ export const UserManagement = () => {
                     x: 960,
                 }}
                 recordCreatorProps={false}
-                loading={false}
                 columns={columns}
-                request={async () => ({
-                    data: [],
-                    total: 3,
-                    success: true,
-                })}
                 value={usersData}
                 onChange={setUsersData}
                 rowSelection={{

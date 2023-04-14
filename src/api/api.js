@@ -3,10 +3,13 @@
  */
 
 import base from './baseUrl'
-import { httpDelete, httpGet, httpPost, httpPut, Delete, Post } from './http'
+import {httpDelete, httpGet, httpPost, httpPut, Delete, Post, Put} from './http'
 
 export  const storeToken=(token)=>{
     localStorage.setItem("token","Token "+token)
+}
+export const storeUserName=(userName)=>{
+    localStorage.setItem("username",userName)
 }
 
 const api = {
@@ -16,8 +19,13 @@ const api = {
     },
     getRegister(params) {
         const url = base.ownUrl + base.register
-        return httpPost(url, params)
+        return Post(url, params)
     },
+    editPassword(params) {
+        const url = base.ownUrl+base.editPassword
+        return Put(url, params)
+    },
+    //Case Study Management API
     getAllCases() {
         const url = base.ownUrl + base.getAllCases
         return httpGet(url)
@@ -46,7 +54,7 @@ const api = {
         const url = `${base.ownUrl}${base.getAllCases}`
         return httpPost(url, case_data)
     },
-
+    //Department Management API
     getDepartment() {
         const url = `${base.ownUrl}${base.getDepartment}`
         return httpGet(url)
@@ -63,6 +71,7 @@ const api = {
         const url = `${base.ownUrl}${base.getDepartment}`
         return httpPost(url, department)
     },
+    //Medicine Management API
     getMedicine() {
         const url = `${base.ownUrl}${base.getMedicine}`
         return httpGet(url)
@@ -79,7 +88,7 @@ const api = {
         const url = `${base.ownUrl}${base.getMedicine}`
         return httpPost(url, medicine)
     },
-
+    //TestAPI methods
     getQuestionList() {
         const url = `${base.ownUrl}${base.getQuestionList}`
         return httpGet(url)
@@ -104,7 +113,7 @@ const api = {
         const url = `${base.ownUrl}${base.getQuestionList}`
         return Post(url,questions)
     },
-
+    //Users Management API
     getUsers(){
         const url = `${base.ownUrl}${base.getPersonnel}`
         return httpGet(url)
@@ -121,7 +130,11 @@ const api = {
         const url=`${base.ownUrl}${base.getPersonnel}`
         return httpPost(url,user)
     },
-
+    //Role Play Management API
+    getRoleInfo(roleId){
+        const url=`${base.ownUrl}${base.getRoleInfo}${roleId}/`
+        return httpGet(url,roleId)
+    },
 
 
 

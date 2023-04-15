@@ -1,11 +1,14 @@
 import {Col, Row} from 'antd'
-import React, {useState} from 'react'
-import {CaseTable} from './caseTable'
+import React, {useEffect, useState} from 'react'
+import {CaseRight} from './caseRight'
 import {CaseCategory} from "./caseCategory";
 
 
 export const CaseLearning = () => {
     const [caseName, setCaseName] = useState("");
+    useEffect(() => {
+
+    }, [caseName])
     return (
         <div>
             <Row>
@@ -15,8 +18,7 @@ export const CaseLearning = () => {
                 <Col span={1}>
                 </Col>
                 <Col span={15}>
-                    {caseName === "" ? <p></p> :
-                        <CaseTable caseName={caseName}/>}
+                    <CaseRight caseName={caseName}/>
                 </Col>
             </Row>
         </div>

@@ -20,7 +20,7 @@ export const VideoModal = ({ videoUrl }) => {
             <Button type="primary" onClick={showModal} icon={<VideoCameraOutlined />}>
                 点击观看视频
             </Button>
-            <Modal title="Video" visible={visible} onCancel={handleCancel} footer={null}>
+            <Modal title="视频" visible={visible} onCancel={handleCancel} footer={null}>
                 <ReactPlayer url={videoUrl} controls width="100%" height="100%" />
             </Modal>
         </div>

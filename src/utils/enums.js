@@ -26,6 +26,6 @@ export const ContextString = {
     fileManagement:"档案管理",
     feeManagement:"收费管理",
     laboratoryProjectManagement:"化验项目管理",
-    hospitalizationManagement:"住院管理"
+    hospitalizationManagement:"住院管理",
 
 }

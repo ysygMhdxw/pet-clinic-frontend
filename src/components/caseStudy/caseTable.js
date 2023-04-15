@@ -21,9 +21,8 @@ export const CaseTable = (props) => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [caseData, setCaseData] = useState([]);
     const searchInput = useRef(null);
+    // eslint-disable-next-line no-unused-vars
     const [tableTypes, setTableTypes] = useState([])
-    const selectRef = useRef(null);
-
 
     async function getCasesData(caseName) {
         try {
@@ -42,7 +41,6 @@ export const CaseTable = (props) => {
         }
     }
 
-
     async function getTableTypesData() {
         try {
             const responce = await api.getCaseCategories()
@@ -51,7 +49,7 @@ export const CaseTable = (props) => {
             let caseTypeDatas = []
             caseCategories.map((caseCategory) => {
                 const transformedData = caseCategory.children.map(item => ({
-                    value: item.key,
+                    value: item.title,
                     label: item.title
                 }));
                 caseTypeDatas.push(...transformedData)
@@ -178,8 +176,8 @@ export const CaseTable = (props) => {
     });
 
 
-    const getFixedSearchProps = (dataIndex) => ({
-        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, close}) => (
+    const getFixedSearchProps = (dataIndex, columnName) => ({
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
             <div
                 style={{
                     padding: 8,
@@ -187,13 +185,12 @@ export const CaseTable = (props) => {
                 onKeyDown={(e) => e.stopPropagation()}
             >
                 <Select
-                    ref={selectRef}
                     allowClear
                     style={{
                         width: '100%',
-                        marginBottom: "10px"
+                        marginBottom:'10px'
                     }}
-                    placeholder="请选择病例种类"
+                    placeholder={`请选择${columnName}`}
                     defaultValue={[]}
                     onChange={(value) => setSelectedKeys(value ? [value] : [])}
                     options={tableTypes}
@@ -209,6 +206,15 @@ export const CaseTable = (props) => {
                         }}
                     >
                         查询
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        重置
                     </Button>
                     <Button
                         type="link"
@@ -250,8 +256,6 @@ export const CaseTable = (props) => {
             }
         },
     });
-
-
     const columns = [
         {
             title: '病例标识',
@@ -269,6 +273,7 @@ export const CaseTable = (props) => {
             title: '病种名称',
             dataIndex: 'disease_name',
             key: 'disease_name',
+            // ...getColumnSearchProps("disease_name", "病种名称")
             ...getFixedSearchProps("disease_name", "病种名称")
         },
         {

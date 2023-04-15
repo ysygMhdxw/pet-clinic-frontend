@@ -175,8 +175,8 @@ export const CaseTable = (props) => {
             ),
     });
 
-
     const getFixedSearchProps = (dataIndex, columnName) => ({
+        // eslint-disable-next-line no-unused-vars
         filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
             <div
                 style={{
@@ -188,7 +188,7 @@ export const CaseTable = (props) => {
                     allowClear
                     style={{
                         width: '100%',
-                        marginBottom:'10px'
+                        marginBottom: '10px'
                     }}
                     placeholder={`请选择${columnName}`}
                     defaultValue={[]}
@@ -207,15 +207,15 @@ export const CaseTable = (props) => {
                     >
                         查询
                     </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters)}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
-                        重置
-                    </Button>
+                    {/*<Button*/}
+                    {/*    onClick={() => clearFilters && handleReset(clearFilters)}*/}
+                    {/*    size="small"*/}
+                    {/*    style={{*/}
+                    {/*        width: 90,*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    重置*/}
+                    {/*</Button>*/}
                     <Button
                         type="link"
                         size="small"
@@ -256,6 +256,7 @@ export const CaseTable = (props) => {
             }
         },
     });
+
     const columns = [
         {
             title: '病例标识',

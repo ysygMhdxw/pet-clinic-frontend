@@ -24,14 +24,14 @@ export const CaseRight = (props) => {
                     <Divider type={"vertical"}></Divider>
                     病例列表
                 </h1>
-                <Divider></Divider>
+                <Divider type={"horizontal"}></Divider>
                 <CaseTable caseName={props.caseName} setDisplayFlg={setDisplayFlg} setCaseInfo={setCaseInfo}/>
             </>
         )
     } else {
         return (
             <>
-                <CaseDetail caseInfo={caseInfo}/>
+                <CaseDetail caseInfo={caseInfo} setDisplayFlg={setDisplayFlg}/>
             </>
         )
 

@@ -45,8 +45,8 @@ const api = {
         const url = `${base.ownUrl}${base.getCaseByCaseId}${case_id}/`
         return httpGet(url)
     },
-    getCaseCheckUpByCaseId(case_id) {
-        const url = `${base.ownUrl}${base.getCaseCheckUpByCaseId}${case_id}/`
+    getCaseCheckUpByCaseNumber(case_number) {
+        const url = `${base.ownUrl}${base.getCaseCheckUpByCaseNumber}${case_number}/`
         return httpGet(url)
     },
     deleteCasesByCaseIds(case_numbers) {

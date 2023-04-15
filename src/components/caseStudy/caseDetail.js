@@ -1,18 +1,24 @@
-import {Descriptions} from 'antd';
+import {Button, Descriptions} from 'antd';
 import propTypes from 'prop-types';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {VideoModal} from "./videoModal";
 import {ImageCarousel} from "./imageCarousel";
+import {CaseCheckUpTable} from "./caseCheckUpTable";
 
 
 export const CaseDetail = (props) => {
     const [caseInfo, setCaseInfo] = useState({});
     useEffect(() => {
         setCaseInfo(props.caseInfo);
-    }, [props]);
+    }, [props.caseInfo]);
 
     return (
         <div style={{marginTop: "2%"}}>
+            <div style={{marginBottom: "3%"}}>
+                <Button type={"primary"} onClick={() => {
+                    props.setDisplayFlg(false)
+                }}>返回</Button>
+            </div>
             <Descriptions
                 title={"病例详情信息"}
                 bordered
@@ -91,6 +97,7 @@ export const CaseDetail = (props) => {
                     </Descriptions.Item>
                 </Descriptions>
             </div>
+            <CaseCheckUpTable caseNumber={props.caseInfo.case_number}/>
 
         </div>
 
@@ -99,5 +106,6 @@ export const CaseDetail = (props) => {
 }
 
 CaseDetail.propTypes = {
-    caseInfo: propTypes.object
+    caseInfo: propTypes.object,
+    setDisplayFlg:propTypes.bool,
 };

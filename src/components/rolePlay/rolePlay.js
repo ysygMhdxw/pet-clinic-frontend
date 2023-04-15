@@ -46,6 +46,7 @@ export const RolePlay = (props) => {
             setRoleInfo({description: data.description, role: data.role})
             setSelectedJob(data.jobs[0])
             setJobInfo(data.jobs)
+            setCurrentStep(0)
             console.log(data.jobs)
             console.log(jobInfo)
             console.log(data);

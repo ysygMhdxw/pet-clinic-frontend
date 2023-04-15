@@ -5,11 +5,11 @@
 import base from './baseUrl'
 import {httpDelete, httpGet, httpPost, httpPut, Delete, Post, Put} from './http'
 
-export  const storeToken=(token)=>{
-    localStorage.setItem("token","Token "+token)
+export const storeToken = (token) => {
+    localStorage.setItem("token", "Token " + token)
 }
-export const storeUserName=(userName)=>{
-    localStorage.setItem("username",userName)
+export const storeUserName = (userName) => {
+    localStorage.setItem("username", userName)
 }
 
 const api = {
@@ -22,7 +22,7 @@ const api = {
         return Post(url, params)
     },
     editPassword(params) {
-        const url = base.ownUrl+base.editPassword
+        const url = base.ownUrl + base.editPassword
         return Put(url, params)
     },
     //Case Study Management API
@@ -35,20 +35,23 @@ const api = {
         return httpGet(url)
     },
     getCaseByDiseaseName(disease_name) {
-        const url = `${base.ownUrl}${base.getCaseByDiseaseName}${disease_name}/`
+        let url = `${base.ownUrl}${base.getCaseByDiseaseName}${disease_name}/`
+        if (disease_name === "") {
+            url = `${base.ownUrl}${base.getCaseByDiseaseName}`
+        }
         return httpGet(url)
     },
     getCaseByCaseId(case_id) {
         const url = `${base.ownUrl}${base.getCaseByCaseId}${case_id}/`
         return httpGet(url)
     },
-    getCaseCheckUpByCaseId(case_id){
+    getCaseCheckUpByCaseId(case_id) {
         const url = `${base.ownUrl}${base.getCaseCheckUpByCaseId}${case_id}/`
         return httpGet(url)
     },
     deleteCasesByCaseIds(case_numbers) {
         const url = `${base.ownUrl}${base.getAllCases}`
-        return httpDelete(url,{case_number_list:case_numbers})
+        return httpDelete(url, {case_number_list: case_numbers})
     },
     addCase(case_data) {
         const url = `${base.ownUrl}${base.getAllCases}`
@@ -99,43 +102,42 @@ const api = {
         return httpGet(url)
     },
 
-    getQuestion(type,id) {
+    getQuestion(type, id) {
         const url = `${base.ownUrl}${base.getQuestionList}${type}/${id}/`
         return httpGet(url)
     },
 
-    deleteQuestions(questions){
+    deleteQuestions(questions) {
         const url = `${base.ownUrl}${base.getQuestionList}`
-        return Delete(url,questions)
+        return Delete(url, questions)
     },
 
-    addQuestions(questions){
+    addQuestions(questions) {
         const url = `${base.ownUrl}${base.getQuestionList}`
-        return Post(url,questions)
+        return Post(url, questions)
     },
     //Users Management API
-    getUsers(){
+    getUsers() {
         const url = `${base.ownUrl}${base.getPersonnel}`
         return httpGet(url)
     },
-    deleteUsers(users){
-        const url=`${base.ownUrl}${base.getPersonnel}`
-        return httpDelete(url,{users:users})
+    deleteUsers(users) {
+        const url = `${base.ownUrl}${base.getPersonnel}`
+        return httpDelete(url, {users: users})
     },
-    editUser(user){
-        const url=`${base.ownUrl}${base.getPersonnel}`
-        return httpPost(url,user)
+    editUser(user) {
+        const url = `${base.ownUrl}${base.getPersonnel}`
+        return httpPost(url, user)
     },
-    addUser(user){
-        const url=`${base.ownUrl}${base.getPersonnel}`
-        return httpPost(url,user)
+    addUser(user) {
+        const url = `${base.ownUrl}${base.getPersonnel}`
+        return httpPost(url, user)
     },
     //Role Play Management API
-    getRoleInfo(roleId){
-        const url=`${base.ownUrl}${base.getRoleInfo}${roleId}/`
-        return httpGet(url,roleId)
+    getRoleInfo(roleId) {
+        const url = `${base.ownUrl}${base.getRoleInfo}${roleId}/`
+        return httpGet(url, roleId)
     },
-
 
 
 }

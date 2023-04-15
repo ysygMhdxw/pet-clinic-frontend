@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {SearchOutlined} from '@ant-design/icons';
-import { ProTable } from '@ant-design/pro-components';
-import {Button, Input, Space,  Select} from 'antd';
+import {ProTable} from '@ant-design/pro-components';
+import {Button, Input, Space, Select} from 'antd';
 import {useRef, useState} from 'react';
 import propTypes from 'prop-types'
 import Highlighter from 'react-highlight-words';
@@ -13,6 +13,7 @@ export const QuestionList = (props) => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [questionData, setQuestionData] = useState([]);
     const searchInput = useRef(null);
+
 
     async function getQuestionsData() {
         const response = await api.getQuestionList();
@@ -39,8 +40,6 @@ export const QuestionList = (props) => {
 
     useEffect(() => {
         getQuestionsData();
-
-
     }, []);
 
 
@@ -148,10 +147,11 @@ export const QuestionList = (props) => {
                 text
             ),
     });
-    const options = [{
-        value: '单选题',
-        lable: '单选题',
-    },
+    const options = [
+        {
+            value: '单选题',
+            lable: '单选题',
+        },
         {
             value: '多选题',
             lable: '多选题',
@@ -265,19 +265,19 @@ export const QuestionList = (props) => {
             key: 'disease_type',
             valueType: 'select',
             valueEnum: {
-                infectious: { text: '传染病' },
-                internal: { text: '内科' },
+                infectious: {text: '传染病'},
+                internal: {text: '内科'},
                 surgery: {
-                  text: '常用手术'
+                    text: '常用手术'
                 },
                 parasitic: {
-                  text: '寄生虫病'
+                    text: '寄生虫病'
                 },
-                immunology: { text: '免疫' },
-                obstetric: { text: '外产科疾病' },
-              },
+                immunology: {text: '免疫'},
+                obstetric: {text: '外产科疾病'},
+            },
             width: '15%',
-            
+
             ...getColumnSearchProps('disease_type'),
         },
         {
@@ -285,7 +285,7 @@ export const QuestionList = (props) => {
             dataIndex: 'question_type',
             key: 'question_type',
             width: '15%',
-            
+
             ...getFixedSearchProps('question_type'),
         },
         {
@@ -300,7 +300,7 @@ export const QuestionList = (props) => {
                             props.setQuestionDetail(record);
                             console.log("change view")
                         }}>
-                        查看 
+                        查看
                     </Button>
                 </Space>
             ),

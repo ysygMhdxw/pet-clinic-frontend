@@ -12,7 +12,7 @@ export const CaseQuestions = () => {
 
     return (
         <div>
-            {cardView == true ?
+            {cardView === true ?
                 <Question
                     setCardView={setCardView}
                     questionDetail={questionDetail}/>

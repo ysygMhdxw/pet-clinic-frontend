@@ -5,7 +5,7 @@ import {VideoModal} from "./videoModal";
 import {ImageCarousel} from "./imageCarousel";
 
 
-export const CaseDisplay = (props) => {
+export const CaseDetail = (props) => {
     const [caseInfo, setCaseInfo] = useState({});
     useEffect(() => {
         setCaseInfo(props.caseInfo);
@@ -18,8 +18,10 @@ export const CaseDisplay = (props) => {
                 bordered
                 column={1}
             >
-                <Descriptions.Item label="病例编号">{caseInfo.case_number}</Descriptions.Item>
-                <Descriptions.Item label="病种名称">{caseInfo.disease_type}</Descriptions.Item>
+                <Descriptions.Item label="病例编号">{caseInfo.id}</Descriptions.Item>
+                <Descriptions.Item label="病例标识">{caseInfo.case_number}</Descriptions.Item>
+                <Descriptions.Item label="病例种类">{caseInfo.disease_type}</Descriptions.Item>
+                <Descriptions.Item label="病种名称">{caseInfo.disease_name}</Descriptions.Item>
                 <Descriptions.Item label="宠物名称">{caseInfo.pet_name}</Descriptions.Item>
                 <Descriptions.Item label="宠物种类">{caseInfo.pet_species}</Descriptions.Item>
                 <Descriptions.Item label="宠物年龄">{caseInfo.pet_age}</Descriptions.Item>
@@ -96,6 +98,6 @@ export const CaseDisplay = (props) => {
 
 }
 
-CaseDisplay.propTypes = {
+CaseDetail.propTypes = {
     caseInfo: propTypes.object
 };

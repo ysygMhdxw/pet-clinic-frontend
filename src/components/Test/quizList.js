@@ -7,12 +7,12 @@ import api from '../../api/api';
 export const QuizList = ( props ) => {
     const columns = [
         {
-          title: '试题名称',
+          title: '考试名称',
           dataIndex: 'name',
           width: '20%',
         },
         {
-          title: '试题描述',
+          title: '考试描述',
           dataIndex: 'description',
           width: '60%',
         },

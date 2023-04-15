@@ -14,9 +14,13 @@ export const Question = ( props ) => {
     let answers = [];
     const [question,setQuestion] = useState(props.questionDetail);
     const [checkView,setCheckView] = useState(false);
+    const [value, setValue] = useState();
     // eslint-disable-next-line no-unused-vars
-    const [isCorrect,setIsCorrect] = useState(true);
+    const [isCorrect,setIsCorrect] = useState(false);
     useEffect(()=>{setQuestion(props.questionDetail)},[props.questionDetail])
+    useEffect(()=>{},[isCorrect])
+    useEffect(()=>{},[value])
+    
     const questionType = question.question_type;
     switch (questionType){
         case '简答题':
@@ -55,7 +59,10 @@ export const Question = ( props ) => {
              isCorrect = {isCorrect}
              setUserScore = {props.setUserScore}
              userScore = {props.userScore}
-             duration = {props.duration}/>
+             duration = {props.duration}
+             setValue = {setValue}
+             setIsCorrect = {setIsCorrect}
+             />
              :
              < QuestionHeader 
              setCardView={props.setCardView}
@@ -83,10 +90,12 @@ export const Question = ( props ) => {
                     answers = {answers}
                     checkView={checkView}
                     correct_ind={questionType =='单选题'?question.answer-1:question.answer}
-                    setIsCorrect = {setIsCorrect}/>    
+                    setIsCorrect = {setIsCorrect}
+                    value = {value}
+                    setValue = {setValue}  />    
             )}
            
-        </div>
+        </div>  
     )
 }
 Question.propTypes = {
@@ -98,7 +107,9 @@ Question.propTypes = {
     totalIndex : propTypes.number,
     setUserScore : propTypes.func,
     userScore : propTypes.number,
-    duration :propTypes.number
+    duration :propTypes.number,
+    value : propTypes.number,
+    setValue : propTypes.func
     
 }
 

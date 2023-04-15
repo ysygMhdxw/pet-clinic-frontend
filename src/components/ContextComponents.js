@@ -9,7 +9,8 @@ import {CaseLearning} from "./caseStudy/caseLearning";
 import {CaseExam} from './Test/caseExam.js';
 import {CaseQuestions} from './Test/caseQuestions';
 import {UserManagement} from "./personnelManagement/userManagement";
-import {TestManagement} from "./caseTestManagement/testManagement";
+import { QuestionManagement } from "./caseTestManagement/questionManagement";
+import { QuizManagement } from './caseTestManagement/quizManagement';
 import {RolePlay} from "./rolePlay/rolePlay";
 import {UserCenter} from "./userCenter/userCenter";
 
@@ -34,9 +35,14 @@ export const ContextComponents = (props) => {
         return <CaseExam/>
     } else if (props.contextString === ContextString.userManagement) {
         return <UserManagement/>
-    } else if (props.contextString === ContextString.testManagement) {
-        return <TestManagement/>
-    } else if (props.contextString == ContextString.fontDesk || props.contextString == ContextString.physicianAssistant || props.contextString == ContextString.veterinarians) {
+    }
+    else if(props.contextString === ContextString.questionManagement){
+        return <QuestionManagement/>
+    }
+    else if(props.contextString === ContextString.quizManagement){
+        return <QuizManagement/>
+    } 
+    else if (props.contextString == ContextString.fontDesk || props.contextString == ContextString.physicianAssistant || props.contextString == ContextString.veterinarians) {
         return <RolePlay roleName={props.contextString}/>
     }
     return (

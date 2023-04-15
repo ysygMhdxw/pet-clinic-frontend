@@ -12,7 +12,8 @@ export const ContextString = {
     takeExam: "考试",
     takeContest: "比赛",
     caseManagement:"病例管理",
-    testManagement:"测试管理",
+    questionManagement:"题目管理",
+    quizManagement:"考试管理",
     systemManagement:"系统管理",
     userManagement:"用户管理",
     functionalLearningManagement:"职能学习管理",
@@ -25,6 +26,6 @@ export const ContextString = {
     fileManagement:"档案管理",
     feeManagement:"收费管理",
     laboratoryProjectManagement:"化验项目管理",
-    hospitalizationManagement:"住院管理"
+    hospitalizationManagement:"住院管理",
 
 }

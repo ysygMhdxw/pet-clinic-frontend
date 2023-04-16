@@ -29,3 +29,10 @@ export const ContextString = {
     hospitalizationManagement:"住院管理",
 
 }
+
+export const Num = {
+    singleMax: 78,
+    multiMax: 3,
+    tofMax: 9,
+    text: 9
+}

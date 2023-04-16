@@ -5,8 +5,12 @@ import React from 'react';
 import { useEffect , useState } from 'react'
 import {PlusOutlined} from "@ant-design/icons"
 import api from '../../api/api';
-
+import { Num } from '../../utils/enums';
 export const QuizManagement = (  ) => {
+    const [messageApi, contextHolder] = message.useMessage();
+    const info = (msg) => {
+        messageApi.info(msg);
+    };
     const columns = [
         {
           title: '考试名称',
@@ -43,8 +47,10 @@ export const QuizManagement = (  ) => {
               </Button>
               <Button
                 type = "link"
-                onClick={()=>
-                  {}
+                onClick={async()=>
+                  {deleteQuizs([record]);
+                    info("删除成功！");
+                    await waitTime(500);}
                    }>
                   删除考试
               </Button>
@@ -53,6 +59,35 @@ export const QuizManagement = (  ) => {
         },
       ];
     
+      const [selectedRows, setSelectedRows] = useState([]);
+
+      const handleRowSelection = (selectedRowKeys, selectedRows) => {
+          console.log(selectedRows)
+          setSelectedRows(selectedRows);
+      };
+
+      const handleBatchDelete = () => {
+        if (selectedRows.length === 0) {
+            message.warning('请选择要删除的行！');
+            return;
+        }
+        const keys = selectedRows.map((row) => row.list_id);
+        const newData = quizListData.filter((row) => !keys.includes(row.list_id));
+        setQuizListData(newData);
+        deleteQuizs(selectedRows);
+        setSelectedRows([]);
+        message.success('批量删除成功！');
+    };
+
+    const deleteQuizs = async (records) => {
+        let resp = {
+            quizs:[]
+        }
+        for (let record of records) {
+            resp.quizs.push(record.id)
+        }
+        console.log(resp)
+    }
 
       const waitTime = (time = 100) => {
         return new Promise((resolve) => {
@@ -97,7 +132,6 @@ export const QuizManagement = (  ) => {
         const tempData = [];
         const res = await api.getUsers()
         const data = res.data
-        console.log(data.users);
         data.users.forEach(user => {
             const stu = {
                 key: user.id,
@@ -114,17 +148,37 @@ export const QuizManagement = (  ) => {
 
 
       //添加题目
-      const[singleNum,setSingleNum] =useState();
-      const [multiNum,setMultiNum] =useState();
-      const [tofNum,setTofNum] =useState();
-      const [textNum,setTextNum] =useState();
+      const[singleNum,setSingleNum] =useState(0);
+      const [multiNum,setMultiNum] =useState(0);
+      const [tofNum,setTofNum] =useState(0);
+      const [textNum,setTextNum] =useState(0);
+
+    //生成随机数组
+    function generateRandomArray(x, y) {
+    const arr = [];
+    while (arr.length < x) {
+        const randomNum = Math.floor(Math.random() * y) + 1;
+        if (!arr.includes(randomNum)) {
+         arr.push(randomNum);
+        }
+     }
+     return arr;
+    }
+
 
     return (
         <>
+        {contextHolder}
+        <div style={{display: "flex", margin: "10px"}}>
          <Button type="primary" onClick={()=>{setIsModalOpen(true)}}>
             <PlusOutlined/>
              新建考试
          </Button>
+
+         <Button type="primary" onClick={handleBatchDelete}>
+                        批量删除
+         </Button>
+         </div>
          <StepsForm
         onFinish={async (values) => {
           let resp = {
@@ -134,19 +188,20 @@ export const QuizManagement = (  ) => {
             students: {list:targetKeys},
             questions:
             {
-                single:[],
-                multi: [],
-                tof: [],
-                text:[]
+                single: generateRandomArray(singleNum,Num.singleMax),
+                multi: generateRandomArray(multiNum,Num.multiMax),
+                tof: generateRandomArray(tofNum,Num.tofMax),
+                text:generateRandomArray(textNum,Num.textNum)
             }
           }
           console.log(resp)
-          console.log(singleNum)
-          //console.log(values);
-          //console.log(targetKeys)
-          await waitTime(1000);
-          setIsModalOpen(false);
-          message.success('提交成功');
+          const res = await api.addQuiz(resp)
+            const data = res.data
+            console.log(data)
+          await waitTime(1000)
+          getQuizListData()
+          setIsModalOpen(false)
+          message.success('提交成功')
         }}
         formProps={{
           validateMessages: {
@@ -213,6 +268,8 @@ export const QuizManagement = (  ) => {
               >
                 <InputNumber
                 defaultValue={0}
+                min={0}
+                max={Num.singleMax}
                 onChange={(value)=>{setSingleNum(value)}} />  道
               </Form.Item>
 
@@ -222,6 +279,8 @@ export const QuizManagement = (  ) => {
               >
                 <InputNumber
                 defaultValue={0}
+                min={0}
+                max={Num.multiMax}
                 onChange={(value)=>{setMultiNum(value)}} /> 道
               </Form.Item>
 
@@ -231,6 +290,8 @@ export const QuizManagement = (  ) => {
               >
                 <InputNumber
                 defaultValue={0}
+                min={0}
+                max={Num.tofMax}
                 onChange={(value)=>{setTofNum(value)}} /> 道
               </Form.Item>
 
@@ -239,6 +300,8 @@ export const QuizManagement = (  ) => {
                 label="问答题"
               >
                 <InputNumber
+                min={0}
+                max={Num.textMax}
                 defaultValue={0}
                 onChange={(value)=>{setTextNum(value)}} /> 道
               </Form.Item>
@@ -261,6 +324,10 @@ export const QuizManagement = (  ) => {
       </StepsForm>
 
 
-        <Table columns={columns} dataSource={quizListData} onChange={onChange} />
+        <Table columns={columns} dataSource={quizListData} onChange={onChange}
+         rowSelection={{
+            type: 'checkbox',
+            onChange: handleRowSelection
+        }} />
         </>
     )}

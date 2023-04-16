@@ -1,26 +1,9 @@
-import {message, Tree} from 'antd';
+import {Divider, message, Tree} from 'antd';
 import propTypes from 'prop-types';
 import {useEffect, useState} from 'react';
 import api from "../../api/api";
 
-// const {Search} = Input;
-//
-// const dataList = [];
 
-// const getParentKey = (key, tree) => {
-//     let parentKey;
-//     for (let i = 0; i < tree.length; i++) {
-//         const node = tree[i];
-//         if (node.children) {
-//             if (node.children.some((item) => item.key === key)) {
-//                 parentKey = node.key;
-//             } else if (getParentKey(key, node.children)) {
-//                 parentKey = getParentKey(key, node.children);
-//             }
-//         }
-//     }
-//     return parentKey;
-// };
 export const CaseCategory = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
     // const success = (msg) => {
@@ -29,8 +12,7 @@ export const CaseCategory = (props) => {
     const showError = (msg) => {
         messageApi.error(msg);
     };
-    const [expandedKeys, setExpandedKeys] = useState([]);
-    // const [searchValue, setSearchValue] = useState('');
+    const [expandedKeys, setExpandedKeys] = useState([0]);
     const [autoExpandParent, setAutoExpandParent] = useState(true);
     const [treeData, setTreeData] = useState([])
     const onExpand = (newExpandedKeys) => {
@@ -42,7 +24,13 @@ export const CaseCategory = (props) => {
         try {
             const responce = await api.getCaseCategories()
             const data = responce.data
-            setTreeData(data.case_categories)
+            let all = {
+                title: "所有病例",
+                key: "all cases",
+            }
+            let categories = [all, ...data.case_categories]
+            console.log(categories)
+            setTreeData(categories)
         } catch (error) {
             console.error(error);
             showError("不存在病例目录！");
@@ -51,7 +39,9 @@ export const CaseCategory = (props) => {
 
     function getNodeName(selectedKeys, {node}) {
         console.log("getNodeName", node.title)
-        props.setCaseName(node.title)
+        let category = node.title
+        if (node.title === "所有病例") category = "";
+        props.setCaseName(category)
     }
 
     useEffect(() => {
@@ -62,6 +52,7 @@ export const CaseCategory = (props) => {
         <div>
             {contextHolder}
             <h2>病例目录</h2>
+            <Divider/>
             <Tree
                 defaultExpandAll
                 onExpand={onExpand}

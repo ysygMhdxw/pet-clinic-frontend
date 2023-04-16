@@ -1,13 +1,15 @@
-import {Button, message, Popconfirm} from "antd";
+import {Button, Input, message, Popconfirm, Select, Space} from "antd";
 import api from "../../api/api";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
     EditableProTable,
     ModalForm,
 } from "@ant-design/pro-components";
-import {PlusOutlined} from "@ant-design/icons";
+import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import {CaseEditForm} from "./caseEditForm";
 import {CaseNewForm} from "./newCaseForm";
+import Highlighter from "react-highlight-words";
+
 
 function random(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -27,12 +29,211 @@ export const CaseManagement = () => {
     const info = (msg) => {
         messageApi.info(msg);
     };
+    const showError = (msg) => {
+        messageApi.error(msg);
+    };
+
     const [caseData, setCaseData] = useState([]);
     const [editableKeys, setEditableRowKeys] = useState([]);
     const [displayFlg, setDisplayFlg] = useState(true);
     // eslint-disable-next-line no-unused-vars
     const [caseInfo, setCaseInfo] = useState([]);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
+    const [tableLittleType, setTableLittleType] = useState([]);
+    const [tableBigType, setTableBigType] = useState([]);
     // const [dataSource, setDataSource] = useState([]);
+
+
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        console.log(selectedKeys);
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+    const getColumnSearchProps = (dataIndex, columnName) => ({
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`查询 ${columnName}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined/>}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        查询
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        清空搜索
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        筛选
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        关闭
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1890ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
+
+    const getFixedSearchProps = (dataIndex, columnName,tableTypes) => ({
+        // eslint-disable-next-line no-unused-vars
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Select
+                    allowClear
+                    style={{
+                        width: '100%',
+                        marginBottom: '10px'
+                    }}
+                    placeholder={`请选择${columnName}`}
+                    defaultValue={[]}
+                    onChange={(value) => setSelectedKeys(value ? [value] : [])}
+                    options={tableTypes}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined/>}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        查询
+                    </Button>
+                    {/*<Button*/}
+                    {/*    onClick={() => clearFilters && handleReset(clearFilters)}*/}
+                    {/*    size="small"*/}
+                    {/*    style={{*/}
+                    {/*        width: 90,*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    重置*/}
+                    {/*</Button>*/}
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        筛选
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        关闭
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1890ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().includes(value),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+    });
+
+
     const columns = [
         {
             title: '病例编号',
@@ -47,7 +248,8 @@ export const CaseManagement = () => {
             editable: (text, record, index) => {
                 return index !== 0;
             },
-            width: '15%',
+            width: '10%',
+            ...getColumnSearchProps("id", "病例编号")
         },
         {
             title: '病例种类',
@@ -62,21 +264,25 @@ export const CaseManagement = () => {
                 return index !== 0;
             },
             width: '15%',
+            ...getFixedSearchProps("disease_type", "病例种类",tableBigType)
         },
         {
-            title: '疾病名称',
+            title: '病种名称',
             key: 'disease_name',
             dataIndex: 'disease_name',
+            ...getFixedSearchProps("disease_name", "病种种类",tableLittleType)
         },
         {
             title: '宠物名称',
             key: 'pet_name',
             dataIndex: 'pet_name',
+            ...getColumnSearchProps("pet_name", "宠物名称")
         },
         {
             title: '宠物种类',
             key: 'pet_species',
             dataIndex: 'pet_species',
+            ...getColumnSearchProps("pet_species", "宠物种类")
         },
         {
             title: '操作',
@@ -137,14 +343,65 @@ export const CaseManagement = () => {
     };
 
     useEffect(() => {
-        if(displayFlg)getCaseData()
+        if (displayFlg) {
+            getCaseData()
+            getTableLittleTypesData()
+            getTableBigTypesData()
+        }
     }, [displayFlg]);
 
     async function getCaseData() {
-        const res = await api.getAllCases()
-        const data = res.data
-        setCaseData(data.cases)
-        console.log(data.cases);
+        try {
+            const res = await api.getAllCases()
+            const data = res.data
+            setCaseData(data.cases)
+            console.log(data.cases);
+        } catch (error) {
+            console.error(error);
+            setCaseData([]);
+            showError("不存在病例数据！");
+        }
+    }
+
+    async function getTableLittleTypesData() {
+        try {
+            const responce = await api.getCaseCategories()
+            const data = responce.data
+            let caseCategories = data.case_categories
+            let caseTypeDatas = []
+            caseCategories.map((caseCategory) => {
+                const transformedData = caseCategory.children.map(item => ({
+                    value: item.title,
+                    label: item.title
+                }));
+                caseTypeDatas.push(...transformedData)
+            })
+            console.log("caseTypeDatas: ", caseTypeDatas)
+            setTableLittleType(caseTypeDatas)
+        } catch (error) {
+            console.error(error);
+            showError("不存在病种分类！");
+        }
+    }
+
+    async function getTableBigTypesData() {
+        try {
+            const responce = await api.getCaseCategories()
+            const data = responce.data
+            let caseCategories = data.case_categories
+            let caseTypeDatas = []
+            caseCategories.map((caseCategory) => {
+                caseTypeDatas.push({
+                    value: caseCategory.title,
+                    label: caseCategory.title
+                })
+            })
+            console.log("Big caseTypeDatas: ", caseTypeDatas)
+            setTableBigType(caseTypeDatas)
+        } catch (error) {
+            console.error(error);
+            showError("不存在病例分类！");
+        }
     }
 
     async function deleteCaseById(case_id) {
@@ -213,11 +470,6 @@ export const CaseManagement = () => {
                         recordCreatorProps={false}
                         loading={false}
                         columns={columns}
-                        request={async () => ({
-                            data: [],
-                            total: 3,
-                            success: true,
-                        })}
                         value={caseData}
                         onChange={setCaseData}
                         editable={{
@@ -238,7 +490,6 @@ export const CaseManagement = () => {
                             onChange: setEditableRowKeys,
                         }}
                     />
-                    {/*<Table columns={columns} dataSource={caseData}/>*/}
                 </div>
 
             </>
@@ -252,7 +503,7 @@ export const CaseManagement = () => {
                         setDisplayFlg(true)
                     }}>返回</Button>
                 </div>
-                <CaseEditForm caseId={caseInfo.id}/>
+                <CaseEditForm caseNumber={caseInfo.case_number}/>
             </div>
         )
     }

@@ -179,6 +179,17 @@ const api = {
         const url = `${base.ownUrl}${base.getQuestionList}`
         return Post(url, questions)
     },
+
+    addQuiz(quiz) {
+        const url = `${base.ownUrl}${base.getQuizList}`
+        return Post(url,quiz)
+    },
+
+    deleteQuiz(quiz) {
+        const url = `${base.ownUrl}${base.getQuizList}`
+        return Delete(url, quiz)
+    },
+
     //Users Management API
     getUsers() {
         const url = `${base.ownUrl}${base.getPersonnel}`

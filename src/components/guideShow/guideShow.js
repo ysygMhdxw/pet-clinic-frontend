@@ -237,7 +237,7 @@ export const GuideShow = ( ) => {
                style={{
                    display: 'flex',
                }}>
-            <Button size="middle" href={"./index.html"}>3D导览</Button>
+            <Button size="middle" href={"http://localhost/guideIndex.html"}>3D导览</Button>
             <DepartmentDisplay/>
         {/*<Table columns={columns} dataSource={data}/>*/}
         </Space>

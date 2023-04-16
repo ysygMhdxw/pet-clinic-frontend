@@ -123,15 +123,15 @@ const api = {
     },
     deleteUsers(users) {
         const url = `${base.ownUrl}${base.getPersonnel}`
-        return httpDelete(url, {users: users})
+        return Delete(url, {users: users})
     },
     editUser(user) {
         const url = `${base.ownUrl}${base.getPersonnel}`
-        return httpPost(url, user)
+        return Put(url, user)
     },
     addUser(user) {
-        const url = `${base.ownUrl}${base.getPersonnel}`
-        return httpPost(url, user)
+        const url = `${base.ownUrl}${base.register}`
+        return Post(url, user)
     },
     //Role Play Management API
     getRoleInfo(roleId) {

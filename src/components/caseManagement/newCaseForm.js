@@ -1,7 +1,7 @@
 import {
     EditableProTable, ModalForm,
     ProForm,
-    ProFormMoney,
+    ProFormMoney, ProFormSelect,
     ProFormText,
     ProFormTextArea,
 } from '@ant-design/pro-components';
@@ -11,6 +11,7 @@ import ImgCrop from "antd-img-crop";
 import {VideoJS} from "./videoPlayer";
 import videojs from "video.js";
 import {PlusOutlined} from "@ant-design/icons";
+import PropTypes from "prop-types";
 
 const waitTime = (time = 100) => {
     return new Promise((resolve) => {
@@ -21,11 +22,15 @@ const waitTime = (time = 100) => {
 };
 
 
-export const CaseNewForm = () => {
+export const CaseNewForm = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
     const info = (msg) => {
         messageApi.info(msg);
     };
+    const showError = (msg) => {
+        messageApi.error(msg);
+    };
+
     const [checkUpData, setCheckUpData] = useState([
         {
             "id": null,
@@ -85,7 +90,7 @@ export const CaseNewForm = () => {
                 let recordList = [record.checkup_pic1, record.checkup_pic2, record.checkup_pic3]
                 let fileList = []
                 recordList.map((picUrl, index) => {
-                        if (picUrl !== "" || picUrl!==null) {
+                        if (picUrl !== "" || picUrl !== null) {
                             fileList.push({
                                 uid: `pic-${index}`,
                                 name: `image${index}.png`,
@@ -144,7 +149,7 @@ export const CaseNewForm = () => {
                 let recordList = [record.checkup_video]
                 let fileList = []
                 recordList.map((picUrl, index) => {
-                        if (picUrl !== "" || picUrl!==null) {
+                        if (picUrl !== "" || picUrl !== null) {
                             fileList.push({
                                 uid: `pic-${index}`,
                                 name: `image${index}.png`,
@@ -243,6 +248,61 @@ export const CaseNewForm = () => {
     const [editableKeys, setEditableRowKeys] = useState(() =>
         checkUpData.map((item) => item.id),
     );
+    const [tableLittleType, setTableLittleType] = useState([]);
+    const [tableLittleTypeValue,setTableLittleTypeValue] = useState([]);
+    // eslint-disable-next-line no-unused-vars
+    const [tableBigTypeValue,setTableBigTypeValue] = useState([]);
+
+    function getTableLittleTypesData(value) {
+        if(value===undefined) {
+            setTableLittleTypeValue([])
+            return
+        }
+        try {
+            let caseCategories = props.tableCategory
+            let caseTypeDatas = []
+            caseCategories.map((caseCategory) => {
+                if (caseCategory.title === value) {
+                    const transformedData = caseCategory.children.map(item => ({
+                        value: item.title,
+                        label: item.title
+                    }));
+                    caseTypeDatas.push(...transformedData)
+                }
+            })
+            console.log("caseTypeDatas: ", caseTypeDatas)
+            setTableLittleType(caseTypeDatas)
+        } catch (error) {
+            console.error(error);
+            showError("不存在病种分类！");
+        }
+    }
+
+    const handleBigTypeChange = (value) => {
+        setTableBigTypeValue(value);
+        setTableLittleTypeValue([]); // 清空后一个组件的选项
+        getTableLittleTypesData(value)
+        // 获取后端数据并更新前一个组件的选项
+        // ...
+    };
+
+    const handleLittleTypeChange = (value) => {
+        setTableLittleTypeValue(value); // 清空后一个组件的选项
+    };
+
+    function getTableBigTypesData() {
+        let caseCategories = props.tableCategory
+        let caseTypeDatas = []
+        caseCategories.map((caseCategory) => {
+            caseTypeDatas.push({
+                value: caseCategory.title,
+                label: caseCategory.title
+            })
+        })
+        console.log("Big caseTypeDatas: ", caseTypeDatas)
+        return caseTypeDatas
+    }
+
 
     //video functions
     const playerRef = React.useRef(null);
@@ -291,7 +351,7 @@ export const CaseNewForm = () => {
         return newFile
     }
 
-
+    // getTableBigTypesData();
     const onPreview = async (file) => {
         let src = file.url;
         if (!src) {
@@ -350,6 +410,7 @@ export const CaseNewForm = () => {
 
     // const handleCancel = () => setPreviewVisible(false);
 
+
     return (
         <>
             {contextHolder}
@@ -366,15 +427,33 @@ export const CaseNewForm = () => {
                     <ProFormText
                         width="md"
                         name="case_number"
-                        label="病例编号"
+                        label="病例标识"
                         tooltip="最长为 24 位"
-                        disabled
                     />
-                    <ProFormText
+                    <ProFormSelect
                         width="md"
                         name="disease_type"
+                        label="病例种类"
+                        placeholder="请选择病例种类"
+                        fieldProps={{
+                            value: tableBigTypeValue,
+                        }}
+                        onChange={handleBigTypeChange}
+                        options={getTableBigTypesData()}
+                    />
+                    <ProFormSelect
+                        width="md"
+                        name="disease_name"
                         label="病种名称"
-                        placeholder="请输入病例种类"
+                        fieldProps={{
+                            value: tableLittleTypeValue,
+                        }}
+                        onChange={handleLittleTypeChange}
+                        placeholder="请选择病种名称"
+                        options={tableLittleType}
+                        disabled={!tableBigTypeValue} // 禁用后一个组件，直到前一个组件有选中值
+                        // onChange={getTableBigTypesData}
+                        tooltip={"请先选择病例种类！"}
                     />
                     <ProFormText
                         width="md"
@@ -687,3 +766,6 @@ export const CaseNewForm = () => {
     )
 
 };
+CaseNewForm.propTypes = {
+    tableCategory: PropTypes.array
+}

@@ -43,6 +43,7 @@ export const CaseManagement = () => {
     const searchInput = useRef(null);
     const [tableLittleType, setTableLittleType] = useState([]);
     const [tableBigType, setTableBigType] = useState([]);
+    const [tableCategory, setTableCategory] = useState([]);
     // const [dataSource, setDataSource] = useState([]);
 
 
@@ -252,6 +253,22 @@ export const CaseManagement = () => {
             ...getColumnSearchProps("id", "病例编号")
         },
         {
+            title: '病例标识',
+            dataIndex: 'case_number',
+            key: 'case_number',
+            formItemProps: (form, {rowIndex}) => {
+                return {
+                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
+                };
+            },
+            // 第一行不允许编辑
+            editable: (text, record, index) => {
+                return index !== 0;
+            },
+            width: '10%',
+            ...getColumnSearchProps("case_number", "病例标识")
+        },
+        {
             title: '病例种类',
             key: 'disease_type',
             dataIndex: 'disease_type',
@@ -389,6 +406,7 @@ export const CaseManagement = () => {
             const responce = await api.getCaseCategories()
             const data = responce.data
             let caseCategories = data.case_categories
+            setTableCategory(caseCategories)
             let caseTypeDatas = []
             caseCategories.map((caseCategory) => {
                 caseTypeDatas.push({
@@ -438,8 +456,10 @@ export const CaseManagement = () => {
                                         新建病例
                                     </Button>
                                 }
+                                submitter={false}
                                 onFinish={async (values) => {
                                     await waitTime(1000);
+                                    console.log(values)
                                     addCase({id: random(0, 10000000), ...values})
                                     console.log(values);
                                     getCaseData();
@@ -447,7 +467,7 @@ export const CaseManagement = () => {
                                     return true;
                                 }}
                             >
-                                <CaseNewForm/>
+                                <CaseNewForm tableCategory={tableCategory}/>
                             </ModalForm>
                         </div>
                         <div style={{marginLeft: "2%"}}>
@@ -503,7 +523,7 @@ export const CaseManagement = () => {
                         setDisplayFlg(true)
                     }}>返回</Button>
                 </div>
-                <CaseEditForm caseNumber={caseInfo.case_number}/>
+                <CaseEditForm caseNumber={caseInfo.case_number} />
             </div>
         )
     }

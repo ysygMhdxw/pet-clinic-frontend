@@ -207,16 +207,22 @@ export const CaseEditForm = (props) => {
     }
 
     async function getCaseData() {
-        const res = await api.getCaseByCaseId(props.caseNumber)
-        const data = res.data
-        setCaseData(data.case)
-        caseFormRef.current?.setFieldsValue(data.case)
-        setSymptomFileList(newFileList([data.case.symptom_pic1, data.case.symptom_pic2, data.case.symptom_pic3]))
-        setDiagnosisFileList(newFileList([data.case.diagnosis_pic1, data.case.diagnosis_pic2, data.case.diagnosis_pic3]))
-        setTreatmentFileList(newFileList([data.case.treatment_pic1, data.case.treatment_pic2, data.case.treatment_pic3]))
-        console.log("case")
-        console.log(data.case)
-        return data.case
+        try {
+            const res = await api.getCaseByCaseId(props.caseNumber)
+            const data = res.data
+            setCaseData(data.case)
+            caseFormRef.current?.setFieldsValue(data.case)
+            setSymptomFileList(newFileList([data.case.symptom_pic1, data.case.symptom_pic2, data.case.symptom_pic3]))
+            setDiagnosisFileList(newFileList([data.case.diagnosis_pic1, data.case.diagnosis_pic2, data.case.diagnosis_pic3]))
+            setTreatmentFileList(newFileList([data.case.treatment_pic1, data.case.treatment_pic2, data.case.treatment_pic3]))
+            console.log("case")
+            console.log(data.case)
+            return data.case
+        } catch (error) {
+            console.error(error);
+            showError("该病例数据不存在！");
+        }
+
     }
 
     async function getCaseCheckUpData() {
@@ -295,7 +301,11 @@ export const CaseEditForm = (props) => {
         imgWindow?.document.write(image.outerHTML);
     };
 
-    const handleSymptomChange = ({fileList: newFileList}) => setSymptomFileList(newFileList);
+    const handleSymptomChange = ({fileList: newFileList}) => {
+        console.log(newFileList)
+        console.log(symptomFileList)
+        setSymptomFileList(newFileList);
+    }
     const handleDiagnosisChange = ({fileList: newFileList}) => setDiagnosisFileList(newFileList);
     const handleTreatmentChange = ({fileList: newFileList}) => setTreatmentFileList(newFileList);
     const handleNewCheckUpPicChange = ({fileList: newFileList}) => setNewCheckUpPicList(newFileList);
@@ -373,8 +383,70 @@ export const CaseEditForm = (props) => {
     const handleVideoCancel = () => {
         setPreviewVisible(false);
     };
+    const uploadProps = {
+        action: 'http://127.0.0.1:4523/m1/2420754-0-default/upload/',
+        listType: 'picture-card',
+        fileList: symptomFileList,
+        // onChange: handleSymptomChange,
+        onPreview: onPreview,
+        customRequest: ({ onSuccess, onError, file }) => {
+            const formData = new FormData();
+            formData.append('file', file);
 
-    return (
+            fetch('http://127.0.0.1:4523/m1/2420754-0-default/upload/', {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    const newFile = {
+                        uid: file.uid,
+                        name: data.name,
+                        status: data.success ? 'done' : 'error',
+                        url: data.url,
+                        thumbUrl: data.thumbUrl,
+                    };
+
+                    const newFileList = [...symptomFileList];
+                    const targetIndex = newFileList.findIndex(
+                        (item) => item.uid === file.uid
+                    );
+
+                    if (targetIndex !== -1) {
+                        newFileList.splice(targetIndex, 1, newFile);
+                    } else {
+                        newFileList.push(newFile);
+                    }
+
+                    setSymptomFileList(newFileList);
+                    console.log("newfilw",newFileList);
+                    console.log(symptomFileList)
+                    onSuccess(data, newFile);
+                })
+                .catch((error) => {
+                    onError(error);
+                });
+        },
+        getData: (file) => {
+            return {
+                name: file.name,
+            };
+        },
+        headers: {
+            Authorization: 'Token' + localStorage.getItem('token'),
+        },
+        showUploadList: {
+            showPreviewIcon: true,
+            showDownloadIcon: true,
+            showRemoveIcon: true,
+        },
+        maxCount: 5,
+        accept: 'image/*',
+    };
+
+
+
+return (
         <>
             {contextHolder}
             <ProForm
@@ -472,8 +544,10 @@ export const CaseEditForm = (props) => {
                         >
                             <ImgCrop
                                 rotationSlider>
+                                <Upload {...uploadProps}>+</Upload>
+
                                 <Upload
-                                    // action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                    action="http://127.0.0.1:4523/m1/2420754-0-default/upload/"
                                     listType="picture-card"
                                     fileList={symptomFileList}
                                     onChange={handleSymptomChange}

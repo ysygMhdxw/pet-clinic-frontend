@@ -1,13 +1,14 @@
-import {Button, message, Popconfirm} from "antd";
+import {Button, Input, message, Popconfirm, Space} from "antd";
 import api from "../../api/api";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
     EditableProTable,
     ModalForm,
     ProForm,
-    ProFormText
+    ProFormText, ProFormTextArea
 } from "@ant-design/pro-components";
-import {PlusOutlined} from "@ant-design/icons";
+import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
 
 function random(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -33,7 +34,118 @@ export const DepartmentManagement = () => {
     };
     const [departmentData, setDepartmentData] = useState([])
     const [editableKeys, setEditableRowKeys] = useState([]);
-    // const [dataSource, setDataSource] = useState([]);
+
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
+
+
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        console.log(selectedKeys);
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+
+    const getColumnSearchProps = (dataIndex,columnName) => ({
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`查询 ${columnName}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined/>}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        查询
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        清空搜索
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        筛选
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        关闭
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1890ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
+
     const columns = [
         {
             title: '科室编号',
@@ -48,7 +160,8 @@ export const DepartmentManagement = () => {
             editable: (text, record, index) => {
                 return index !== 0;
             },
-            width: '15%',
+            width: '10%',
+            ...getColumnSearchProps("id","科室编号")
         },
         {
             title: '科室名称',
@@ -63,11 +176,13 @@ export const DepartmentManagement = () => {
                 return index !== 0;
             },
             width: '15%',
+            ...getColumnSearchProps("name","科室名称")
         },
         {
             title: '科室简介',
             key: 'description',
             dataIndex: 'description',
+            ...getColumnSearchProps("description","科室简介")
         },
         {
             title: '操作',
@@ -212,7 +327,7 @@ export const DepartmentManagement = () => {
 
                         </ProForm.Group>
                         <ProForm.Group>
-                            <ProFormText
+                            <ProFormTextArea
                                 name='description'
                                 width="md"
                                 label="科室简介"
@@ -240,6 +355,12 @@ export const DepartmentManagement = () => {
                 maxLength={5}
                 scroll={{
                     x: 960,
+                }}
+                pagination={{
+                    pageSize: 10,
+                    showQuickJumper: true,
+                    // showSizeChanger: true,
+                    // total: 20,
                 }}
                 recordCreatorProps={false}
                 loading={false}

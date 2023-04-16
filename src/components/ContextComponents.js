@@ -13,7 +13,7 @@ import { QuestionManagement } from "./caseTestManagement/questionManagement";
 import { QuizManagement } from './caseTestManagement/quizManagement';
 import {RolePlay} from "./rolePlay/rolePlay";
 import {UserCenter} from "./userCenter/userCenter";
-import {GuideShow} from "./threeD/guideShow";
+import {GuideShow} from "./guideShow/guideShow";
 
 
 export const ContextComponents = (props) => {

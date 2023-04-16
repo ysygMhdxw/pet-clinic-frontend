@@ -150,19 +150,19 @@ export const QuestionList = (props) => {
     const options = [
         {
             value: '单选题',
-            lable: '单选题',
+            label: '单选题',
         },
         {
             value: '多选题',
-            lable: '多选题',
+            label: '多选题',
         },
         {
             value: '判断题',
-            lable: '判断题',
+            label: '判断题',
         },
         {
             value: '简答题',
-            lable: '简答题',
+            label: '简答题',
         }];
 
     const getFixedSearchProps = (dataIndex) => ({

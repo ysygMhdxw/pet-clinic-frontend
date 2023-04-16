@@ -5,6 +5,12 @@
 ### `npm install`
 ### `npm run start`
 
+## 3D项目运行
+### http.js文件写有本地服务器运行端口和运行项目名称
+### 本地命令行打开3D项目所在位置
+### 运行 'node http.js'
+### 打开浏览器"http://localhost:3000/guideIndex.html"
+
 ## 项目接口完成情况
 * ✔ 登录
 * ✔ 注册

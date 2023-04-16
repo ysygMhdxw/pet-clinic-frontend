@@ -1,13 +1,14 @@
-import {Button, message, Popconfirm} from "antd";
+import {Button, Input, InputNumber, message, Popconfirm, Space} from "antd";
 import api from "../../api/api";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
     EditableProTable,
     ModalForm,
-    ProForm,
-    ProFormText
+    ProForm, ProFormMoney,
+    ProFormText, ProFormTextArea
 } from "@ant-design/pro-components";
-import {PlusOutlined} from "@ant-design/icons";
+import {FilterOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
 
 function random(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -21,15 +22,256 @@ const waitTime = (time = 100) => {
     });
 };
 
-
 export const MedicineManagement = () => {
     const [messageApi, contextHolder] = message.useMessage();
-    const info = (msg) => {
-        messageApi.info(msg);
+    const success = (msg) => {
+        messageApi.success(msg);
     };
+    const showError = (msg) => {
+        messageApi.error(msg);
+    };
+
     const [medicineData, setMedicineData] = useState([])
     const [editableKeys, setEditableRowKeys] = useState([]);
-    // const [dataSource, setDataSource] = useState([]);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
+
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        console.log(selectedKeys);
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+
+
+    const getColumnSearchProps = (dataIndex, columnName) => ({
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`查询 ${columnName}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined/>}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        查询
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        清空搜索
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        筛选
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        关闭
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1890ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
+    const [startPrice, setStartPrice] = useState(null);
+    const [endPrice, setEndPrice] = useState(null);
+    const [priceFilteredInfo, setPriceFilteredInfo] = useState({});
+    const handlePriceFilter = (value, record) => {
+        const {price} = record;
+        if (startPrice && endPrice) {
+            return price >= startPrice && price <= endPrice;
+        } else if (startPrice) {
+            return price >= startPrice;
+        } else if (endPrice) {
+            return price <= endPrice;
+        }
+        return true;
+    };
+    const handlePriceReset = () => {
+        setStartPrice(null);
+        setEndPrice(null);
+        setPriceFilteredInfo({});
+    };
+    const handlePriceConfirm = () => {
+        setPriceFilteredInfo({
+            price: {
+                ...priceFilteredInfo.price,
+                filters: [{text: `${startPrice} - ${endPrice}`, value: 'price'}],
+                filteredValue: [startPrice, endPrice],
+            },
+        });
+    };
+    // eslint-disable-next-line no-unused-vars
+    const priceFilterDropdown = ({setSelectedKeys, confirm, clearFilters}) => (
+        <div style={{padding: 8}}>
+            <InputNumber
+                placeholder="最小值"
+                style={{width: 120, marginRight: 8}}
+                value={startPrice}
+                onChange={value => setStartPrice(value)}
+                onPressEnter={confirm}
+                min={0}
+            />
+            <InputNumber
+                placeholder="最大值"
+                style={{width: 120, marginRight: 8}}
+                value={endPrice}
+                onChange={value => setEndPrice(value)}
+                onPressEnter={confirm}
+                min={0}
+            />
+            <div style={{marginTop: "10px", gap: "5px", display: "flex"}}>
+                <Button onClick={handlePriceReset}>重置</Button>
+                <Button onClick={handlePriceConfirm}>筛选</Button>
+            </div>
+        </div>
+    );
+
+
+    // eslint-disable-next-line no-unused-vars
+    const [selectedRows, setSelectedRows] = useState([]);
+    const handleRowSelection = (selectedRowKeys, selectedRows) => {
+        console.log(selectedRows)
+        setSelectedRows(selectedRows);
+    };
+    const handleBatchDelete = () => {
+        if (selectedRows.length === 0) {
+            showError('请选择要删除的行！');
+            return;
+        }
+        const keys = selectedRows.map((row) => row.id);
+        console.log("keys: ", keys)
+        deleteMedicineById(keys, (error) => {
+            if (error) showError("批量删除失败，请稍后再试！");
+        });
+        setSelectedRows([]);
+    };
+
+    useEffect(() => {
+        getMedicineData()
+    }, []);
+
+    async function getMedicineData() {
+        try {
+            const res = await api.getMedicine()
+            const data = res.data
+            setMedicineData(data.medicinelist.filter((item) => item.type === "药品"))
+        } catch (error) {
+            console.error(error);
+            showError("不存在药品数据！");
+        }
+    }
+
+    async function deleteMedicineById(medicine_id, onError) {
+        try {
+            const res = await api.deleteMedicine(medicine_id)
+            const data = res.data
+            console.log(data)
+            getMedicineData()
+            success("删除药品成功！")
+        } catch (error) {
+            console.error(error);
+            onError("删除药品失败！");
+        }
+
+    }
+
+    async function editMedicine(medicine) {
+        try {
+            const res = await api.editMedicine(medicine)
+            const data = res.data
+            console.log(data)
+            getMedicineData()
+            success("修改药品成功！")
+        } catch (error) {
+            console.error(error);
+            showError("修改药品失败！");
+        }
+    }
+
+    async function addMedicine(medicine) {
+        try {
+            const res = await api.addMedicine(medicine)
+            const data = res.data
+            console.log(data)
+            getMedicineData()
+            success("添加药品成功！")
+        } catch (error) {
+            console.error(error);
+            showError("添加药品失败！");
+        }
+    }
+
     const columns = [
         {
             title: '药品编号',
@@ -40,11 +282,11 @@ export const MedicineManagement = () => {
                     rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
                 };
             },
+            tooltip: "不允许修改",
             // 第一行不允许编辑
-            editable: (text, record, index) => {
-                return index !== 0;
-            },
+            editable: false,
             width: '10%',
+            ...getColumnSearchProps("id", "药品编号")
         },
         {
             title: '药品名称',
@@ -59,28 +301,40 @@ export const MedicineManagement = () => {
                 return index !== 0;
             },
             width: '10%',
+            ...getColumnSearchProps("name", "药品名称")
         },
         {
             title: '药品种类',
             key: 'tag',
             dataIndex: 'tag',
             width: '10%',
+            ...getColumnSearchProps("tag", "药品种类")
         },
         {
             title: '药品简介',
             key: 'description',
             dataIndex: 'description',
+            ...getColumnSearchProps("description", "药品简介")
         },
         {
-            title: '药品价格',
+            title: '药品价格（元）',
             key: 'price',
             dataIndex: 'price',
-            width: '10%',
+            width: '15%',
+            fieldProps: {
+                type: 'number',
+                min: 0,
+                precision:0
+            },
+            filterIcon: <FilterOutlined/>,
+            filterDropdown: priceFilterDropdown,
+            filteredValue: priceFilteredInfo.price && priceFilteredInfo.price.filteredValue,
+            onFilter: handlePriceFilter,
         },
         {
             title: '操作',
             valueType: 'option',
-            width: 200,
+            width: 150,
             render: (text, record, _, action) => [
                 <a
                     key="editable"
@@ -96,9 +350,9 @@ export const MedicineManagement = () => {
                     title={"删除数据"}
                     description={"确认删除此条数据？删除后将无法恢复。"}
                     onConfirm={async () => {
-                        setMedicineData(medicineData.filter((item) => item.id !== record.id));
-                        (record.id);
-                        info("删除成功！");
+                        deleteMedicineById(record.id, (error) => {
+                            if (error) showError(error);
+                        });
                         await waitTime(500);
                     }
                     }
@@ -114,41 +368,11 @@ export const MedicineManagement = () => {
         },
     ];
 
-    useEffect(() => {
-        getMedicineData()
-    }, []);
-
-    async function getMedicineData() {
-        const res = await api.getMedicine()
-        const data = res.data
-        setMedicineData(data.medicinelist.filter((item) => item.type=="药品"))
-        console.log(data.medicinelist);
-    }
-
-    async function deleteMedicineById(medicine_id) {
-        const res = await api.deleteMedicine(medicine_id)
-        const data = res.data
-        console.log(data.medicinelist.id)
-    }
-
-    async function editMedicine(medicine) {
-        const res = await api.editMedicine(medicine)
-        const data = res.data
-        console.log(data)
-    }
-
-    async function addMedicine(medicine) {
-        const res = await api.addMedicine(medicine)
-        const data = res.data
-        console.log(data)
-    }
-
-
     return (
         <>
             {contextHolder}
             <h1 style={{marginBottom: "1"}}>药品管理</h1>
-            <div style={{display: "flex", margin: "10px"}}>
+            <div style={{display: "flex", justifyContent: "flex-end", gap: "10px", marginRight: "3%"}}>
                 <div style={{marginLeft: "auto"}}>
                     <ModalForm
                         labelWidth="auto"
@@ -159,11 +383,10 @@ export const MedicineManagement = () => {
                             </Button>
                         }
                         onFinish={async (values) => {
-                            await waitTime(1000);
-                            addMedicine({id: random(0, 10000000), ...values})
+                            await waitTime(500);
+                            addMedicine({id: random(0, 10000000), type: "药品", ...values})
                             console.log(values);
                             getMedicineData();
-                            message.success('新建成功');
                             return true;
                         }}
                     >
@@ -186,15 +409,21 @@ export const MedicineManagement = () => {
                             />
                         </ProForm.Group>
                         <ProForm.Group>
-                            <ProFormText
+                            <ProFormMoney
                                 name='price'
                                 width="md"
-                                label="药品价格"
+                                fieldProps={{
+                                    moneySymbol: false,
+                                    precision: 0
+                                }}
+                                min={0}
+                                tooltip="请输入正确格式的金额（单位为元）"
+                                label="药品价格（元）"
                                 placeholder="请输入药品价格"
                             />
                         </ProForm.Group>
                         <ProForm.Group>
-                            <ProFormText
+                            <ProFormTextArea
                                 name='description'
                                 width="md"
                                 label="药品简介"
@@ -205,6 +434,16 @@ export const MedicineManagement = () => {
 
                     </ModalForm>
                 </div>
+                <div>
+                    <Button type="primary" onClick={handleBatchDelete}>
+                        批量删除
+                    </Button>
+                </div>
+                <div>
+                    <Button type="primary">
+                        批量上传
+                    </Button>
+                </div>
             </div>
 
             <EditableProTable
@@ -214,14 +453,17 @@ export const MedicineManagement = () => {
                 scroll={{
                     x: 960,
                 }}
+                pagination={{
+                    pageSize: 10,
+                    showQuickJumper: true,
+                }}
                 recordCreatorProps={false}
                 loading={false}
                 columns={columns}
-                // request={async () => ({
-                //     data: [],
-                //     total: 3,
-                //     success: true,
-                // })}
+                rowSelection={{
+                    type: 'checkbox',
+                    onChange: handleRowSelection
+                }}
                 value={medicineData}
                 onChange={setMedicineData}
                 editable={{
@@ -230,19 +472,18 @@ export const MedicineManagement = () => {
                     // eslint-disable-next-line no-unused-vars
                     onSave: async (rowKey, data, _row) => {
                         editMedicine(data)
-                        info("修改成功！")
                         await waitTime(500);
                     },
                     // eslint-disable-next-line no-unused-vars
                     onDelete: async (rowKey, data, _row) => {
-                        deleteMedicineById(data.id)
-                        info("删除成功！")
+                        deleteMedicineById(data.id, (error) => {
+                            if (error) showError(error);
+                        });
                         await waitTime(500);
                     },
                     onChange: setEditableRowKeys,
                 }}
             />
-            {/*<Table columns={columns} dataSource={departmentData}/>*/}
         </>
     )
 }

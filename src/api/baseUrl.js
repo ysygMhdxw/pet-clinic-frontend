@@ -32,10 +32,18 @@ const base = {
     // basicStructureAndFunctionManagement
     // departmentManagement
     getDepartment: "management/department/",
+    getDepartmentInstrumentation: "management/department/instrumentation/",
+    getDepartmentCheckup: "management/department/checkup/",
     //drugManagement
     getMedicine: "management/medicine/",
     //personnelManagement
     getPersonnel: 'authentication/user/',
+    //instrumentManagement
+    getInstrument:'management/instrumentation/',
+    //checkupManagement
+    getCheckup:'management/checkup/',
+    //hospitalizationManagement
+    getHospitalization:'management/hospitalization/',
 
 
 }

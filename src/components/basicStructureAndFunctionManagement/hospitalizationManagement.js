@@ -1,13 +1,13 @@
-import {Button, Input, message, Popconfirm, Space} from "antd";
+import {Button, Input, InputNumber, message, Popconfirm, Space} from "antd";
 import api from "../../api/api";
 import React, {useEffect, useRef, useState} from "react";
 import {
     EditableProTable,
     ModalForm,
-    ProForm,
+    ProForm, ProFormMoney,
     ProFormText, ProFormTextArea
 } from "@ant-design/pro-components";
-import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import {FilterOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 
 function random(min, max) {
@@ -22,19 +22,17 @@ const waitTime = (time = 100) => {
     });
 };
 
-
-export const DepartmentManagement = () => {
+export const HospitalizationManagement = () => {
     const [messageApi, contextHolder] = message.useMessage();
-
     const success = (msg) => {
         messageApi.success(msg);
     };
     const showError = (msg) => {
         messageApi.error(msg);
     };
-    const [departmentData, setDepartmentData] = useState([])
-    const [editableKeys, setEditableRowKeys] = useState([]);
 
+    const [hospitalizationData, setHospitalizationData] = useState([])
+    const [editableKeys, setEditableRowKeys] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
@@ -50,7 +48,8 @@ export const DepartmentManagement = () => {
         setSearchText('');
     };
 
-    const getColumnSearchProps = (dataIndex,columnName) => ({
+
+    const getColumnSearchProps = (dataIndex, columnName) => ({
         filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
             <div
                 style={{
@@ -144,10 +143,139 @@ export const DepartmentManagement = () => {
                 text
             ),
     });
+    const [startPrice, setStartPrice] = useState(null);
+    const [endPrice, setEndPrice] = useState(null);
+    const [priceFilteredInfo, setPriceFilteredInfo] = useState({});
+    const handlePriceFilter = (value, record) => {
+        const {price} = record;
+        if (startPrice && endPrice) {
+            return price >= startPrice && price <= endPrice;
+        } else if (startPrice) {
+            return price >= startPrice;
+        } else if (endPrice) {
+            return price <= endPrice;
+        }
+        return true;
+    };
+    const handlePriceReset = () => {
+        setStartPrice(null);
+        setEndPrice(null);
+        setPriceFilteredInfo({});
+    };
+    const handlePriceConfirm = () => {
+        setPriceFilteredInfo({
+            price: {
+                ...priceFilteredInfo.price,
+                filters: [{text: `${startPrice} - ${endPrice}`, value: 'price'}],
+                filteredValue: [startPrice, endPrice],
+            },
+        });
+    };
+    // eslint-disable-next-line no-unused-vars
+    const priceFilterDropdown = ({setSelectedKeys, confirm, clearFilters}) => (
+        <div style={{padding: 8}}>
+            <InputNumber
+                placeholder="最小值"
+                style={{width: 120, marginRight: 8}}
+                value={startPrice}
+                onChange={value => setStartPrice(value)}
+                onPressEnter={confirm}
+                min={0}
+            />
+            <InputNumber
+                placeholder="最大值"
+                style={{width: 120, marginRight: 8}}
+                value={endPrice}
+                onChange={value => setEndPrice(value)}
+                onPressEnter={confirm}
+                min={0}
+            />
+            <div style={{marginTop: "10px", gap: "5px", display: "flex"}}>
+                <Button onClick={handlePriceReset}>重置</Button>
+                <Button onClick={handlePriceConfirm}>筛选</Button>
+            </div>
+        </div>
+    );
+
+
+    // eslint-disable-next-line no-unused-vars
+    const [selectedRows, setSelectedRows] = useState([]);
+    const handleRowSelection = (selectedRowKeys, selectedRows) => {
+        console.log(selectedRows)
+        setSelectedRows(selectedRows);
+    };
+    const handleBatchDelete = () => {
+        if (selectedRows.length === 0) {
+            showError('请选择要删除的行！');
+            return;
+        }
+        const keys = selectedRows.map((row) => row.id);
+        console.log("keys: ", keys)
+        deleteHospitalizationById(keys, (error) => {
+            if (error) showError("批量删除失败，请稍后再试！");
+        });
+        setSelectedRows([]);
+    };
+
+    useEffect(() => {
+        getHospitalizationData()
+    }, []);
+
+    async function getHospitalizationData() {
+        try {
+            const res = await api.getHospitalization()
+            const data = res.data
+            console.log(data)
+            setHospitalizationData(data.hospitalizationlist)
+        } catch (error) {
+            console.error(error);
+            showError("不存在住院数据！");
+        }
+    }
+
+    async function deleteHospitalizationById(hospitalization_id, onError) {
+        try {
+            const res = await api.deleteHospitalization(hospitalization_id)
+            const data = res.data
+            console.log(data)
+            getHospitalizationData()
+            success("删除住院信息成功！")
+        } catch (error) {
+            console.error(error);
+            onError("删除住院信息失败！");
+        }
+    }
+
+    async function editHospitalization(hospitalization) {
+        try {
+            const res = await api.editHospitalilzation(hospitalization)
+            const data = res.data
+            console.log(data)
+            getHospitalizationData()
+            success("修改住院信息成功！")
+        } catch (error) {
+            getHospitalizationData()
+            console.error(error);
+            showError("修改住院信息失败！");
+        }
+    }
+
+    async function addHospitalization(hospitalization) {
+        try {
+            const res = await api.addHospitalization(hospitalization)
+            const data = res.data
+            console.log(data)
+            getHospitalizationData()
+            success("添加住院成功！")
+        } catch (error) {
+            console.error(error);
+            showError("添加住院失败！");
+        }
+    }
 
     const columns = [
         {
-            title: '科室编号',
+            title: '住院编号',
             dataIndex: 'id',
             key: 'id',
             formItemProps: (form, {rowIndex}) => {
@@ -155,16 +283,16 @@ export const DepartmentManagement = () => {
                     rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
                 };
             },
+            tooltip: "不允许修改",
             // 第一行不允许编辑
-            editable:false,
-            tooltip: "不允许修改！",
+            editable: false,
             width: '10%',
-            ...getColumnSearchProps("id","科室编号")
+            ...getColumnSearchProps("id", "住院编号")
         },
         {
-            title: '科室名称',
-            key: 'name',
-            dataIndex: 'name',
+            title: '住院病例编号',
+            key: 'case_id',
+            dataIndex: 'case_id',
             formItemProps: (form, {rowIndex}) => {
                 return {
                     rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
@@ -174,48 +302,55 @@ export const DepartmentManagement = () => {
                 return index !== 0;
             },
             width: '15%',
-            ...getColumnSearchProps("name","科室名称")
+            ...getColumnSearchProps("case_id", "住院病例编号")
         },
         {
-            title: '科室简介',
-            key: 'description',
-            dataIndex: 'description',
-            ...getColumnSearchProps("description","科室简介")
+            title: '住院开始日期',
+            key: 'bg_time',
+            dataIndex: 'bg_time',
+            width: '15%',
+            valueType: 'date',
+            editable: true,
+            fieldProps: {
+                format: 'YYYY-MM-DD',
+                showTime: true,
+                allowClear: false,
+            },
+            ...getColumnSearchProps("bg_time", "住院开始日期")
+        },
+        {
+            title: '住院结束日期',
+            key: 'ed_time',
+            dataIndex: 'ed_time',
+            width: '15%',
+            valueType: 'date',
+            editable: true,
+            fieldProps: {
+                format: 'YYYY-MM-DD',
+                showTime: true,
+                allowClear: false,
+            },
+            ...getColumnSearchProps("ed_time", "住院结束日期")
+        },
+        {
+            title: '住院价格（元）',
+            key: 'price',
+            dataIndex: 'price',
+            width: '15%',
+            fieldProps: {
+                type: 'number',
+                min: 0,
+                precision:0
+            },
+            filterIcon: <FilterOutlined/>,
+            filterDropdown: priceFilterDropdown,
+            filteredValue: priceFilteredInfo.price && priceFilteredInfo.price.filteredValue,
+            onFilter: handlePriceFilter,
         },
         {
             title: '操作',
             valueType: 'option',
-            width: 200,
-            // render: (text, record) => [
-            //     <a
-            //         key="detail"
-            //         onClick={() => {
-            //             // setCaseInfo(record)
-            //             // console.log(record)
-            //             // setDisplayFlg(false)
-            //         }}
-            //     >
-            //         修改
-            //     </a>,
-            //     <Popconfirm
-            //         key="delete"
-            //         placement="top"
-            //         title={"删除数据"}
-            //         description={"确认删除此条数据？删除后将无法恢复。"}
-            //         onConfirm={async () => {
-            //             deleteDepartmentById(record.id);
-            //             await waitTime(500);
-            //         }
-            //         }
-            //         okText="Yes"
-            //         cancelText="No"
-            //     >
-            //         <a>
-            //             删除
-            //         </a>
-            //     </Popconfirm>
-            //     ,
-            // ],
+            width: 150,
             render: (text, record, _, action) => [
                 <a
                     key="editable"
@@ -231,8 +366,7 @@ export const DepartmentManagement = () => {
                     title={"删除数据"}
                     description={"确认删除此条数据？删除后将无法恢复。"}
                     onConfirm={async () => {
-                        // setDepartmentData(departmentData.filter((item) => item.id !== record.id));
-                        deleteDepartmentById(record.id, (error) => {
+                        deleteHospitalizationById(record.id, (error) => {
                             if (error) showError(error);
                         });
                         await waitTime(500);
@@ -250,97 +384,25 @@ export const DepartmentManagement = () => {
         },
     ];
 
-    useEffect(() => {
-        getDepartmentData()
-    }, []);
-
-    async function getDepartmentData() {
-        try {
-            const res = await api.getDepartment()
-            const data = res.data
-            setDepartmentData(data.departmentlist)
-            console.log(data.departmentlist);
-        } catch (error) {
-            console.error(error);
-            showError("不存在科室数据！");
-        }
-    }
-
-    async function deleteDepartmentById(department_ids, onError) {
-        try {
-            await api.deleteDepartment(department_ids);
-            await getDepartmentData();
-            success('删除成功！');
-        } catch (error) {
-            console.error(error);
-            onError("删除科室失败，请稍后重试！");
-        }
-    }
-
-    async function editDepartment(department, onError) {
-        try {
-            const res = await api.editDepartment(department);
-            const data = res.data
-            console.log(data)
-            await getDepartmentData();
-            success('修改科室成功！');
-        } catch (error) {
-            console.error(error);
-            onError("修改科室失败，请稍后重试！");
-        }
-    }
-
-    async function addDepartment(department) {
-        try {
-            const res = await api.addDepartment(department)
-            const data = res.data
-            success("添加科室成功！")
-            console.log(data)
-        } catch (error) {
-            console.error(error);
-            showError("添加科室失败，请稍后重试！");
-        }
-    }
-
-    // eslint-disable-next-line no-unused-vars
-    const [selectedRows, setSelectedRows] = useState([]);
-    const handleRowSelection = (selectedRowKeys, selectedRows) => {
-        console.log(selectedRows)
-        setSelectedRows(selectedRows);
-    };
-
-    const handleBatchDelete = () => {
-        if (selectedRows.length === 0) {
-            showError('请选择要删除的行！');
-            return;
-        }
-        const keys = selectedRows.map((row) => row.id);
-        deleteDepartmentById(keys, (error) => {
-            if (error) showError("批量删除失败，请稍后再试！");
-        });
-        setSelectedRows([]);
-    };
-
     return (
         <>
             {contextHolder}
-            <h1 style={{marginBottom: "1"}}>科室管理</h1>
+            <h1 style={{marginBottom: "1"}}>住院管理</h1>
             <div style={{display: "flex", justifyContent: "flex-end", gap: "10px", marginRight: "3%"}}>
-                <div>
+                <div style={{marginLeft: "auto"}}>
                     <ModalForm
                         labelWidth="auto"
                         trigger={
                             <Button type="primary">
                                 <PlusOutlined/>
-                                新建科室
+                                新建住院信息
                             </Button>
                         }
                         onFinish={async (values) => {
-                            await waitTime(1000);
-                            addDepartment({id: random(0, 10000000), ...values})
+                            await waitTime(500);
+                            addHospitalization({id: random(0, 10000000), type: "住院", ...values})
                             console.log(values);
-                            getDepartmentData();
-                            message.success('新建成功');
+                            getHospitalizationData();
                             return true;
                         }}
                     >
@@ -348,20 +410,43 @@ export const DepartmentManagement = () => {
                             <ProFormText
                                 width="md"
                                 name="name"
-                                label="科室名称"
+                                label="住院名称"
                                 tooltip="最长为 24 位"
                                 placeholder="请输入名称"
                             />
-
+                            {/*<ProFormText width="md" name="company" label="我方公司名称" placeholder="请输入名称"/>*/}
+                        </ProForm.Group>
+                        <ProForm.Group>
+                            <ProFormText
+                                name='tag'
+                                width="md"
+                                label="住院种类"
+                                placeholder="请输入住院种类"
+                            />
+                        </ProForm.Group>
+                        <ProForm.Group>
+                            <ProFormMoney
+                                name='price'
+                                width="md"
+                                fieldProps={{
+                                    moneySymbol: false,
+                                    precision: 0
+                                }}
+                                min={0}
+                                tooltip="请输入正确格式的金额（单位为元）"
+                                label="住院价格（元）"
+                                placeholder="请输入住院价格"
+                            />
                         </ProForm.Group>
                         <ProForm.Group>
                             <ProFormTextArea
                                 name='description'
                                 width="md"
-                                label="科室简介"
-                                placeholder="请输入科室简介"
+                                label="住院简介"
+                                placeholder="请输入住院简介"
                             />
                         </ProForm.Group>
+
 
                     </ModalForm>
                 </div>
@@ -379,7 +464,7 @@ export const DepartmentManagement = () => {
 
             <EditableProTable
                 rowKey="id"
-                headerTitle="科室基本信息"
+                headerTitle="住院基本信息"
                 maxLength={5}
                 scroll={{
                     x: 960,
@@ -387,8 +472,6 @@ export const DepartmentManagement = () => {
                 pagination={{
                     pageSize: 10,
                     showQuickJumper: true,
-                    // showSizeChanger: true,
-                    // total: 20,
                 }}
                 recordCreatorProps={false}
                 loading={false}
@@ -397,25 +480,28 @@ export const DepartmentManagement = () => {
                     type: 'checkbox',
                     onChange: handleRowSelection
                 }}
-                value={departmentData}
-                onChange={setDepartmentData}
+                value={hospitalizationData}
+                onChange={setHospitalizationData}
                 editable={{
                     type: 'multiple',
                     editableKeys,
                     // eslint-disable-next-line no-unused-vars
                     onSave: async (rowKey, data, _row) => {
-                        await editDepartment(data);
+                        console.log("data",data)
+                        delete data.index
+                        editHospitalization(data)
                         await waitTime(500);
                     },
                     // eslint-disable-next-line no-unused-vars
                     onDelete: async (rowKey, data, _row) => {
-                        await deleteDepartmentById(data.id);
+                        deleteHospitalizationById(data.id, (error) => {
+                            if (error) showError(error);
+                        });
                         await waitTime(500);
                     },
                     onChange: setEditableRowKeys,
                 }}
             />
-            {/*<Table columns={columns} dataSource={departmentData}/>*/}
         </>
     )
 }

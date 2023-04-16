@@ -14,6 +14,9 @@ import { QuizManagement } from './caseTestManagement/quizManagement';
 import {RolePlay} from "./rolePlay/rolePlay";
 import {UserCenter} from "./userCenter/userCenter";
 import {GuideShow} from "./threeD/guideShow";
+import {InstrumentManagement} from "./basicStructureAndFunctionManagement/instrumentManagement";
+import {HospitalizationManagement} from "./basicStructureAndFunctionManagement/hospitalizationManagement";
+import {CheckUpManagement} from "./basicStructureAndFunctionManagement/checkupManagement";
 
 
 export const ContextComponents = (props) => {
@@ -43,11 +46,23 @@ export const ContextComponents = (props) => {
     else if(props.contextString === ContextString.quizManagement){
         return <QuizManagement/>
     } 
-    else if (props.contextString == ContextString.fontDesk || props.contextString == ContextString.physicianAssistant || props.contextString == ContextString.veterinarians) {
+    else if (props.contextString === ContextString.fontDesk || props.contextString === ContextString.physicianAssistant || props.contextString === ContextString.veterinarians) {
         return <RolePlay roleName={props.contextString}/>
     }
     else if(props.contextString === ContextString.guideShow){
         return <GuideShow/>
+    }
+    else if(props.contextString === ContextString.fileManagement){
+        return "诶呀！有这个东西吗"
+    }
+    else if(props.contextString === ContextString.instrumentManagement){
+        return <InstrumentManagement/>
+    }
+    else if(props.contextString===ContextString.hospitalizationManagement){
+        return <HospitalizationManagement/>
+    }
+    else if(props.contextString===ContextString.checkupManagement){
+        return <CheckUpManagement/>
     }
     return (
         <>

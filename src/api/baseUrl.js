@@ -17,7 +17,7 @@ const base = {
     getCaseCategory: "case/category/",
     getCaseByDiseaseName: "case/name/",
     getCaseByCaseId: "case/number/",
-    getCaseCheckUpByCaseId: "case/checkup/",
+    getCaseCheckUpByCaseNumber: "case/checkup/",
     getCaseByDiseaseType: "case/type/",
 
     // Questions and Tests

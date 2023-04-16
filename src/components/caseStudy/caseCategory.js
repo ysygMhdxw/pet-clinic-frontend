@@ -1,76 +1,60 @@
-import {Input, Tree} from 'antd';
+import {Divider, message, Tree} from 'antd';
 import propTypes from 'prop-types';
 import {useEffect, useState} from 'react';
 import api from "../../api/api";
 
-const {Search} = Input;
 
-const dataList = [];
-
-const getParentKey = (key, tree) => {
-    let parentKey;
-    for (let i = 0; i < tree.length; i++) {
-        const node = tree[i];
-        if (node.children) {
-            if (node.children.some((item) => item.key === key)) {
-                parentKey = node.key;
-            } else if (getParentKey(key, node.children)) {
-                parentKey = getParentKey(key, node.children);
-            }
-        }
-    }
-    return parentKey;
-};
 export const CaseCategory = (props) => {
-    const [expandedKeys, setExpandedKeys] = useState([]);
-    const [searchValue, setSearchValue] = useState('');
+    const [messageApi, contextHolder] = message.useMessage();
+    // const success = (msg) => {
+    //     messageApi.success(msg);
+    // };
+    const showError = (msg) => {
+        messageApi.error(msg);
+    };
+    const [expandedKeys, setExpandedKeys] = useState([0]);
     const [autoExpandParent, setAutoExpandParent] = useState(true);
     const [treeData, setTreeData] = useState([])
     const onExpand = (newExpandedKeys) => {
         setExpandedKeys(newExpandedKeys);
         setAutoExpandParent(false);
     };
-    const onChange = (e) => {
-        const {value} = e.target;
-        const newExpandedKeys = dataList
-            .map((item) => {
-                if (item.title.indexOf(value) > -1) {
-                    return getParentKey(item.key, treeData);
-                }
-                return null;
-            })
-            .filter((item, i, self) => item && self.indexOf(item) === i);
-        setExpandedKeys(newExpandedKeys);
-        setSearchValue(value);
-        setAutoExpandParent(true);
-    };
 
     async function getTreeData() {
-        const responce = await api.getCaseCategories()
-        const data = responce.data
-        setTreeData(data.case_categories)
+        try {
+            const responce = await api.getCaseCategories()
+            const data = responce.data
+            let all = {
+                title: "所有病例",
+                key: "all cases",
+            }
+            let categories = [all, ...data.case_categories]
+            console.log(categories)
+            setTreeData(categories)
+        } catch (error) {
+            console.error(error);
+            showError("不存在病例目录！");
+        }
     }
 
     function getNodeName(selectedKeys, {node}) {
-        console.log(selectedKeys);
-        console.log(node);
-        props.setCaseName(node.title)
+        console.log("getNodeName", node.title)
+        let category = node.title
+        if (node.title === "所有病例") category = "";
+        props.setCaseName(category)
     }
 
     useEffect(() => {
         getTreeData()
         console.log(treeData);
-    }, [searchValue]);
+    }, []);
     return (
         <div>
-            <Search
-                style={{
-                    marginBottom: 8,
-                }}
-                placeholder="Search"
-                onChange={onChange}
-            />
+            {contextHolder}
+            <h2>病例目录</h2>
+            <Divider/>
             <Tree
+                defaultExpandAll
                 onExpand={onExpand}
                 expandedKeys={expandedKeys}
                 autoExpandParent={autoExpandParent}

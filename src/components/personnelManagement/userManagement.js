@@ -1,17 +1,15 @@
-import {Button, message, Popconfirm} from "antd";
+import {Button, Input, message, Popconfirm, Skeleton, Space} from "antd";
 import api from "../../api/api";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
     EditableProTable,
     ModalForm,
     ProForm, ProFormSelect,
     ProFormText
 } from "@ant-design/pro-components";
-import {LockOutlined, PlusOutlined} from "@ant-design/icons";
+import {LockOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
 
-function random(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-}
 
 const waitTime = (time = 100) => {
     return new Promise((resolve) => {
@@ -24,12 +22,128 @@ const waitTime = (time = 100) => {
 
 export const UserManagement = () => {
     const [messageApi, contextHolder] = message.useMessage();
-    const info = (msg) => {
-        messageApi.info(msg);
+    const success = (msg) => {
+        messageApi.success(msg);
     };
+    const showError = (msg) => {
+        messageApi.error(msg);
+    };
+
+
     const [usersData, setUsersData] = useState([])
     const [editableKeys, setEditableRowKeys] = useState([]);
-    // const [dataSource, setDataSource] = useState([]);
+
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
+
+
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        console.log(selectedKeys);
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+
+    const getColumnSearchProps = (dataIndex, columnName) => ({
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Input
+                    ref={searchInput}
+                    placeholder={`查询 ${columnName}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined/>}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        查询
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        清空搜索
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        筛选
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        关闭
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1890ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
+
     const columns = [
         {
             title: '用户编号',
@@ -41,10 +155,9 @@ export const UserManagement = () => {
                 };
             },
             // 第一行不允许编辑
-            editable: (text, record, index) => {
-                return index !== 0;
-            },
+            editable:false,
             width: '15%',
+            ...getColumnSearchProps("id", "用户编号")
         },
         {
             title: '用户名称',
@@ -59,11 +172,17 @@ export const UserManagement = () => {
             //     return index !== 0;
             // },
             width: '15%',
+            ...getColumnSearchProps("username", "用户名称")
         },
         {
             title: '密码',
             key: 'password',
             dataIndex: 'password',
+            render: () => {
+                return (
+                    <Skeleton active style={{width:"200px"}} paragraph={{ rows: 1 }}/>
+                )
+            }
         },
         {
             title: '管理员权限',
@@ -80,17 +199,6 @@ export const UserManagement = () => {
                     status: 'Success',
                 },
             },
-            // render: (_) =>
-            //     (<>
-            //         {_ === true ?
-            //             <Tag color={'red'} key={"superuser"}>
-            //                 {`管理员`}
-            //             </Tag> :
-            //             <Tag color={'geekblue'} key={"superuser"}>
-            //                 {`用户`}
-            //             </Tag>
-            //         }
-            //     </>),
         },
         {
             title: '操作',
@@ -112,8 +220,7 @@ export const UserManagement = () => {
                     description={"确认删除此条数据？删除后将无法恢复。"}
                     onConfirm={async () => {
                         setUsersData(usersData.filter((item) => item.id !== record.id));
-                        deleteUserById(record.id);
-                        info("删除成功！");
+                        deleteUserById([record.id]);
                         await waitTime(500);
                     }
                     }
@@ -154,29 +261,74 @@ export const UserManagement = () => {
         message.success('批量删除成功！');
     };
 
-    async function getPersonnelData() {
-        const res = await api.getUsers()
-        const data = res.data
-        setUsersData(data.users)
-        console.log(data.users);
+    function addPassword(data) {
+        data.forEach(item => {
+            if (!(item.password)) {
+                item.password = '';
+            } else item.password = '';
+        });
+        return data;
     }
 
-    async function deleteUserById(user_id) {
-        const res = await api.deleteUsers(user_id)
-        const data = res.data
-        console.log(data)
+    async function getPersonnelData() {
+        try {
+            const res = await api.getUsers()
+            const data = res.data
+            const users=addPassword(data.users)
+            setUsersData(users)
+            console.log(data.users);
+        } catch (error) {
+
+            console.error(error);
+            setUsersData([]);
+            showError("不存在用户数据！");
+        }
+
+    }
+
+    async function deleteUserById(userIds) {
+        try {
+            const res = await api.deleteUsers(userIds)
+            const data = res.data
+            console.log(data)
+            getPersonnelData()
+            success("删除用户成功！");
+        } catch (error) {
+            console.error(error);
+            showError("删除用户失败！");
+        }
     }
 
     async function editUser(user) {
-        const res = await api.editUser(user)
-        const data = res.data
-        console.log(data.department.id)
+        try {
+            const res = await api.editUser(user)
+            const data = res.data
+            getPersonnelData();
+            success("修改用户成功！");
+            console.log(data)
+        } catch (error) {
+            console.error(error);
+            showError("修改用户失败！");
+        }
     }
 
     async function addUser(user) {
-        const res = await api.addUser(user)
-        const data = res.data
-        console.log(data)
+        try {
+            const res = await api.addUser(user)
+            const data = res.data
+            getPersonnelData();
+            console.log(data)
+            success("新建用户成功！")
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                showError('用户名已被注册，请更换新建的用户名！');
+            } else if (error.response && error.response.status === 500) {
+                showError('服务器错误，请稍后重试');
+            } else {
+                showError('网络错误，请检查网络连接');
+            }
+            console.error(error);
+        }
     }
 
 
@@ -195,18 +347,16 @@ export const UserManagement = () => {
                             </Button>
                         }
                         onFinish={async (values) => {
-                            await waitTime(1000);
-                            addUser({id: random(0, 10000000), ...values})
+                            await waitTime(500);
+                            addUser(values)
                             console.log(values);
-                            getPersonnelData();
-                            message.success('新建成功');
                             return true;
                         }}
                     >
                         <ProForm.Group>
                             <ProFormText
                                 width="md"
-                                name="name"
+                                name="username"
                                 label="用户名称"
                                 tooltip="最长为 24 位"
                                 placeholder="请输入用户名称"
@@ -243,7 +393,7 @@ export const UserManagement = () => {
                         </ProForm.Group>
                     </ModalForm>
                 </div>
-                <div style={{marginLeft:"2%"}}>
+                <div style={{marginLeft: "2%"}}>
                     <Button type="primary" onClick={handleBatchDelete}>
                         批量删除
                     </Button>
@@ -258,6 +408,7 @@ export const UserManagement = () => {
                 scroll={{
                     x: 960,
                 }}
+                pagination={{current: 1, pageSize: 10}}
                 recordCreatorProps={false}
                 columns={columns}
                 value={usersData}
@@ -272,19 +423,17 @@ export const UserManagement = () => {
                     // eslint-disable-next-line no-unused-vars
                     onSave: async (rowKey, data, _row) => {
                         editUser(data)
-                        info("修改成功！")
                         await waitTime(500);
                     },
                     // eslint-disable-next-line no-unused-vars
                     onDelete: async (rowKey, data, _row) => {
+                        console.log("delete data",data)
                         deleteUserById([data.id])
-                        info("删除成功！")
                         await waitTime(500);
                     },
                     onChange: setEditableRowKeys,
                 }}
             />
-            {/*<Table columns={columns} dataSource={departmentData}/>*/}
         </>
     )
 }

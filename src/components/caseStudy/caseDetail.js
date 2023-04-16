@@ -1,25 +1,33 @@
-import {Descriptions} from 'antd';
+import {Button, Descriptions} from 'antd';
 import propTypes from 'prop-types';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {VideoModal} from "./videoModal";
 import {ImageCarousel} from "./imageCarousel";
+import {CaseCheckUpTable} from "./caseCheckUpTable";
 
 
-export const CaseDisplay = (props) => {
+export const CaseDetail = (props) => {
     const [caseInfo, setCaseInfo] = useState({});
     useEffect(() => {
         setCaseInfo(props.caseInfo);
-    }, [props]);
+    }, [props.caseInfo]);
 
     return (
         <div style={{marginTop: "2%"}}>
+            <div style={{marginBottom: "3%"}}>
+                <Button type={"primary"} onClick={() => {
+                    props.setDisplayFlg(false)
+                }}>返回</Button>
+            </div>
             <Descriptions
                 title={"病例详情信息"}
                 bordered
                 column={1}
             >
-                <Descriptions.Item label="病例编号">{caseInfo.case_number}</Descriptions.Item>
-                <Descriptions.Item label="病种名称">{caseInfo.disease_type}</Descriptions.Item>
+                <Descriptions.Item label="病例编号">{caseInfo.id}</Descriptions.Item>
+                <Descriptions.Item label="病例标识">{caseInfo.case_number}</Descriptions.Item>
+                <Descriptions.Item label="病例种类">{caseInfo.disease_type}</Descriptions.Item>
+                <Descriptions.Item label="病种名称">{caseInfo.disease_name}</Descriptions.Item>
                 <Descriptions.Item label="宠物名称">{caseInfo.pet_name}</Descriptions.Item>
                 <Descriptions.Item label="宠物种类">{caseInfo.pet_species}</Descriptions.Item>
                 <Descriptions.Item label="宠物年龄">{caseInfo.pet_age}</Descriptions.Item>
@@ -89,6 +97,7 @@ export const CaseDisplay = (props) => {
                     </Descriptions.Item>
                 </Descriptions>
             </div>
+            <CaseCheckUpTable caseNumber={props.caseInfo.case_number}/>
 
         </div>
 
@@ -96,6 +105,7 @@ export const CaseDisplay = (props) => {
 
 }
 
-CaseDisplay.propTypes = {
-    caseInfo: propTypes.object
+CaseDetail.propTypes = {
+    caseInfo: propTypes.object,
+    setDisplayFlg:propTypes.bool,
 };

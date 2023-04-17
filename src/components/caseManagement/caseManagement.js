@@ -1,4 +1,4 @@
-import {Button, Input, message, Popconfirm, Select, Space} from "antd";
+import {Button, Divider, Input, message, Popconfirm, Select, Space, Tooltip} from "antd";
 import api from "../../api/api";
 import React, {useEffect, useRef, useState} from "react";
 import {
@@ -9,6 +9,7 @@ import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import {CaseEditForm} from "./caseEditForm";
 import {CaseNewForm} from "./newCaseForm";
 import Highlighter from "react-highlight-words";
+import {CheckUpTable} from "./checkupTable";
 
 
 function random(min, max) {
@@ -26,8 +27,8 @@ const waitTime = (time = 100) => {
 
 export const CaseManagement = () => {
     const [messageApi, contextHolder] = message.useMessage();
-    const info = (msg) => {
-        messageApi.info(msg);
+    const success = (msg) => {
+        messageApi.success(msg);
     };
     const showError = (msg) => {
         messageApi.error(msg);
@@ -35,16 +36,16 @@ export const CaseManagement = () => {
 
     const [caseData, setCaseData] = useState([]);
     const [editableKeys, setEditableRowKeys] = useState([]);
-    const [displayFlg, setDisplayFlg] = useState(true);
+    const [displayFlg, setDisplayFlg] = useState(1);
     // eslint-disable-next-line no-unused-vars
     const [caseInfo, setCaseInfo] = useState([]);
+    // const [casecheckupInfo, setCaseCheckupInfo] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const [tableLittleType, setTableLittleType] = useState([]);
     const [tableBigType, setTableBigType] = useState([]);
     const [tableCategory, setTableCategory] = useState([]);
-    // const [dataSource, setDataSource] = useState([]);
 
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -250,6 +251,7 @@ export const CaseManagement = () => {
                 return index !== 0;
             },
             width: '10%',
+            sorter: (a, b) => a.id - b.id,
             ...getColumnSearchProps("id", "病例编号")
         },
         {
@@ -304,18 +306,40 @@ export const CaseManagement = () => {
         {
             title: '操作',
             valueType: 'option',
-            width: 200,
+            width: 300,
             render: (text, record) => [
+                <Tooltip key="tooltip1" title={"修改病例的基本信息，包括主要病症、诊断结果、治疗方案。"}>
                 <a
                     key="detail"
                     onClick={() => {
                         setCaseInfo(record)
-                        console.log(record)
-                        setDisplayFlg(false)
+                        setDisplayFlg(3)
                     }}
                 >
-                    修改
-                </a>,
+                    修改基本信息
+                </a>
+                </Tooltip>,
+                <Divider
+                    key="divider1"
+                    type={"vertical"}
+                >
+                </Divider>,
+                <Tooltip key="tooltip2" title={"修改病例的所有检查项目。"}>
+                <a
+                    key="checkup"
+                    onClick={() => {
+                        setCaseInfo(record)
+                        setDisplayFlg(2)
+                    }}
+                >
+                    修改检查信息
+                </a>
+                </Tooltip>,
+                <Divider
+                    key="divider2"
+                    type={"vertical"}
+                >
+                </Divider>,
                 <Popconfirm
                     key="delete"
                     placement="top"
@@ -323,8 +347,7 @@ export const CaseManagement = () => {
                     description={"确认删除此条数据？删除后将无法恢复。"}
                     onConfirm={async () => {
                         setCaseData(caseData.filter((item) => item.id !== record.id));
-                        deleteCaseById(record.id);
-                        info("删除成功！");
+                        deleteCaseByCaseNumbers(record.case_number);
                         await waitTime(500);
                     }
                     }
@@ -351,12 +374,17 @@ export const CaseManagement = () => {
             message.warning('请选择要删除的行！');
             return;
         }
-        const keys = selectedRows.map((row) => row.id);
-        const newData = caseData.filter((row) => !keys.includes(row.id));
-        setCaseData(newData);
+        try{
+            const keys = selectedRows.map((row) => row.case_number);
+            const newData = caseData.filter((row) => !keys.includes(row.case_number));
+            setCaseData(newData);
+            deleteCaseByCaseNumbers(keys);
+        }catch(error){
+            console.log(error)
+            showError("批量删除失败！")
+        }
+        getCaseData()
         setSelectedRows([]);
-        deleteCaseById(keys);
-        message.success('批量删除成功！');
     };
 
     useEffect(() => {
@@ -366,6 +394,7 @@ export const CaseManagement = () => {
             getTableBigTypesData()
         }
     }, [displayFlg]);
+
 
     async function getCaseData() {
         try {
@@ -379,7 +408,6 @@ export const CaseManagement = () => {
             showError("不存在病例数据！");
         }
     }
-
     async function getTableLittleTypesData() {
         try {
             const responce = await api.getCaseCategories()
@@ -422,10 +450,16 @@ export const CaseManagement = () => {
         }
     }
 
-    async function deleteCaseById(case_id) {
-        const res = await api.deleteCasesByCaseIds([case_id])
-        const data = res.data
-        console.log(data)
+    async function deleteCaseByCaseNumbers(case_numbers) {
+        try{
+            const res = await api.deleteCasesByCaseNumbers([case_numbers])
+            const data = res.data
+            console.log(data)
+            success("删除病例基本信息成功！")
+        }catch (error) {
+            showError("删除病例基本信息失败！")
+        }
+        getCaseData()
     }
 
     async function editCase(caseData) {
@@ -440,7 +474,19 @@ export const CaseManagement = () => {
         console.log(data)
     }
 
-    if (displayFlg) {
+    //modal Visible
+    // eslint-disable-next-line no-unused-vars
+    const [visible, setVisible] = useState(false);
+
+    function handleVisibleChange(visible) {
+        setVisible(visible);
+    }
+
+    function handleClose() {
+        setVisible(false);
+    }
+
+    if (displayFlg===1) {
         return (
             <>
                 {contextHolder}
@@ -449,6 +495,8 @@ export const CaseManagement = () => {
                     <div style={{display: "flex", margin: "10px"}}>
                         <div style={{marginLeft: "auto"}}>
                             <ModalForm
+                                onVisibleChange={handleVisibleChange}
+                                submitter={false}
                                 labelWidth="auto"
                                 trigger={
                                     <Button type="primary">
@@ -456,7 +504,6 @@ export const CaseManagement = () => {
                                         新建病例
                                     </Button>
                                 }
-                                submitter={false}
                                 onFinish={async (values) => {
                                     await waitTime(1000);
                                     console.log(values)
@@ -467,7 +514,7 @@ export const CaseManagement = () => {
                                     return true;
                                 }}
                             >
-                                <CaseNewForm tableCategory={tableCategory}/>
+                                <CaseNewForm tableCategory={tableCategory} getcasedata={getCaseData} onClose={handleClose}/>
                             </ModalForm>
                         </div>
                         <div style={{marginLeft: "2%"}}>
@@ -498,13 +545,11 @@ export const CaseManagement = () => {
                             // eslint-disable-next-line no-unused-vars
                             onSave: async (rowKey, data, _row) => {
                                 editCase(data)
-                                info("修改成功！")
                                 await waitTime(500);
                             },
                             // eslint-disable-next-line no-unused-vars
                             onDelete: async (rowKey, data, _row) => {
-                                deleteCaseById(data.id)
-                                info("删除成功！")
+                                deleteCaseByCaseNumbers(data.case_number)
                                 await waitTime(500);
                             },
                             onChange: setEditableRowKeys,
@@ -514,13 +559,24 @@ export const CaseManagement = () => {
 
             </>
         )
-    } else {
+    } else if(displayFlg===2){
+        return(
+            <div>
+                <div style={{marginBottom: "5%"}}>
+                    <Button type={"primary"} onClick={() => {
+                        setDisplayFlg(1)
+                    }}>返回</Button>
+                </div>
+                <CheckUpTable caseNumber={caseInfo.case_number} />
+            </div>
+        )
+    } else if(displayFlg===3){
         return (
             <div>
                 {/*<CaseDetail caseInfo={caseInfo}/>*/}
                 <div style={{marginBottom: "5%"}}>
                     <Button type={"primary"} onClick={() => {
-                        setDisplayFlg(true)
+                        setDisplayFlg(1)
                     }}>返回</Button>
                 </div>
                 <CaseEditForm caseNumber={caseInfo.case_number} />

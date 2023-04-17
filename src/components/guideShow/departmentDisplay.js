@@ -270,7 +270,6 @@ export const DepartmentDisplay = () => {
                     toolBarRender={false}
                     dataSource={departmentData}
                 />
-                {/*<Table columns={columns} dataSource={departmentData}/>*/}
             </>
         )
     }

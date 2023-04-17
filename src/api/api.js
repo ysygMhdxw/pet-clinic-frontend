@@ -45,17 +45,34 @@ const api = {
         const url = `${base.ownUrl}${base.getCaseByCaseId}${case_id}/`
         return httpGet(url)
     },
+    editCase(case_data){
+        const url = `${base.ownUrl}${base.getAllCases}`
+        return httpPut(url,case_data)
+    },
     getCaseCheckUpByCaseNumber(case_number) {
-        const url = `${base.ownUrl}${base.getCaseCheckUpByCaseNumber}${case_number}/`
+        console.log("case_number", case_number)
+        const url = `${base.ownUrl}${base.getCaseCheckUp}${case_number}/`
         return httpGet(url)
     },
-    deleteCasesByCaseIds(case_numbers) {
+    deleteCaseCheckUpByCaseupIds(caseCheckupIds) {
+        const url = `${base.ownUrl}${base.getCaseCheckUp}`
+        return httpDelete(url, caseCheckupIds)
+    },
+    deleteCasesByCaseNumbers(case_numbers) {
         const url = `${base.ownUrl}${base.getAllCases}`
-        return httpDelete(url, {case_number_list: case_numbers})
+        return Delete(url, {case_number_list: case_numbers})
     },
     addCase(case_data) {
         const url = `${base.ownUrl}${base.getAllCases}`
         return httpPost(url, case_data)
+    },
+    addCheckupData(checkup_data) {
+        const url = `${base.ownUrl}${base.getCaseCheckUp}`
+        return httpPost(url, checkup_data)
+    },
+    editCheckupData(checkup_data){
+        const url = `${base.ownUrl}${base.getCaseCheckUp}`
+        return httpPut(url, checkup_data)
     },
     //Department Management API
     getDepartment() {

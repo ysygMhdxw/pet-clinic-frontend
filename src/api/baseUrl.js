@@ -9,7 +9,7 @@ const base = {
     // Login
     login: "authentication/token/",
     //register
-    register: "authentication/user/register",
+    register: "authentication/user/register/",
     editPassword: "authentication/user/",
 
     // Case Learning
@@ -17,7 +17,7 @@ const base = {
     getCaseCategory: "case/category/",
     getCaseByDiseaseName: "case/name/",
     getCaseByCaseId: "case/number/",
-    getCaseCheckUpByCaseNumber: "case/checkup/",
+    getCaseCheckUp: "case/checkup/",
     getCaseByDiseaseType: "case/type/",
 
     // Questions and Tests

@@ -1,9 +1,10 @@
-import {Button, Descriptions, Input, InputNumber, Space} from 'antd';
+import {Button, Descriptions, Divider, Input, InputNumber, Space} from 'antd';
 import React, { useRef, useState} from 'react';
 import {FilterOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import {ProTable} from "@ant-design/pro-components";
 import PropTypes from "prop-types";
+import {Department3dComponent} from "./department3dComponent";
 
 
 export const DepartmentDetail = (props) => {
@@ -275,6 +276,14 @@ export const DepartmentDetail = (props) => {
     return (
         <div>
             <div style={{marginTop: "2%"}}>
+                <Descriptions
+                    title={`${departmentInfo.name} 3D导览`}
+                    bordered
+                    column={1}
+                >
+                </Descriptions>
+                <Department3dComponent departmentName={departmentInfo.name}/>
+                <Divider/>
                 <Descriptions
                     title={"科室详情信息"}
                     bordered

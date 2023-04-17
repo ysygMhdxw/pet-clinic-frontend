@@ -48,7 +48,7 @@ export const ContextComponents = (props) => {
     else if (props.contextString == ContextString.fontDesk || props.contextString == ContextString.physicianAssistant || props.contextString == ContextString.veterinarians) {
         return <RolePlay roleName={props.contextString}/>
     }
-    else if(props.contextString === ContextString.guideShow){
+    else if(props.contextString === ContextString.guide3dShow){
         return <GuideShow/>
     }
     else if(props.contextString === ContextString.fileManagement){

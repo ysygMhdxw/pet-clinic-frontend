@@ -212,6 +212,7 @@ export const VaccineManagement = () => {
             // 第一行不允许编辑
             editable: false,
             width: '10%',
+            sorter: (a, b) => a.id - b.id,
             ...getColumnSearchProps("id", "疫苗编号")
         },
         {

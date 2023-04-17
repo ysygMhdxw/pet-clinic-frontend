@@ -300,6 +300,7 @@ export const CheckUpManagement = () => {
             // 第一行不允许编辑
             editable: false,
             width: '10%',
+            sorter: (a, b) => a.id - b.id,
             ...getColumnSearchProps("id", "检查项目编号")
         },
         {

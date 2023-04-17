@@ -167,6 +167,13 @@ export const DepartmentDisplay = () => {
             ...getColumnSearchProps("description", "科室简介")
         },
         {
+            title: '科室负责人',
+            key: 'manager',
+            dataIndex: 'manager',
+            width: '15%',
+            ...getColumnSearchProps("manager", "科室负责人")
+        },
+        {
             title: '操作',
             valueType: 'option',
             width: 200,

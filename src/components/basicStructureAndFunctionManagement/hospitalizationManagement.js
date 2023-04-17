@@ -1,11 +1,12 @@
-import {Button, Input, InputNumber, message, Popconfirm, Space} from "antd";
+import {Button, Form, Input, InputNumber, message, Popconfirm, Space} from "antd";
 import api from "../../api/api";
+import moment from 'moment';
 import React, {useEffect, useRef, useState} from "react";
 import {
     EditableProTable,
     ModalForm,
-    ProForm, ProFormMoney,
-    ProFormText, ProFormTextArea
+    ProForm, ProFormDatePicker, ProFormMoney,
+    ProFormText
 } from "@ant-design/pro-components";
 import {FilterOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
@@ -36,6 +37,7 @@ export const HospitalizationManagement = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+    const [form] = Form.useForm()
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         console.log(selectedKeys);
@@ -204,29 +206,149 @@ export const HospitalizationManagement = () => {
         console.log(selectedRows)
         setSelectedRows(selectedRows);
     };
-    const handleBatchDelete = () => {
+    const handleBatchDelete = async () => {
         if (selectedRows.length === 0) {
             showError('请选择要删除的行！');
             return;
         }
         const keys = selectedRows.map((row) => row.id);
         console.log("keys: ", keys)
-        deleteHospitalizationById(keys, (error) => {
-            if (error) showError("批量删除失败，请稍后再试！");
-        });
-        setSelectedRows([]);
+        try {
+            const res = await api.deleteHospitalizations(keys)
+            const data = res.data
+            console.log(data)
+            success("批量删除住院数据成功！")
+            getHospitalizationData()
+        } catch (error) {
+            console.error(error);
+            showError("批量删除住院数据失败，请稍后再试！");
+        }
     };
+
+
+    //datePicker
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [dateFilteredInfo, setDateFilteredInfo] = useState({});
+    const handleDateFilter = (value, record) => {
+        console.log(value)
+        console.log("record", record)
+        const {bg_time: date_time} = record;
+        console.log(startDate)
+        console.log(endDate)
+        const admissionDate = moment(startDate)
+        const dischargeDate = moment(endDate);
+        if (admissionDate && dischargeDate) {
+            return date_time >= admissionDate && date_time <= dischargeDate;
+        } else if (admissionDate) {
+            return date_time >= admissionDate;
+        } else if (dischargeDate) {
+            return date_time <= dischargeDate;
+        }
+        return true;
+    };
+    const handleDateReset = () => {
+        setStartDate(null);
+        setEndDate(null);
+        setDateFilteredInfo({});
+    };
+    const handleDateConfirm = () => {
+        setDateFilteredInfo({
+            time: {
+                ...dateFilteredInfo.time,
+                filters: [{text: `${startDate} - ${endDate}`, value: 'time'}],
+                filteredValue: [startDate, endDate],
+            },
+        });
+    };
+    const dateFormatRegex = /^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
+    // eslint-disable-next-line no-unused-vars
+    const dateFilterDropdown = ({setSelectedKeys, confirm, clearFilters}) => (
+        <div style={{padding: 8}}>
+            <Form form={form} initialValues={{}}>
+                <Form.Item
+                    label="开始日期"
+                    name="startDate"
+                    rules={[
+                        {
+                            required: true,
+                            message: '请填写日期',
+                        },
+                        {
+                            pattern: dateFormatRegex,
+                            message: '日期格式不正确，请输入 yyyy-mm-dd 格式的日期',
+                        },
+                    ]}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                >
+                    <Input
+                        placeholder="开始日期"
+                        style={{width: 120, marginRight: 8}}
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="结束日期"
+                    name="endDate"
+                    rules={[
+                        {
+                            required: true,
+                            message: '请填写日期',
+                        },
+                        {
+                            pattern: dateFormatRegex,
+                            message: '日期格式不正确，请输入 yyyy-mm-dd 格式的日期',
+                        },
+                    ]}
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                >
+                    <Input
+                        placeholder="结束日期"
+                        style={{width: 120, marginRight: 8}}
+                    />
+                </Form.Item>
+            </Form>
+            <div style={{marginTop: "10px", gap: "5px", display: "flex"}}>
+                <Button onClick={handleDateReset}>重置</Button>
+                <Button onClick={handleDateConfirm}>筛选</Button>
+            </div>
+        </div>
+    );
+
 
     useEffect(() => {
         getHospitalizationData()
     }, []);
 
+    const formattedData = (data) => data.map(item => {
+        const bgTimeObj = new Date(item.bg_time);
+        const edTimeObj = new Date(item.ed_time);
+
+        const year1 = bgTimeObj.getFullYear();
+        const month1 = String(bgTimeObj.getMonth() + 1).padStart(2, '0');
+        const day1 = String(bgTimeObj.getDate()).padStart(2, '0');
+        const formattedBgTime = `${year1}-${month1}-${day1}`;
+
+        const year2 = edTimeObj.getFullYear();
+        const month2 = String(edTimeObj.getMonth() + 1).padStart(2, '0');
+        const day2 = String(edTimeObj.getDate()).padStart(2, '0');
+        const formattedEdTime = `${year2}-${month2}-${day2}`;
+
+        return {
+            ...item,
+            bg_time: formattedBgTime,
+            ed_time: formattedEdTime
+        };
+    });
+
     async function getHospitalizationData() {
         try {
             const res = await api.getHospitalization()
             const data = res.data
-            console.log(data)
-            setHospitalizationData(data.hospitalizationlist)
+            let datas = formattedData(data.hospitalizationlist)
+            console.log(datas)
+            setHospitalizationData(datas)
         } catch (error) {
             console.error(error);
             showError("不存在住院数据！");
@@ -311,12 +433,16 @@ export const HospitalizationManagement = () => {
             width: '15%',
             valueType: 'date',
             editable: true,
+            required: true,
             fieldProps: {
                 format: 'YYYY-MM-DD',
                 showTime: true,
                 allowClear: false,
             },
-            ...getColumnSearchProps("bg_time", "住院开始日期")
+            filterIcon: <FilterOutlined/>,
+            filterDropdown: dateFilterDropdown,
+            filteredValue: dateFilteredInfo.time && dateFilteredInfo.time.filteredValue,
+            onFilter: handleDateFilter,
         },
         {
             title: '住院结束日期',
@@ -325,12 +451,13 @@ export const HospitalizationManagement = () => {
             width: '15%',
             valueType: 'date',
             editable: true,
+            required: true,
             fieldProps: {
                 format: 'YYYY-MM-DD',
                 showTime: true,
                 allowClear: false,
             },
-            ...getColumnSearchProps("ed_time", "住院结束日期")
+            ...getColumnSearchProps('ed_time', '住院结束日期'),
         },
         {
             title: '住院价格（元）',
@@ -340,7 +467,7 @@ export const HospitalizationManagement = () => {
             fieldProps: {
                 type: 'number',
                 min: 0,
-                precision:0
+                precision: 0
             },
             filterIcon: <FilterOutlined/>,
             filterDropdown: priceFilterDropdown,
@@ -399,9 +526,26 @@ export const HospitalizationManagement = () => {
                             </Button>
                         }
                         onFinish={async (values) => {
+                            try {
+                                // 验证出院时间必须早于入院时间
+                                const admissionDate = moment(values.bg_time)
+                                const dischargeDate = moment(values.ed_time);
+                                console.log("admission date", admissionDate)
+                                console.log("discharge date", dischargeDate)
+
+                                if (admissionDate && dischargeDate && dischargeDate.isBefore(admissionDate)) {
+                                    throw new Error('住院结束日期必须晚于住院开始日期！')
+                                }
+                                addHospitalization({id: random(0, 10000000), ...values})
+                                await waitTime(500);
+                                // 执行其他操作，比如提交表单数据到后端
+                                console.log('表单验证成功，提交的数据为：', values);
+                            } catch (error) {
+                                getHospitalizationData()
+                                console.error('表单验证失败：', error);
+                                showError(error.message);
+                            }
                             await waitTime(500);
-                            addHospitalization({id: random(0, 10000000), type: "住院", ...values})
-                            console.log(values);
                             getHospitalizationData();
                             return true;
                         }}
@@ -414,14 +558,29 @@ export const HospitalizationManagement = () => {
                                 tooltip="最长为 24 位"
                                 placeholder="请输入名称"
                             />
-                            {/*<ProFormText width="md" name="company" label="我方公司名称" placeholder="请输入名称"/>*/}
                         </ProForm.Group>
                         <ProForm.Group>
                             <ProFormText
-                                name='tag'
+                                name='case_id'
                                 width="md"
-                                label="住院种类"
-                                placeholder="请输入住院种类"
+                                label="住院病例编号"
+                                placeholder="请输入住院病例编号"
+                            />
+                        </ProForm.Group>
+                        <ProForm.Group>
+                            <ProFormDatePicker
+                                name='bg_time'
+                                width="md"
+                                label="住院开始日期"
+                                placeholder="请输入住院开始日期"
+                            />
+                        </ProForm.Group>
+                        <ProForm.Group>
+                            <ProFormDatePicker
+                                name='ed_time'
+                                width="md"
+                                label="住院结束日期"
+                                placeholder="请输入住院结束日期"
                             />
                         </ProForm.Group>
                         <ProForm.Group>
@@ -438,16 +597,6 @@ export const HospitalizationManagement = () => {
                                 placeholder="请输入住院价格"
                             />
                         </ProForm.Group>
-                        <ProForm.Group>
-                            <ProFormTextArea
-                                name='description'
-                                width="md"
-                                label="住院简介"
-                                placeholder="请输入住院简介"
-                            />
-                        </ProForm.Group>
-
-
                     </ModalForm>
                 </div>
                 <div>
@@ -463,6 +612,7 @@ export const HospitalizationManagement = () => {
             </div>
 
             <EditableProTable
+                form={form}
                 rowKey="id"
                 headerTitle="住院基本信息"
                 maxLength={5}
@@ -486,11 +636,26 @@ export const HospitalizationManagement = () => {
                     type: 'multiple',
                     editableKeys,
                     // eslint-disable-next-line no-unused-vars
-                    onSave: async (rowKey, data, _row) => {
-                        console.log("data",data)
-                        delete data.index
-                        editHospitalization(data)
-                        await waitTime(500);
+                    onSave: async (rowKey, data, row) => {
+                        try {
+                            // 验证出院时间必须早于入院时间
+                            const admissionDate = moment(data.bg_time)
+                            const dischargeDate = moment(data.ed_time);
+                            console.log("admission date", admissionDate)
+                            console.log("discharge date", dischargeDate)
+
+                            if (admissionDate && dischargeDate && dischargeDate.isBefore(admissionDate)) {
+                                throw new Error('住院结束日期必须晚于住院开始日期！')
+                            }
+                            editHospitalization(data)
+                            await waitTime(500);
+                            // 执行其他操作，比如提交表单数据到后端
+                            console.log('表单验证成功，提交的数据为：', data);
+                        } catch (error) {
+                            getHospitalizationData()
+                            console.error('表单验证失败：', error);
+                            showError(error.message);
+                        }
                     },
                     // eslint-disable-next-line no-unused-vars
                     onDelete: async (rowKey, data, _row) => {

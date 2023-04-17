@@ -283,6 +283,7 @@ export const DepartmentDetail = (props) => {
                     <Descriptions.Item label="科室编号">{departmentInfo.id}</Descriptions.Item>
                     <Descriptions.Item label="科室名称">{departmentInfo.name}</Descriptions.Item>
                     <Descriptions.Item label="科室简介">{departmentInfo.description}</Descriptions.Item>
+                    <Descriptions.Item label="科室负责人">{departmentInfo.manager}</Descriptions.Item>
                 </Descriptions>
 
                 <div style={{marginTop: "3%"}}>

@@ -78,6 +78,10 @@ const api = {
         const url = `${base.ownUrl}${base.getDepartment}${department_id}/`
         return httpDelete(url)
     },
+    deleteDepartments(department_ids) {
+        const url = `${base.ownUrl}${base.getDepartment}`
+        return Delete(url,department_ids)
+    },
     editDepartment(department) {
         const url = `${base.ownUrl}${base.getDepartment}`
         return httpPut(url, department)
@@ -94,6 +98,10 @@ const api = {
     deleteMedicine(medicine_id) {
         const url = `${base.ownUrl}${base.getMedicine}${medicine_id}/`
         return httpDelete(url)
+    },
+    deleteMedicines(medicine_ids) {
+        const url = `${base.ownUrl}${base.getMedicine}`
+        return Delete(url,medicine_ids)
     },
     editMedicine(medicine) {
         const url = `${base.ownUrl}${base.getMedicine}`
@@ -112,6 +120,10 @@ const api = {
         const url = `${base.ownUrl}${base.getInstrument}${instrument_id}/`
         return httpDelete(url)
     },
+    deleteInstruments(instrument_ids) {
+        const url = `${base.ownUrl}${base.getInstrument}`
+        return Delete(url,instrument_ids)
+    },
     editInstrument(instrument) {
         const url = `${base.ownUrl}${base.getInstrument}`
         return httpPut(url, instrument)
@@ -129,6 +141,10 @@ const api = {
         const url = `${base.ownUrl}${base.getCheckup}${checkup_id}/`
         return httpDelete(url)
     },
+    deleteCheckups(checkupids) {
+        const url = `${base.ownUrl}${base.getCheckup}`
+        return Delete(url,checkupids)
+    },
     editCheckup(checkup) {
         const url = `${base.ownUrl}${base.getCheckup}`
         return httpPut(url, checkup)
@@ -145,6 +161,10 @@ const api = {
     deleteHospitalization(hospitalization_id) {
         const url = `${base.ownUrl}${base.getHospitalization}${hospitalization_id}/`
         return httpDelete(url)
+    },
+    deleteHospitalizations(hospitalizationIds) {
+        const url = `${base.ownUrl}${base.getHospitalization}`
+        return Delete(url,hospitalizationIds);
     },
     editHospitalilzation(hospitalization) {
         const url = `${base.ownUrl}${base.getHospitalization}`

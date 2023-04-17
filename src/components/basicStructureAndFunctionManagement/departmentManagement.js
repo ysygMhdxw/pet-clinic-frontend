@@ -183,39 +183,15 @@ export const DepartmentManagement = () => {
             ...getColumnSearchProps("description","科室简介")
         },
         {
+            title: '科室负责人',
+            key: 'manager',
+            dataIndex: 'manager',
+            ...getColumnSearchProps("manager","科室负责人")
+        },
+        {
             title: '操作',
             valueType: 'option',
             width: 200,
-            // render: (text, record) => [
-            //     <a
-            //         key="detail"
-            //         onClick={() => {
-            //             // setCaseInfo(record)
-            //             // console.log(record)
-            //             // setDisplayFlg(false)
-            //         }}
-            //     >
-            //         修改
-            //     </a>,
-            //     <Popconfirm
-            //         key="delete"
-            //         placement="top"
-            //         title={"删除数据"}
-            //         description={"确认删除此条数据？删除后将无法恢复。"}
-            //         onConfirm={async () => {
-            //             deleteDepartmentById(record.id);
-            //             await waitTime(500);
-            //         }
-            //         }
-            //         okText="Yes"
-            //         cancelText="No"
-            //     >
-            //         <a>
-            //             删除
-            //         </a>
-            //     </Popconfirm>
-            //     ,
-            // ],
             render: (text, record, _, action) => [
                 <a
                     key="editable"
@@ -294,6 +270,7 @@ export const DepartmentManagement = () => {
         try {
             const res = await api.addDepartment(department)
             const data = res.data
+            getDepartmentData()
             success("添加科室成功！")
             console.log(data)
         } catch (error) {
@@ -309,15 +286,21 @@ export const DepartmentManagement = () => {
         setSelectedRows(selectedRows);
     };
 
-    const handleBatchDelete = () => {
+    const handleBatchDelete = async () => {
         if (selectedRows.length === 0) {
             showError('请选择要删除的行！');
             return;
         }
         const keys = selectedRows.map((row) => row.id);
-        deleteDepartmentById(keys, (error) => {
-            if (error) showError("批量删除失败，请稍后再试！");
-        });
+        console.log(keys)
+        try {
+            await api.deleteDepartments(keys);
+            await getDepartmentData();
+            success('批量删除成功！');
+        } catch (error) {
+            console.error(error);
+            showError("批量删除科室失败，请稍后重试！");
+        }
         setSelectedRows([]);
     };
 
@@ -360,6 +343,15 @@ export const DepartmentManagement = () => {
                                 width="md"
                                 label="科室简介"
                                 placeholder="请输入科室简介"
+                            />
+                        </ProForm.Group>
+                        <ProForm.Group>
+                            <ProFormText
+                                name='manager'
+                                width="md"
+                                label="科室负责人"
+                                placeholder="请输入科室负责人"
+                                tooltip={"负责人之间用空格分隔"}
                             />
                         </ProForm.Group>
 

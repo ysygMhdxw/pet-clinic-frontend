@@ -204,16 +204,23 @@ export const MedicineManagement = () => {
         console.log(selectedRows)
         setSelectedRows(selectedRows);
     };
-    const handleBatchDelete = () => {
+    const handleBatchDelete = async () => {
         if (selectedRows.length === 0) {
             showError('请选择要删除的行！');
             return;
         }
         const keys = selectedRows.map((row) => row.id);
         console.log("keys: ", keys)
-        deleteMedicineById(keys, (error) => {
-            if (error) showError("批量删除失败，请稍后再试！");
-        });
+        try {
+            const res = await api.deleteMedicines(keys)
+            const data = res.data
+            console.log(data)
+            getMedicineData()
+            success("批量删除药品成功！")
+        } catch (error) {
+            console.error(error);
+            showError("批量删除药品失败，请稍后再试！");
+        }
         setSelectedRows([]);
     };
 

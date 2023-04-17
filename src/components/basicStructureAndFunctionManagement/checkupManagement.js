@@ -392,17 +392,23 @@ export const CheckUpManagement = () => {
         console.log(selectedRows)
         setSelectedRows(selectedRows);
     };
-    const handleBatchDelete = () => {
+    const handleBatchDelete = async () => {
         if (selectedRows.length === 0) {
             showError('请选择要删除的行！');
             return;
         }
         const keys = selectedRows.map((row) => row.id);
         console.log("keys: ", keys)
-        deleteCheckupById(keys, (error) => {
-            if (error) showError("批量删除失败，请稍后再试！");
-        });
-        setSelectedRows([]);
+        try {
+            const res = await api.deleteCheckups(keys)
+            const data = res.data
+            console.log(data)
+            getCheckupData()
+            success("批量删除检查项目成功！")
+        } catch (error) {
+            console.error(error);
+            showError("批量删除检查项目失败，请稍后再试！");
+        }
     };
 
     function transferToId(data) {

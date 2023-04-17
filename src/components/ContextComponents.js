@@ -13,11 +13,10 @@ import { QuestionManagement } from "./caseTestManagement/questionManagement";
 import { QuizManagement } from './caseTestManagement/quizManagement';
 import {RolePlay} from "./rolePlay/rolePlay";
 import {UserCenter} from "./userCenter/userCenter";
-import {GuideShow} from "./threeD/guideShow";
+import {GuideShow} from "./guideShow/guideShow";
 import {InstrumentManagement} from "./basicStructureAndFunctionManagement/instrumentManagement";
 import {HospitalizationManagement} from "./basicStructureAndFunctionManagement/hospitalizationManagement";
 import {CheckUpManagement} from "./basicStructureAndFunctionManagement/checkupManagement";
-
 
 export const ContextComponents = (props) => {
     if(props.contextString===ContextString.userCenter){
@@ -46,7 +45,7 @@ export const ContextComponents = (props) => {
     else if(props.contextString === ContextString.quizManagement){
         return <QuizManagement/>
     } 
-    else if (props.contextString === ContextString.fontDesk || props.contextString === ContextString.physicianAssistant || props.contextString === ContextString.veterinarians) {
+    else if (props.contextString == ContextString.fontDesk || props.contextString == ContextString.physicianAssistant || props.contextString == ContextString.veterinarians) {
         return <RolePlay roleName={props.contextString}/>
     }
     else if(props.contextString === ContextString.guideShow){

@@ -159,6 +159,7 @@ export const DepartmentManagement = () => {
             editable:false,
             tooltip: "不允许修改！",
             width: '10%',
+            sorter: (a, b) => a.id - b.id,
             ...getColumnSearchProps("id","科室编号")
         },
         {

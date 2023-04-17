@@ -1,4 +1,4 @@
-import {Button, Space} from 'antd';
+import { Space} from 'antd';
 import React from "react";
 import {DepartmentDisplay} from "./departmentDisplay";
 
@@ -11,7 +11,7 @@ export const GuideShow = () => {
                style={{
                    display: 'flex',
                }}>
-            <Button size="middle" href={"http://localhost/guideIndex.html"}>3D导览</Button>
+            {/*<Button size="middle" href={"http://localhost/guideIndex.html"}>3D导览</Button>*/}
             <DepartmentDisplay/>
         </Space>
     );

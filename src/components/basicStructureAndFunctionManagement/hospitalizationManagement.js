@@ -227,94 +227,6 @@ export const HospitalizationManagement = () => {
 
 
     //datePicker
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-    const [dateFilteredInfo, setDateFilteredInfo] = useState({});
-    const handleDateFilter = (value, record) => {
-        console.log(value)
-        console.log("record", record)
-        const {bg_time: date_time} = record;
-        console.log(startDate)
-        console.log(endDate)
-        const admissionDate = moment(startDate)
-        const dischargeDate = moment(endDate);
-        if (admissionDate && dischargeDate) {
-            return date_time >= admissionDate && date_time <= dischargeDate;
-        } else if (admissionDate) {
-            return date_time >= admissionDate;
-        } else if (dischargeDate) {
-            return date_time <= dischargeDate;
-        }
-        return true;
-    };
-    const handleDateReset = () => {
-        setStartDate(null);
-        setEndDate(null);
-        setDateFilteredInfo({});
-    };
-    const handleDateConfirm = () => {
-        setDateFilteredInfo({
-            time: {
-                ...dateFilteredInfo.time,
-                filters: [{text: `${startDate} - ${endDate}`, value: 'time'}],
-                filteredValue: [startDate, endDate],
-            },
-        });
-    };
-    const dateFormatRegex = /^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
-    // eslint-disable-next-line no-unused-vars
-    const dateFilterDropdown = ({setSelectedKeys, confirm, clearFilters}) => (
-        <div style={{padding: 8}}>
-            <Form form={form} initialValues={{}}>
-                <Form.Item
-                    label="开始日期"
-                    name="startDate"
-                    rules={[
-                        {
-                            required: true,
-                            message: '请填写日期',
-                        },
-                        {
-                            pattern: dateFormatRegex,
-                            message: '日期格式不正确，请输入 yyyy-mm-dd 格式的日期',
-                        },
-                    ]}
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                >
-                    <Input
-                        placeholder="开始日期"
-                        style={{width: 120, marginRight: 8}}
-                    />
-                </Form.Item>
-                <Form.Item
-                    label="结束日期"
-                    name="endDate"
-                    rules={[
-                        {
-                            required: true,
-                            message: '请填写日期',
-                        },
-                        {
-                            pattern: dateFormatRegex,
-                            message: '日期格式不正确，请输入 yyyy-mm-dd 格式的日期',
-                        },
-                    ]}
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                >
-                    <Input
-                        placeholder="结束日期"
-                        style={{width: 120, marginRight: 8}}
-                    />
-                </Form.Item>
-            </Form>
-            <div style={{marginTop: "10px", gap: "5px", display: "flex"}}>
-                <Button onClick={handleDateReset}>重置</Button>
-                <Button onClick={handleDateConfirm}>筛选</Button>
-            </div>
-        </div>
-    );
 
 
     useEffect(() => {
@@ -409,6 +321,7 @@ export const HospitalizationManagement = () => {
             // 第一行不允许编辑
             editable: false,
             width: '10%',
+            sorter: (a, b) => a.id - b.id,
             ...getColumnSearchProps("id", "住院编号")
         },
         {
@@ -439,10 +352,6 @@ export const HospitalizationManagement = () => {
                 showTime: true,
                 allowClear: false,
             },
-            filterIcon: <FilterOutlined/>,
-            filterDropdown: dateFilterDropdown,
-            filteredValue: dateFilteredInfo.time && dateFilteredInfo.time.filteredValue,
-            onFilter: handleDateFilter,
         },
         {
             title: '住院结束日期',
@@ -457,7 +366,6 @@ export const HospitalizationManagement = () => {
                 showTime: true,
                 allowClear: false,
             },
-            ...getColumnSearchProps('ed_time', '住院结束日期'),
         },
         {
             title: '住院价格（元）',

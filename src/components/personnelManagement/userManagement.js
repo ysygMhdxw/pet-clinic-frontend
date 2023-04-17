@@ -157,6 +157,7 @@ export const UserManagement = () => {
             // 第一行不允许编辑
             editable:false,
             width: '15%',
+            sorter: (a, b) => a.id - b.id,
             ...getColumnSearchProps("id", "用户编号")
         },
         {

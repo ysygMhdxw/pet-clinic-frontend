@@ -1,4 +1,4 @@
-import {Button, Divider, Input, message, Space} from "antd";
+import {Button, Input, message, Space} from "antd";
 import api from "../../api/api";
 import React, {useEffect, useRef, useState} from "react";
 import {
@@ -255,7 +255,6 @@ export const DepartmentDisplay = () => {
         return (
             <>
                 {contextHolder}
-                <Divider/>
                 <h1 style={{marginBottom: "1"}}>科室信息</h1>
                 <ProTable
                     maxLength={5}

@@ -1,6 +1,7 @@
 export const ContextString = {
     userCenter:"用户中心",
-    guideShow: "导览展示",
+    guideShow: "导览科室信息",
+    guide3dShow: "3D导览科室信息",
     functionLearning: "职能学习",
     rolePlay: "角色扮演",
     fontDesk: "前台",

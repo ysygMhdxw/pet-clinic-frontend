@@ -36,7 +36,7 @@ function getItem(label, key, icon, children) {
 
 const frontItems = [
     getItem('用户中心', '用户中心', <UserOutlined/>),
-    getItem('导览展示', '导览展示', <PieChartOutlined/>),
+    getItem('3D导览科室信息', '3D导览科室信息', <PieChartOutlined/>),
     getItem('职能学习', '职能学习', <DesktopOutlined/>, [
         getItem('角色扮演', '角色扮演', <UserOutlined/>, [
             getItem('前台', '前台'),

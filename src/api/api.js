@@ -205,6 +205,11 @@ const api = {
         return Post(url,quiz)
     },
 
+    editQuiz(quiz) {
+        const url = `${base.ownUrl}${base.getQuizList}`
+        return Put(url, quiz)
+    },
+
     deleteQuiz(quiz) {
         const url = `${base.ownUrl}${base.getQuizList}`
         return Delete(url, quiz)

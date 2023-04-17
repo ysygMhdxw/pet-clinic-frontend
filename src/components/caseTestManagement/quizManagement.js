@@ -186,8 +186,11 @@ export const QuizManagement = (  ) => {
     }
 
 
-     
+
+    const [editQuizId,setEditQuizId] = useState()
     async function handleQuizData(record){
+      setEditQuizId(record.id)
+      //console.log(editQuizId)
         let keys = [];
         for (let [type, arr] of Object.entries(record.questions)) {
             for (let id of arr) {
@@ -389,9 +392,11 @@ export const QuizManagement = (  ) => {
         { isQuestionVisible && (<QuestionTransfer 
             isQuestionVisible = {isQuestionVisible}
             setIsQuestionVisible = {setIsQuestionVisible}
+            getQuizListData = {getQuizListData}
             targetQuestionKeys = {targetQuestionKeys}
             allQuestions = {allQuestions}
-            info = {info} /> )}
+            info = {info} 
+            editQuizId = {editQuizId}/> )}
         
         <Table columns={columns} dataSource={quizListData} onChange={onChange}
          rowKey="list_id"

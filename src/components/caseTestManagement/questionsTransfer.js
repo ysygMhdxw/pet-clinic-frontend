@@ -4,6 +4,7 @@ import propTypes from 'prop-types'
 import {  Table,  Transfer } from 'antd';
 import difference from 'lodash/difference';
 import { useState } from 'react';
+import api from '../../api/api';
 
 export const QuestionTransfer= ( props ) => {
 
@@ -23,13 +24,30 @@ export const QuestionTransfer= ( props ) => {
       };
 
     //Modal 提交时的处理逻辑，应该加上put方法修改quiz
-    const handleOk = () => {
+    const handleOk = async  () => {
         console.log(newQuestions)
         setConfirmLoading(true);
+       let resp ={
+        id: props.editQuizId,
+        questions:{
+          single:[],
+          multi:[],
+          tof:[],
+          text:[]
+        }
+       }
+       for(let item of newQuestions){
+        resp.questions[item.type].push(item.id)
+       }
+       //console.log(resp)
+       const res = await api.editQuiz(resp)
+        const data = res.data
+        console.log(data)
         setTimeout(() => {
             props.setIsQuestionVisible(false)
             setConfirmLoading(false);
             props.info("修改成功")
+            props.getQuizListData()
             
           }, 1000);
     };
@@ -147,6 +165,8 @@ QuestionTransfer.propTypes = {
     isQuestionVisible: propTypes.bool,
     setIsQuestionVisible: propTypes.func,
     targetQuestionKeys: propTypes.array,
+    getQuizListData: propTypes.func,
     allQuestions: propTypes.array,
-    info: propTypes.func
+    info: propTypes.func,
+    editQuizId : propTypes.number,
 }

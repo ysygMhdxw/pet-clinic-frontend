@@ -23,12 +23,12 @@ const departmentsPic = {
     archives: 'danganshi2.jpg',
     examination_room: 'zhenshi&binglijiepoushi.jpg',
     immunization_room: 'yaofang&mianyishi.jpg',
-    laboratory: 'huayanshi&zhuankejianchashi&chuzhishi.jpg',
+    laboratory: 'huayanshi.jpg',
     imaging_room: 'yingxiangshi2.jpg',
-    specialty_examination_room: 'huayanshi&zhuankejianchashi&chuzhishi.jpg',
-    treatment_room: 'huayanshi&zhuankejianchashi&chuzhishi.jpg',
+    specialty_examination_room: 'zhuankejianchashi&zhusheshi.jpg',
+    treatment_room: 'chuzhishi.jpg',
     pharmacy: 'yaofang&mianyishi.jpg',
-    injection_room: '注射室',
+    injection_room: 'zhuankejianchashi&zhusheshi.jpg',
     surgery_preparation_room: 'shoushushizhunbeishi.jpg',
     operating_room: 'shoushushi2.jpg',
     inpatient_department: 'zhuyuanbu.jpg',
@@ -44,7 +44,7 @@ export const Department3dComponent = (props) => {
                 </a-scene>
             </div>
         );
-    } else if (props.departmentName === departments.laboratory || props.departmentName === departments.specialty_examination_room || props.departmentName === departments.treatment_room) {
+    } else if (props.departmentName === departments.laboratory) {
         return (
             <div style={{width: "1200px", height: "800px"}}>
                 <a-scene embedded>
@@ -105,6 +105,22 @@ export const Department3dComponent = (props) => {
             <div style={{width: "1200px", height: "800px"}}>
                 <a-scene embedded>
                     <a-sky src={`images/${departmentsPic.inpatient_department}`} rotation="0 -130 0"></a-sky>
+                </a-scene>
+            </div>
+        );
+    } else if(props.departmentName === departments.specialty_examination_room || props.departmentName === departments.injection_room){
+        return (
+            <div style={{width: "1200px", height: "800px"}}>
+                <a-scene embedded>
+                    <a-sky src={`images/${departmentsPic.specialty_examination_room}`} rotation="0 -130 0"></a-sky>
+                </a-scene>
+            </div>
+        );
+    } else if (props.departmentName === departments.treatment_room) {
+        return (
+            <div style={{width: "1200px", height: "800px"}}>
+                <a-scene embedded>
+                    <a-sky src={`images/${departmentsPic.treatment_room}`} rotation="0 -130 0"></a-sky>
                 </a-scene>
             </div>
         );

@@ -102,15 +102,7 @@ export const QuestionManagement = () => {
             title: '操作',
             valueType: 'option',
             width: 200,
-            render: (text, record, _, action) => [
-                <a
-                    key="editable"
-                    onClick={() => {
-                        action?.startEditable?.(record.list_id);
-                    }}
-                >
-                    编辑
-                </a>,
+            render: (text, record) => [
                 <Popconfirm
                     key="delete"
                     placement="top"
@@ -165,7 +157,7 @@ export const QuestionManagement = () => {
     async function getQuestionData() {
         const res = await api.getQuestionList()
         const data = res.data
-        console.log(data)
+        //console.log(data)
         let i = 0
         for (let [type, arr] of Object.entries(data)){
             if (types.indexOf(type) != -1){
@@ -223,7 +215,7 @@ export const QuestionManagement = () => {
     return (
         <>
             {contextHolder}
-            <h1 style={{marginBottom: "1"}}>测试管理</h1>
+            <h1 style={{marginBottom: "1"}}>题目管理</h1>
             <div style={{display: "flex", margin: "10px"}}>
                 <div style={{marginLeft: "auto"}}>
                     <ModalForm

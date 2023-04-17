@@ -34,5 +34,5 @@ export const Num = {
     singleMax: 78,
     multiMax: 3,
     tofMax: 9,
-    text: 9
+    textMax: 1
 }

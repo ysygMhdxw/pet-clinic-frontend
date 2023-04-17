@@ -6,6 +6,7 @@ import { useEffect , useState } from 'react'
 import {PlusOutlined} from "@ant-design/icons"
 import api from '../../api/api';
 import { Num } from '../../utils/enums';
+import { QuestionTransfer } from './questionsTransfer';
 export const QuizManagement = (  ) => {
     const [messageApi, contextHolder] = message.useMessage();
     const info = (msg) => {
@@ -13,18 +14,28 @@ export const QuizManagement = (  ) => {
     };
     const columns = [
         {
+            titile:'考试编号',
+            dataIndex: 'list_id',
+            key: 'list_id',
+            width: '10%',
+        },
+
+        {
           title: '考试名称',
           dataIndex: 'name',
+          key:'name',
           width: '20%',
         },
         {
           title: '考试描述',
           dataIndex: 'description',
+          key:'description',
           width: '40%',
         },
         {
           title: '用时',
           dataIndex: 'duration',
+          key: 'duration',
           sorter: {
             compare: (a, b) => a.duration - b.duration,
             multiple: 2,
@@ -40,8 +51,11 @@ export const QuizManagement = (  ) => {
             <Space size="middle">
               <Button
                 type = "link"
-                onClick={()=>
-                  {}
+                onClick={async()=>
+                  {handleQuizData(record)
+                    getAllQuestions()
+                    await waitTime(1000);
+                    setIsQuestionVisible(true)}
                    }>
                   查看详情
               </Button>
@@ -49,6 +63,7 @@ export const QuizManagement = (  ) => {
                 type = "link"
                 onClick={async()=>
                   {deleteQuizs([record]);
+                    setQuizListData(quizListData.filter((item) => item.list_id !== record.list_id));
                     info("删除成功！");
                     await waitTime(500);}
                    }>
@@ -86,7 +101,9 @@ export const QuizManagement = (  ) => {
         for (let record of records) {
             resp.quizs.push(record.id)
         }
-        console.log(resp)
+        const res = await api.deleteQuiz(resp);
+        const data = res.data
+        console.log(data)
     }
 
       const waitTime = (time = 100) => {
@@ -101,6 +118,10 @@ export const QuizManagement = (  ) => {
       async function getQuizListData(){
         const response = await api.getQuizList();
         const quizList = response.data.quizs;
+        let i = 0
+        for ( let quiz of quizList ) {
+            quiz['list_id'] = i++
+        }
         setQuizListData(quizList);
       }
 
@@ -166,18 +187,60 @@ export const QuizManagement = (  ) => {
     }
 
 
+     
+    async function handleQuizData(record){
+        let keys = [];
+        for (let [type, arr] of Object.entries(record.questions)) {
+            for (let id of arr) {
+                keys.push(type + id.toString());
+            }
+        }
+        console.log(keys)
+        setTargetQuestionKeys(keys);
+    }
+    const [targetQuestionKeys,setTargetQuestionKeys] = useState([])
+    const [isQuestionVisible,setIsQuestionVisible] = useState(false)
+
+    //处理全部问题的数据，在questionsTransfer中显示
+    const [allQuestions,setAllQuestions] = useState([])
+    const typeMap = {single: '单选题', multi: '多选题', tof: '判断题', text: '简答题'};
+    async function getAllQuestions(){
+        const response = await api.getQuestionList()
+        const data = await response.data
+        let allQuestions = []
+        for (let [type, arr] of Object.entries(data)) {
+           if (type in typeMap){
+            for(let item of Array.from(arr)) {
+            const question = {
+                id: item.id,
+                type: type,
+                question_type: typeMap[type],
+                key: type + item.id.toString(),
+                description: item.description.substring(0,10)+'...',
+                disease_type: item.disease_type
+            }
+            allQuestions.push(question)
+           }}
+        }
+        console.log(allQuestions)
+        setAllQuestions(allQuestions)
+    }
+
     return (
         <>
         {contextHolder}
+        <h1 style={{marginBottom: "1"}}>考试管理</h1>
         <div style={{display: "flex", margin: "10px"}}>
+         <div style={{marginLeft: "auto"}}>
          <Button type="primary" onClick={()=>{setIsModalOpen(true)}}>
             <PlusOutlined/>
              新建考试
          </Button>
-
-         <Button type="primary" onClick={handleBatchDelete}>
+        
+         <Button type="primary" onClick={handleBatchDelete} style={{marginLeft:"15px"}}>
                         批量删除
          </Button>
+         </div>   
          </div>
          <StepsForm
         onFinish={async (values) => {
@@ -191,7 +254,7 @@ export const QuizManagement = (  ) => {
                 single: generateRandomArray(singleNum,Num.singleMax),
                 multi: generateRandomArray(multiNum,Num.multiMax),
                 tof: generateRandomArray(tofNum,Num.tofMax),
-                text:generateRandomArray(textNum,Num.textNum)
+                text: generateRandomArray(textNum,Num.textMax)
             }
           }
           console.log(resp)
@@ -201,6 +264,7 @@ export const QuizManagement = (  ) => {
           await waitTime(1000)
           getQuizListData()
           setIsModalOpen(false)
+          setTargetKeys([])
           message.success('提交成功')
         }}
         formProps={{
@@ -323,8 +387,15 @@ export const QuizManagement = (  ) => {
  
       </StepsForm>
 
-
+        { isQuestionVisible && (<QuestionTransfer 
+            isQuestionVisible = {isQuestionVisible}
+            setIsQuestionVisible = {setIsQuestionVisible}
+            targetQuestionKeys = {targetQuestionKeys}
+            allQuestions = {allQuestions}
+            info = {info} /> )}
+        
         <Table columns={columns} dataSource={quizListData} onChange={onChange}
+         rowKey="list_id"
          rowSelection={{
             type: 'checkbox',
             onChange: handleRowSelection

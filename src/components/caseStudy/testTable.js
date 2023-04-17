@@ -1,14 +1,71 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ProTable from '@ant-design/pro-table';
 import PropTypes from "prop-types";
 import api from "../../api/api";
+import {Button, DatePicker, InputNumber} from "antd";
+import moment from 'moment';
+import {SearchOutlined} from "@ant-design/icons";
 
 export const TestTable=(props)=> {
     const [dataSource, setDataSource] = useState([]);
     const [filteredDataSource, setFilteredDataSource] = useState([]);
     const actionRef = useRef(); // 用于获取 reload 方法的 ref
 
-    // 获取数据并更新数据源
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [dateFilteredInfo, setDateFilteredInfo] = useState({});
+    const handleDateFilter = (value, record) => {
+        const {bg_time:date_time} = record;
+        const admissionDate = moment(startDate)
+        const dischargeDate = moment(endDate);
+        if (admissionDate && dischargeDate) {
+            return date_time >= admissionDate && date_time <= dischargeDate;
+        } else if (admissionDate) {
+            return date_time >= admissionDate;
+        } else if (dischargeDate) {
+            return date_time <= dischargeDate;
+        }
+        return true;
+    };
+    const handleDateReset = () => {
+        setStartDate(null);
+        setEndDate(null);
+        setDateFilteredInfo({});
+    };
+    const handleDateConfirm = () => {
+        setDateFilteredInfo({
+            bg_time: {
+                ...dateFilteredInfo.bg_time,
+                filters: [{text: `${startDate} - ${endDate}`, value: 'bg_time'}],
+                filteredValue: [startDate, endDate],
+            },
+        });
+    };
+    // eslint-disable-next-line no-unused-vars
+    const dateFilterDropdown = ({setSelectedKeys, confirm, clearFilters}) => (
+        <div style={{ padding: 8 }}>
+            <DatePicker
+                placeholder="开始日期"
+                style={{ width: 120, marginRight: 8 }}
+                value={startDate ? moment(startDate, 'YYYY-MM-DD') : null}
+                onPressEnter={confirm}
+                onChange={(date, dateString) => setStartDate(dateString)}
+            />
+            <DatePicker
+                placeholder="结束日期"
+                style={{ width: 120, marginRight: 8 }}
+                value={endDate ? moment(endDate, 'YYYY-MM-DD') : null}
+                onPressEnter={confirm}
+                onChange={(date, dateString) => setEndDate(dateString)}
+            />
+            <div style={{ marginTop: "10px", gap: "5px", display: "flex" }}>
+                <Button onClick={handleDateReset}>重置</Button>
+                <Button onClick={handleDateConfirm}>筛选</Button>
+            </div>
+        </div>
+    );
+
+
     const fetchData = async () => {
         const res = await api.getCaseByDiseaseName(props.caseName)
         const data = res.data

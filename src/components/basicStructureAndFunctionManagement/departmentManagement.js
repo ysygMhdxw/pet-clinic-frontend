@@ -39,7 +39,6 @@ export const DepartmentManagement = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
 
-
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         console.log(selectedKeys);
         confirm();
@@ -157,9 +156,8 @@ export const DepartmentManagement = () => {
                 };
             },
             // 第一行不允许编辑
-            editable: (text, record, index) => {
-                return index !== 0;
-            },
+            editable:false,
+            tooltip: "不允许修改！",
             width: '10%',
             ...getColumnSearchProps("id","科室编号")
         },
@@ -183,6 +181,12 @@ export const DepartmentManagement = () => {
             key: 'description',
             dataIndex: 'description',
             ...getColumnSearchProps("description","科室简介")
+        },
+        {
+            title: '科室负责人',
+            key: 'manager',
+            dataIndex: 'manager',
+            ...getColumnSearchProps("manager","科室负责人")
         },
         {
             title: '操作',
@@ -266,6 +270,7 @@ export const DepartmentManagement = () => {
         try {
             const res = await api.addDepartment(department)
             const data = res.data
+            getDepartmentData()
             success("添加科室成功！")
             console.log(data)
         } catch (error) {
@@ -281,15 +286,21 @@ export const DepartmentManagement = () => {
         setSelectedRows(selectedRows);
     };
 
-    const handleBatchDelete = () => {
+    const handleBatchDelete = async () => {
         if (selectedRows.length === 0) {
             showError('请选择要删除的行！');
             return;
         }
         const keys = selectedRows.map((row) => row.id);
-        deleteDepartmentById(keys, (error) => {
-            if (error) showError("批量删除失败，请稍后再试！");
-        });
+        console.log(keys)
+        try {
+            await api.deleteDepartments(keys);
+            await getDepartmentData();
+            success('批量删除成功！');
+        } catch (error) {
+            console.error(error);
+            showError("批量删除科室失败，请稍后重试！");
+        }
         setSelectedRows([]);
     };
 
@@ -332,6 +343,15 @@ export const DepartmentManagement = () => {
                                 width="md"
                                 label="科室简介"
                                 placeholder="请输入科室简介"
+                            />
+                        </ProForm.Group>
+                        <ProForm.Group>
+                            <ProFormText
+                                name='manager'
+                                width="md"
+                                label="科室负责人"
+                                placeholder="请输入科室负责人"
+                                tooltip={"负责人之间用空格分隔"}
                             />
                         </ProForm.Group>
 

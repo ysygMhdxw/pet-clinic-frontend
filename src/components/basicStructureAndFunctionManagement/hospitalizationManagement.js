@@ -1,11 +1,12 @@
-import {Button, Input, InputNumber, message, Popconfirm, Space} from "antd";
+import {Button, Form, Input, InputNumber, message, Popconfirm, Space} from "antd";
 import api from "../../api/api";
+import moment from 'moment';
 import React, {useEffect, useRef, useState} from "react";
 import {
     EditableProTable,
     ModalForm,
-    ProForm, ProFormMoney,
-    ProFormText, ProFormTextArea
+    ProForm, ProFormDatePicker, ProFormMoney,
+    ProFormText
 } from "@ant-design/pro-components";
 import {FilterOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
@@ -22,7 +23,7 @@ const waitTime = (time = 100) => {
     });
 };
 
-export const MedicineManagement = () => {
+export const HospitalizationManagement = () => {
     const [messageApi, contextHolder] = message.useMessage();
     const success = (msg) => {
         messageApi.success(msg);
@@ -31,11 +32,12 @@ export const MedicineManagement = () => {
         messageApi.error(msg);
     };
 
-    const [medicineData, setMedicineData] = useState([])
+    const [hospitalizationData, setHospitalizationData] = useState([])
     const [editableKeys, setEditableRowKeys] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+    const [form] = Form.useForm()
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         console.log(selectedKeys);
@@ -212,76 +214,190 @@ export const MedicineManagement = () => {
         const keys = selectedRows.map((row) => row.id);
         console.log("keys: ", keys)
         try {
-            const res = await api.deleteMedicines(keys)
+            const res = await api.deleteHospitalizations(keys)
             const data = res.data
             console.log(data)
-            getMedicineData()
-            success("批量删除药品成功！")
+            success("批量删除住院数据成功！")
+            getHospitalizationData()
         } catch (error) {
             console.error(error);
-            showError("批量删除药品失败，请稍后再试！");
+            showError("批量删除住院数据失败，请稍后再试！");
         }
-        setSelectedRows([]);
     };
 
+
+    //datePicker
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [dateFilteredInfo, setDateFilteredInfo] = useState({});
+    const handleDateFilter = (value, record) => {
+        console.log(value)
+        console.log("record", record)
+        const {bg_time: date_time} = record;
+        console.log(startDate)
+        console.log(endDate)
+        const admissionDate = moment(startDate)
+        const dischargeDate = moment(endDate);
+        if (admissionDate && dischargeDate) {
+            return date_time >= admissionDate && date_time <= dischargeDate;
+        } else if (admissionDate) {
+            return date_time >= admissionDate;
+        } else if (dischargeDate) {
+            return date_time <= dischargeDate;
+        }
+        return true;
+    };
+    const handleDateReset = () => {
+        setStartDate(null);
+        setEndDate(null);
+        setDateFilteredInfo({});
+    };
+    const handleDateConfirm = () => {
+        setDateFilteredInfo({
+            time: {
+                ...dateFilteredInfo.time,
+                filters: [{text: `${startDate} - ${endDate}`, value: 'time'}],
+                filteredValue: [startDate, endDate],
+            },
+        });
+    };
+    const dateFormatRegex = /^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
+    // eslint-disable-next-line no-unused-vars
+    const dateFilterDropdown = ({setSelectedKeys, confirm, clearFilters}) => (
+        <div style={{padding: 8}}>
+            <Form form={form} initialValues={{}}>
+                <Form.Item
+                    label="开始日期"
+                    name="startDate"
+                    rules={[
+                        {
+                            required: true,
+                            message: '请填写日期',
+                        },
+                        {
+                            pattern: dateFormatRegex,
+                            message: '日期格式不正确，请输入 yyyy-mm-dd 格式的日期',
+                        },
+                    ]}
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                >
+                    <Input
+                        placeholder="开始日期"
+                        style={{width: 120, marginRight: 8}}
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="结束日期"
+                    name="endDate"
+                    rules={[
+                        {
+                            required: true,
+                            message: '请填写日期',
+                        },
+                        {
+                            pattern: dateFormatRegex,
+                            message: '日期格式不正确，请输入 yyyy-mm-dd 格式的日期',
+                        },
+                    ]}
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                >
+                    <Input
+                        placeholder="结束日期"
+                        style={{width: 120, marginRight: 8}}
+                    />
+                </Form.Item>
+            </Form>
+            <div style={{marginTop: "10px", gap: "5px", display: "flex"}}>
+                <Button onClick={handleDateReset}>重置</Button>
+                <Button onClick={handleDateConfirm}>筛选</Button>
+            </div>
+        </div>
+    );
+
+
     useEffect(() => {
-        getMedicineData()
+        getHospitalizationData()
     }, []);
 
-    async function getMedicineData() {
+    const formattedData = (data) => data.map(item => {
+        const bgTimeObj = new Date(item.bg_time);
+        const edTimeObj = new Date(item.ed_time);
+
+        const year1 = bgTimeObj.getFullYear();
+        const month1 = String(bgTimeObj.getMonth() + 1).padStart(2, '0');
+        const day1 = String(bgTimeObj.getDate()).padStart(2, '0');
+        const formattedBgTime = `${year1}-${month1}-${day1}`;
+
+        const year2 = edTimeObj.getFullYear();
+        const month2 = String(edTimeObj.getMonth() + 1).padStart(2, '0');
+        const day2 = String(edTimeObj.getDate()).padStart(2, '0');
+        const formattedEdTime = `${year2}-${month2}-${day2}`;
+
+        return {
+            ...item,
+            bg_time: formattedBgTime,
+            ed_time: formattedEdTime
+        };
+    });
+
+    async function getHospitalizationData() {
         try {
-            const res = await api.getMedicine()
+            const res = await api.getHospitalization()
             const data = res.data
-            setMedicineData(data.medicinelist.filter((item) => item.type === "药品"))
+            let datas = formattedData(data.hospitalizationlist)
+            console.log(datas)
+            setHospitalizationData(datas)
         } catch (error) {
             console.error(error);
-            showError("不存在药品数据！");
+            showError("不存在住院数据！");
         }
     }
 
-    async function deleteMedicineById(medicine_id, onError) {
+    async function deleteHospitalizationById(hospitalization_id, onError) {
         try {
-            const res = await api.deleteMedicine(medicine_id)
+            const res = await api.deleteHospitalization(hospitalization_id)
             const data = res.data
             console.log(data)
-            getMedicineData()
-            success("删除药品成功！")
+            getHospitalizationData()
+            success("删除住院信息成功！")
         } catch (error) {
             console.error(error);
-            onError("删除药品失败！");
-        }
-
-    }
-
-    async function editMedicine(medicine) {
-        try {
-            const res = await api.editMedicine(medicine)
-            const data = res.data
-            console.log(data)
-            getMedicineData()
-            success("修改药品成功！")
-        } catch (error) {
-            console.error(error);
-            showError("修改药品失败！");
+            onError("删除住院信息失败！");
         }
     }
 
-    async function addMedicine(medicine) {
+    async function editHospitalization(hospitalization) {
         try {
-            const res = await api.addMedicine(medicine)
+            const res = await api.editHospitalilzation(hospitalization)
             const data = res.data
             console.log(data)
-            getMedicineData()
-            success("添加药品成功！")
+            getHospitalizationData()
+            success("修改住院信息成功！")
+        } catch (error) {
+            getHospitalizationData()
+            console.error(error);
+            showError("修改住院信息失败！");
+        }
+    }
+
+    async function addHospitalization(hospitalization) {
+        try {
+            const res = await api.addHospitalization(hospitalization)
+            const data = res.data
+            console.log(data)
+            getHospitalizationData()
+            success("添加住院成功！")
         } catch (error) {
             console.error(error);
-            showError("添加药品失败！");
+            showError("添加住院失败！");
         }
     }
 
     const columns = [
         {
-            title: '药品编号',
+            title: '住院编号',
             dataIndex: 'id',
             key: 'id',
             formItemProps: (form, {rowIndex}) => {
@@ -293,12 +409,12 @@ export const MedicineManagement = () => {
             // 第一行不允许编辑
             editable: false,
             width: '10%',
-            ...getColumnSearchProps("id", "药品编号")
+            ...getColumnSearchProps("id", "住院编号")
         },
         {
-            title: '药品名称',
-            key: 'name',
-            dataIndex: 'name',
+            title: '住院病例编号',
+            key: 'case_id',
+            dataIndex: 'case_id',
             formItemProps: (form, {rowIndex}) => {
                 return {
                     rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
@@ -307,31 +423,51 @@ export const MedicineManagement = () => {
             editable: (text, record, index) => {
                 return index !== 0;
             },
-            width: '10%',
-            ...getColumnSearchProps("name", "药品名称")
+            width: '15%',
+            ...getColumnSearchProps("case_id", "住院病例编号")
         },
         {
-            title: '药品种类',
-            key: 'tag',
-            dataIndex: 'tag',
-            width: '10%',
-            ...getColumnSearchProps("tag", "药品种类")
+            title: '住院开始日期',
+            key: 'bg_time',
+            dataIndex: 'bg_time',
+            width: '15%',
+            valueType: 'date',
+            editable: true,
+            required: true,
+            fieldProps: {
+                format: 'YYYY-MM-DD',
+                showTime: true,
+                allowClear: false,
+            },
+            filterIcon: <FilterOutlined/>,
+            filterDropdown: dateFilterDropdown,
+            filteredValue: dateFilteredInfo.time && dateFilteredInfo.time.filteredValue,
+            onFilter: handleDateFilter,
         },
         {
-            title: '药品简介',
-            key: 'description',
-            dataIndex: 'description',
-            ...getColumnSearchProps("description", "药品简介")
+            title: '住院结束日期',
+            key: 'ed_time',
+            dataIndex: 'ed_time',
+            width: '15%',
+            valueType: 'date',
+            editable: true,
+            required: true,
+            fieldProps: {
+                format: 'YYYY-MM-DD',
+                showTime: true,
+                allowClear: false,
+            },
+            ...getColumnSearchProps('ed_time', '住院结束日期'),
         },
         {
-            title: '药品价格（元）',
+            title: '住院价格（元）',
             key: 'price',
             dataIndex: 'price',
             width: '15%',
             fieldProps: {
                 type: 'number',
                 min: 0,
-                precision:0
+                precision: 0
             },
             filterIcon: <FilterOutlined/>,
             filterDropdown: priceFilterDropdown,
@@ -357,7 +493,7 @@ export const MedicineManagement = () => {
                     title={"删除数据"}
                     description={"确认删除此条数据？删除后将无法恢复。"}
                     onConfirm={async () => {
-                        deleteMedicineById(record.id, (error) => {
+                        deleteHospitalizationById(record.id, (error) => {
                             if (error) showError(error);
                         });
                         await waitTime(500);
@@ -378,7 +514,7 @@ export const MedicineManagement = () => {
     return (
         <>
             {contextHolder}
-            <h1 style={{marginBottom: "1"}}>药品管理</h1>
+            <h1 style={{marginBottom: "1"}}>住院管理</h1>
             <div style={{display: "flex", justifyContent: "flex-end", gap: "10px", marginRight: "3%"}}>
                 <div style={{marginLeft: "auto"}}>
                     <ModalForm
@@ -386,14 +522,31 @@ export const MedicineManagement = () => {
                         trigger={
                             <Button type="primary">
                                 <PlusOutlined/>
-                                新建药品
+                                新建住院信息
                             </Button>
                         }
                         onFinish={async (values) => {
+                            try {
+                                // 验证出院时间必须早于入院时间
+                                const admissionDate = moment(values.bg_time)
+                                const dischargeDate = moment(values.ed_time);
+                                console.log("admission date", admissionDate)
+                                console.log("discharge date", dischargeDate)
+
+                                if (admissionDate && dischargeDate && dischargeDate.isBefore(admissionDate)) {
+                                    throw new Error('住院结束日期必须晚于住院开始日期！')
+                                }
+                                addHospitalization({id: random(0, 10000000), ...values})
+                                await waitTime(500);
+                                // 执行其他操作，比如提交表单数据到后端
+                                console.log('表单验证成功，提交的数据为：', values);
+                            } catch (error) {
+                                getHospitalizationData()
+                                console.error('表单验证失败：', error);
+                                showError(error.message);
+                            }
                             await waitTime(500);
-                            addMedicine({id: random(0, 10000000), type: "药品", ...values})
-                            console.log(values);
-                            getMedicineData();
+                            getHospitalizationData();
                             return true;
                         }}
                     >
@@ -401,18 +554,33 @@ export const MedicineManagement = () => {
                             <ProFormText
                                 width="md"
                                 name="name"
-                                label="药品名称"
+                                label="住院名称"
                                 tooltip="最长为 24 位"
                                 placeholder="请输入名称"
                             />
-                            {/*<ProFormText width="md" name="company" label="我方公司名称" placeholder="请输入名称"/>*/}
                         </ProForm.Group>
                         <ProForm.Group>
                             <ProFormText
-                                name='tag'
+                                name='case_id'
                                 width="md"
-                                label="药品种类"
-                                placeholder="请输入药品种类"
+                                label="住院病例编号"
+                                placeholder="请输入住院病例编号"
+                            />
+                        </ProForm.Group>
+                        <ProForm.Group>
+                            <ProFormDatePicker
+                                name='bg_time'
+                                width="md"
+                                label="住院开始日期"
+                                placeholder="请输入住院开始日期"
+                            />
+                        </ProForm.Group>
+                        <ProForm.Group>
+                            <ProFormDatePicker
+                                name='ed_time'
+                                width="md"
+                                label="住院结束日期"
+                                placeholder="请输入住院结束日期"
                             />
                         </ProForm.Group>
                         <ProForm.Group>
@@ -425,20 +593,10 @@ export const MedicineManagement = () => {
                                 }}
                                 min={0}
                                 tooltip="请输入正确格式的金额（单位为元）"
-                                label="药品价格（元）"
-                                placeholder="请输入药品价格"
+                                label="住院价格（元）"
+                                placeholder="请输入住院价格"
                             />
                         </ProForm.Group>
-                        <ProForm.Group>
-                            <ProFormTextArea
-                                name='description'
-                                width="md"
-                                label="药品简介"
-                                placeholder="请输入药品简介"
-                            />
-                        </ProForm.Group>
-
-
                     </ModalForm>
                 </div>
                 <div>
@@ -454,8 +612,9 @@ export const MedicineManagement = () => {
             </div>
 
             <EditableProTable
+                form={form}
                 rowKey="id"
-                headerTitle="药品基本信息"
+                headerTitle="住院基本信息"
                 maxLength={5}
                 scroll={{
                     x: 960,
@@ -471,19 +630,36 @@ export const MedicineManagement = () => {
                     type: 'checkbox',
                     onChange: handleRowSelection
                 }}
-                value={medicineData}
-                onChange={setMedicineData}
+                value={hospitalizationData}
+                onChange={setHospitalizationData}
                 editable={{
                     type: 'multiple',
                     editableKeys,
                     // eslint-disable-next-line no-unused-vars
-                    onSave: async (rowKey, data, _row) => {
-                        editMedicine(data)
-                        await waitTime(500);
+                    onSave: async (rowKey, data, row) => {
+                        try {
+                            // 验证出院时间必须早于入院时间
+                            const admissionDate = moment(data.bg_time)
+                            const dischargeDate = moment(data.ed_time);
+                            console.log("admission date", admissionDate)
+                            console.log("discharge date", dischargeDate)
+
+                            if (admissionDate && dischargeDate && dischargeDate.isBefore(admissionDate)) {
+                                throw new Error('住院结束日期必须晚于住院开始日期！')
+                            }
+                            editHospitalization(data)
+                            await waitTime(500);
+                            // 执行其他操作，比如提交表单数据到后端
+                            console.log('表单验证成功，提交的数据为：', data);
+                        } catch (error) {
+                            getHospitalizationData()
+                            console.error('表单验证失败：', error);
+                            showError(error.message);
+                        }
                     },
                     // eslint-disable-next-line no-unused-vars
                     onDelete: async (rowKey, data, _row) => {
-                        deleteMedicineById(data.id, (error) => {
+                        deleteHospitalizationById(data.id, (error) => {
                             if (error) showError(error);
                         });
                         await waitTime(500);

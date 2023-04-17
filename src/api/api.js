@@ -62,9 +62,25 @@ const api = {
         const url = `${base.ownUrl}${base.getDepartment}`
         return httpGet(url)
     },
+    getDepartmentById(id) {
+        const url = `${base.ownUrl}${base.getDepartment}${id}/`
+        return httpGet(url)
+    },
+    getDepartmentInstrumentationById(id) {
+        const url = `${base.ownUrl}${base.getDepartmentInstrumentation}${id}`
+        return httpGet(url)
+    },
+    getDepartmentCheckupById(id) {
+        const url = `${base.ownUrl}${base.getDepartmentCheckup}${id}`
+        return httpGet(url)
+    },
     deleteDepartment(department_id) {
         const url = `${base.ownUrl}${base.getDepartment}${department_id}/`
         return httpDelete(url)
+    },
+    deleteDepartments(department_ids) {
+        const url = `${base.ownUrl}${base.getDepartment}`
+        return Delete(url,department_ids)
     },
     editDepartment(department) {
         const url = `${base.ownUrl}${base.getDepartment}`
@@ -83,6 +99,10 @@ const api = {
         const url = `${base.ownUrl}${base.getMedicine}${medicine_id}/`
         return httpDelete(url)
     },
+    deleteMedicines(medicine_ids) {
+        const url = `${base.ownUrl}${base.getMedicine}`
+        return Delete(url,medicine_ids)
+    },
     editMedicine(medicine) {
         const url = `${base.ownUrl}${base.getMedicine}`
         return httpPut(url, medicine)
@@ -90,6 +110,69 @@ const api = {
     addMedicine(medicine) {
         const url = `${base.ownUrl}${base.getMedicine}`
         return httpPost(url, medicine)
+    },
+    //Instrument Management API
+    getInstrument() {
+        const url = `${base.ownUrl}${base.getInstrument}`
+        return httpGet(url)
+    },
+    deleteInstrument(instrument_id) {
+        const url = `${base.ownUrl}${base.getInstrument}${instrument_id}/`
+        return httpDelete(url)
+    },
+    deleteInstruments(instrument_ids) {
+        const url = `${base.ownUrl}${base.getInstrument}`
+        return Delete(url,instrument_ids)
+    },
+    editInstrument(instrument) {
+        const url = `${base.ownUrl}${base.getInstrument}`
+        return httpPut(url, instrument)
+    },
+    addInstrument(instrument) {
+        const url = `${base.ownUrl}${base.getInstrument}`
+        return Post(url, instrument)
+    },
+    //Checkup Management API
+    getCheckup() {
+        const url = `${base.ownUrl}${base.getCheckup}`
+        return httpGet(url)
+    },
+    deleteCheckup(checkup_id) {
+        const url = `${base.ownUrl}${base.getCheckup}${checkup_id}/`
+        return httpDelete(url)
+    },
+    deleteCheckups(checkupids) {
+        const url = `${base.ownUrl}${base.getCheckup}`
+        return Delete(url,checkupids)
+    },
+    editCheckup(checkup) {
+        const url = `${base.ownUrl}${base.getCheckup}`
+        return httpPut(url, checkup)
+    },
+    addCheckup(checkup) {
+        const url = `${base.ownUrl}${base.getCheckup}`
+        return Post(url, checkup)
+    },
+    //Hospitalization Management API
+    getHospitalization() {
+        const url = `${base.ownUrl}${base.getHospitalization}`
+        return httpGet(url)
+    },
+    deleteHospitalization(hospitalization_id) {
+        const url = `${base.ownUrl}${base.getHospitalization}${hospitalization_id}/`
+        return httpDelete(url)
+    },
+    deleteHospitalizations(hospitalizationIds) {
+        const url = `${base.ownUrl}${base.getHospitalization}`
+        return Delete(url,hospitalizationIds);
+    },
+    editHospitalilzation(hospitalization) {
+        const url = `${base.ownUrl}${base.getHospitalization}`
+        return Put(url, hospitalization)
+    },
+    addHospitalization(hospitalization) {
+        const url = `${base.ownUrl}${base.getHospitalization}`
+        return Post(url, hospitalization)
     },
     //TestAPI methods
     getQuestionList() {

@@ -13,8 +13,10 @@ import { QuestionManagement } from "./caseTestManagement/questionManagement";
 import { QuizManagement } from './caseTestManagement/quizManagement';
 import {RolePlay} from "./rolePlay/rolePlay";
 import {UserCenter} from "./userCenter/userCenter";
-import {GuideShow} from "./threeD/guideShow";
-
+import {GuideShow} from "./guideShow/guideShow";
+import {InstrumentManagement} from "./basicStructureAndFunctionManagement/instrumentManagement";
+import {HospitalizationManagement} from "./basicStructureAndFunctionManagement/hospitalizationManagement";
+import {CheckUpManagement} from "./basicStructureAndFunctionManagement/checkupManagement";
 
 export const ContextComponents = (props) => {
     if(props.contextString===ContextString.userCenter){
@@ -48,6 +50,18 @@ export const ContextComponents = (props) => {
     }
     else if(props.contextString === ContextString.guideShow){
         return <GuideShow/>
+    }
+    else if(props.contextString === ContextString.fileManagement){
+        return "诶呀！有这个东西吗"
+    }
+    else if(props.contextString === ContextString.instrumentManagement){
+        return <InstrumentManagement/>
+    }
+    else if(props.contextString===ContextString.hospitalizationManagement){
+        return <HospitalizationManagement/>
+    }
+    else if(props.contextString===ContextString.checkupManagement){
+        return <CheckUpManagement/>
     }
     return (
         <>

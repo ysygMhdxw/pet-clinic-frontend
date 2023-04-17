@@ -13,7 +13,7 @@ import {
     PieChartOutlined,
     ProjectOutlined,
     ReadOutlined,
-    TeamOutlined,
+    TeamOutlined, ToolOutlined,
     UserOutlined
 } from '@ant-design/icons';
 import {Breadcrumb, Layout, Menu, theme} from 'antd';
@@ -68,9 +68,10 @@ const backItems = [
             getItem('人员管理', '人员管理', <ContactsOutlined/>),
             getItem('药品管理', '药品管理', <MedicineBoxOutlined/>),
             getItem('疫苗管理', '疫苗管理', <ReadOutlined/>),
-            getItem('档案管理', '档案管理', <DatabaseOutlined/>),
-            getItem('收费管理', '收费管理', <DollarOutlined/>),
-            getItem('化验项目管理', '化验项目管理', <ProjectOutlined/>),
+            // getItem('档案管理', '档案管理', <DatabaseOutlined/>),
+            getItem('器械管理', '器械管理', <ToolOutlined/>),
+            // getItem('收费管理', '收费管理', <DollarOutlined/>),
+            getItem('检查项目管理', '检查项目管理', <ProjectOutlined/>),
             getItem('住院管理', '住院管理', <ClusterOutlined/>),
 
         ]),

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import {  StepsForm } from '@ant-design/pro-components';
 import { Table, Space, Button, message, Form, Input, InputNumber ,Modal,Transfer} from 'antd';
 import React from 'react';
@@ -142,7 +141,7 @@ export const QuizManagement = (  ) => {
         setTargetKeys(newTargetKeys);
       };
       const handleSearch = (dir, value) => {
-        //console.log('search:', dir, value);
+        console.log('search:', dir, value);
       };
       useEffect(() => {
         getStudentsData();

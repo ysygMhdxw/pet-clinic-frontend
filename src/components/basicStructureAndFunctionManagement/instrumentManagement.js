@@ -243,7 +243,7 @@ export const InstrumentManagement = () => {
             tooltip: "不允许修改",
             // 第一行不允许编辑
             editable: false,
-            width: '10%',
+            width: '15%',
             sorter: (a, b) => a.id - b.id,
             ...getColumnSearchProps("id", "器械编号")
         },

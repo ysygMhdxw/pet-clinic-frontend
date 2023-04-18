@@ -5,11 +5,12 @@ import React, {useEffect, useRef, useState} from "react";
 import {
     EditableProTable,
     ModalForm,
-    ProForm, ProFormDatePicker, ProFormMoney,
+    ProForm, ProFormDatePicker, ProFormDependency, ProFormMoney, ProFormSelect,
     ProFormText
 } from "@ant-design/pro-components";
 import {FilterOutlined, PlusOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
+import PropTypes from "prop-types";
 
 function random(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -23,7 +24,7 @@ const waitTime = (time = 100) => {
     });
 };
 
-export const HospitalizationManagement = () => {
+export const HospitalizationManagement = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
     const success = (msg) => {
         messageApi.success(msg);
@@ -226,7 +227,6 @@ export const HospitalizationManagement = () => {
     };
 
 
-    //datePicker
 
 
     useEffect(() => {
@@ -294,6 +294,7 @@ export const HospitalizationManagement = () => {
         }
     }
 
+
     async function addHospitalization(hospitalization) {
         try {
             const res = await api.addHospitalization(hospitalization)
@@ -320,7 +321,7 @@ export const HospitalizationManagement = () => {
             tooltip: "不允许修改",
             // 第一行不允许编辑
             editable: false,
-            width: '10%',
+            width: '15%',
             sorter: (a, b) => a.id - b.id,
             ...getColumnSearchProps("id", "住院编号")
         },
@@ -328,6 +329,8 @@ export const HospitalizationManagement = () => {
             title: '住院病例编号',
             key: 'case_id',
             dataIndex: 'case_id',
+            valueType: "select",
+            request : async () => props.caseNumberOptions,
             formItemProps: (form, {rowIndex}) => {
                 return {
                     rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
@@ -352,6 +355,7 @@ export const HospitalizationManagement = () => {
                 showTime: true,
                 allowClear: false,
             },
+            ...getColumnSearchProps("bg_time", "住院开始时间")
         },
         {
             title: '住院结束日期',
@@ -366,6 +370,7 @@ export const HospitalizationManagement = () => {
                 showTime: true,
                 allowClear: false,
             },
+            ...getColumnSearchProps("ed_time", "住院结束时间")
         },
         {
             title: '住院价格（元）',
@@ -468,29 +473,47 @@ export const HospitalizationManagement = () => {
                             />
                         </ProForm.Group>
                         <ProForm.Group>
-                            <ProFormText
+                            <ProFormSelect
                                 name='case_id'
                                 width="md"
                                 label="住院病例编号"
+                                options={props.caseNumberOptions}
                                 placeholder="请输入住院病例编号"
                             />
                         </ProForm.Group>
-                        <ProForm.Group>
-                            <ProFormDatePicker
-                                name='bg_time'
-                                width="md"
-                                label="住院开始日期"
-                                placeholder="请输入住院开始日期"
-                            />
-                        </ProForm.Group>
-                        <ProForm.Group>
-                            <ProFormDatePicker
-                                name='ed_time'
-                                width="md"
-                                label="住院结束日期"
-                                placeholder="请输入住院结束日期"
-                            />
-                        </ProForm.Group>
+                        <ProFormDependency name={['bg_time', 'ed_time']}>
+                            {/* eslint-disable-next-line no-unused-vars */}
+                            {({bg_time, ed_time}) => {
+                                return (
+                                    <div>
+                                        <ProForm.Group>
+                                            <ProFormDatePicker
+                                                name='bg_time'
+                                                width="md"
+                                                label="住院开始日期"
+                                                placeholder="请输入住院开始日期"
+                                            />
+                                        </ProForm.Group>
+                                        <ProForm.Group>
+                                            <ProFormDatePicker
+                                                name='ed_time'
+                                                width="md"
+                                                label="住院结束日期"
+                                                placeholder="请输入住院结束日期"
+                                                rules={[{
+                                                    validator: (_, value) => {
+                                                        if (!value || !bg_time || moment(value).isSameOrAfter(bg_time)) {
+                                                            return Promise.resolve();
+                                                        }
+                                                        return Promise.reject('住院结束日期不能早于开始日期');
+                                                    }
+                                                }]}
+                                            />
+                                        </ProForm.Group>
+                                    </div>
+                                );
+                            }}
+                        </ProFormDependency>
                         <ProForm.Group>
                             <ProFormMoney
                                 name='price'
@@ -577,4 +600,7 @@ export const HospitalizationManagement = () => {
             />
         </>
     )
+}
+HospitalizationManagement.propTypes={
+    caseNumberOptions:PropTypes.array
 }

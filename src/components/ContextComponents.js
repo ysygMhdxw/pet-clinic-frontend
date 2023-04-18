@@ -15,8 +15,8 @@ import {RolePlay} from "./rolePlay/rolePlay";
 import {UserCenter} from "./userCenter/userCenter";
 import {GuideShow} from "./guideShow/guideShow";
 import {InstrumentManagement} from "./basicStructureAndFunctionManagement/instrumentManagement";
-import {HospitalizationManagement} from "./basicStructureAndFunctionManagement/hospitalizationManagement";
 import {CheckUpManagement} from "./basicStructureAndFunctionManagement/checkupManagement";
+import {Hospitalization} from "./basicStructureAndFunctionManagement/hospitalization";
 
 export const ContextComponents = (props) => {
     if(props.contextString===ContextString.userCenter){
@@ -58,7 +58,7 @@ export const ContextComponents = (props) => {
         return <InstrumentManagement/>
     }
     else if(props.contextString===ContextString.hospitalizationManagement){
-        return <HospitalizationManagement/>
+        return <Hospitalization/>
     }
     else if(props.contextString===ContextString.checkupManagement){
         return <CheckUpManagement/>

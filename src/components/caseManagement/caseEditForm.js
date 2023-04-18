@@ -609,13 +609,20 @@ export const CaseEditForm = (props) => {
                     <ProFormText
                         width="md"
                         name="case_number"
-                        label="病例编号"
+                        label="病例标识"
+                        disabled={true}
                         tooltip="最长为 24 位"
                     />
                     <ProFormSelect
                         width="md"
                         name="disease_type"
                         label="病例种类"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入病例种类！',
+                            },
+                        ]}
                         placeholder="请选择病例种类"
                         onChange={getTableLittleTypesData}
                         options={tableBigType}
@@ -624,6 +631,12 @@ export const CaseEditForm = (props) => {
                         width="md"
                         name="disease_name"
                         label="病种名称"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入病种名称！',
+                            },
+                        ]}
                         placeholder="请选择病种名称"
                         options={tableLittleType}
                         tooltip={"请先选择病例种类！"}
@@ -632,12 +645,24 @@ export const CaseEditForm = (props) => {
                         width="md"
                         name="pet_name"
                         label="宠物名称"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入宠物名称！',
+                            },
+                        ]}
                         placeholder="请输入宠物名称"
                     />
                     <ProFormText
                         width="md"
                         name="pet_species"
                         label="宠物种类"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入宠物种类！',
+                            },
+                        ]}
                         placeholder="请输入宠物种类"
                     />
                     <ProFormMoney
@@ -649,6 +674,12 @@ export const CaseEditForm = (props) => {
                         }}
                         min={0}
                         max={100}
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入宠物年龄！',
+                            },
+                        ]}
                         label="宠物年龄"
                         placeholder="请输入宠物年龄"
                         tooltip="仅支持整数数字"
@@ -657,6 +688,12 @@ export const CaseEditForm = (props) => {
                         width="md"
                         name="owner_name"
                         label="宠物主人姓名"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入宠物主人姓名！',
+                            },
+                        ]}
                         placeholder="请输入宠物主人姓名"
                     />
                     <ProFormText

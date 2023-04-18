@@ -686,7 +686,6 @@ export const CaseNewForm = (props) => {
                     <ProFormText
                         width="md"
                         name="owner_phone"
-
                         rules={[{
                             require: true, message: "请输入正确格式的电话号码！",
                             pattern: new RegExp('^(((\\+86)|(\\+86-))|((86)|(86\\-))|((0086)|(0086\\-)))?1[3|5|7|8]\\d{9}$', 'g')

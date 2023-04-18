@@ -345,8 +345,8 @@ export const CheckUpTable = (props) => {
                 dataIndex: 'checkup_pics',
                 key: 'checkup_pics',
                 render: (pics) => {
-                    console.log(pics)
                     const allEmpty = pics.every((pic) => pic === '');
+                    pics = pics.filter((pic) => pic !== '');
                     if(allEmpty){
                         return (
                             <div>
@@ -511,6 +511,7 @@ export const CheckUpTable = (props) => {
             <div>
                 <div style={{marginBottom: "5%"}}>
                     <Button type={"primary"} onClick={() => {
+                        getCheckupItemData()
                         setDisplayFlg(false)
                     }}>返回到病例检查表格</Button>
                 </div>
@@ -560,7 +561,7 @@ export const CheckUpTable = (props) => {
                             <ProForm.Group>
                                 <ProFormText
                                     width="md"
-                                    name="name"
+                                    name="checkup_item"
                                     label="检查项目名称"
                                     rules={[
                                         {
@@ -574,7 +575,7 @@ export const CheckUpTable = (props) => {
                             </ProForm.Group>
                             <ProForm.Group>
                                 <ProFormTextArea
-                                    name='description'
+                                    name='checkup_text'
                                     width="md"
                                     label="检查项目简介"
                                     placeholder="请输入检查项目简介"

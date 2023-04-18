@@ -55,8 +55,9 @@ const api = {
         return httpGet(url)
     },
     deleteCaseCheckUpByCaseupIds(caseCheckupIds) {
+        console.log("checkupIds", caseCheckupIds)
         const url = `${base.ownUrl}${base.getCaseCheckUp}`
-        return httpDelete(url, caseCheckupIds)
+        return Delete(url, {checkup_id_list:caseCheckupIds})
     },
     deleteCasesByCaseNumbers(case_numbers) {
         const url = `${base.ownUrl}${base.getAllCases}`

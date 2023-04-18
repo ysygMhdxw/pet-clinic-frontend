@@ -1,14 +1,16 @@
 import {
+    ModalForm,
     ProForm,
     ProFormMoney, ProFormSelect,
     ProFormText,
     ProFormTextArea,
 } from '@ant-design/pro-components';
-import {Divider, message, Upload} from 'antd';
-import React, {useState} from 'react';
+import {Button, Divider, message, Upload} from 'antd';
+import React, {useEffect, useState} from 'react';
 import ImgCrop from "antd-img-crop";
 import PropTypes from "prop-types";
 import api from "../../api/api";
+import {PlusOutlined} from "@ant-design/icons";
 
 const waitTime = (time = 100) => {
     return new Promise((resolve) => {
@@ -513,19 +515,41 @@ export const CaseNewForm = (props) => {
             const data = await res.data
             console.log(data);
             success("添加成功！")
-
         } catch (error) {
             console.log(error);
+            showError(error)
             showError("添加失败！")
         }
-
+        props.getcasedata();
     }
 
+
+
+    useEffect(()=>{
+        console.log("casenew form useeffect")
+    })
+
+
+
+    async function checkValueInData(value) {
+        if (props.caseNumbers.indexOf(value) > -1) {
+            return Promise.reject('已存在该病例标识！');
+        }
+        return Promise.resolve();
+
+    }
 
     return (
         <>
             {contextHolder}
-            <ProForm
+            <ModalForm
+                labelWidth="auto"
+                trigger={
+                    <Button type="primary">
+                        <PlusOutlined/>
+                        新建病例
+                    </Button>
+                }
                 submitter={{
                     submitButtonProps: {}, resetButtonProps: {
                         style: {
@@ -539,13 +563,14 @@ export const CaseNewForm = (props) => {
                     values.diagnosis_video = diagnosisVideo.length > 0 ? diagnosisVideo[0].url : "";
                     values.treatment_video = treatmentVideo.length > 0 ? treatmentVideo[0].url : "";
                     let tot_values = {...values, ...transferData("symptom", symptomPicList), ...transferData("diagnosis", diagnosisPicList), ...transferData("treatment", treatmentPicList)}
-                    await addCase(tot_values)
-                    props.getcasedata();
+                    try {
+                        await addCase(tot_values)
+                    } catch (error) {
+                        showError("失败！")
+                    }
                     await waitTime(500);
-                    props.onClose();
                     console.log(tot_values);
                     console.log(values);
-                    return true;
                 }}
                 initialValues={[]}
             >
@@ -554,6 +579,15 @@ export const CaseNewForm = (props) => {
                         width="md"
                         name="case_number"
                         label="病例标识"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入病例标识！',
+                            },
+                            {
+                                validator: (_, value) => checkValueInData(value),
+                            },
+                        ]}
                         tooltip="最长为 24 位"
                     />
                     <ProFormSelect
@@ -564,6 +598,12 @@ export const CaseNewForm = (props) => {
                         fieldProps={{
                             value: tableBigTypeValue,
                         }}
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入病例种类！',
+                            },
+                        ]}
                         onChange={handleBigTypeChange}
                         options={getTableBigTypesData()}
                     />
@@ -571,6 +611,12 @@ export const CaseNewForm = (props) => {
                         width="md"
                         name="disease_name"
                         label="病种名称"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入病种名称！',
+                            },
+                        ]}
                         fieldProps={{
                             value: tableLittleTypeValue,
                         }}
@@ -585,12 +631,24 @@ export const CaseNewForm = (props) => {
                         width="md"
                         name="pet_name"
                         label="宠物名称"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入宠物名称！',
+                            },
+                        ]}
                         placeholder="请输入宠物名称"
                     />
                     <ProFormText
                         width="md"
                         name="pet_species"
                         label="宠物种类"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入宠物种类！',
+                            },
+                        ]}
                         placeholder="请输入宠物种类"
                     />
                     <ProFormMoney
@@ -603,6 +661,12 @@ export const CaseNewForm = (props) => {
                         min={0}
                         max={100}
                         label="宠物年龄"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入宠物年龄！',
+                            },
+                        ]}
                         placeholder="请输入宠物年龄"
                         tooltip="仅支持整数数字"
                     />
@@ -610,11 +674,19 @@ export const CaseNewForm = (props) => {
                         width="md"
                         name="owner_name"
                         label="宠物主人姓名"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入宠物主人姓名！',
+                            },
+                        ]}
+                        required
                         placeholder="请输入宠物主人姓名"
                     />
                     <ProFormText
                         width="md"
                         name="owner_phone"
+
                         rules={[{
                             require: true, message: "请输入正确格式的电话号码！",
                             pattern: new RegExp('^(((\\+86)|(\\+86-))|((86)|(86\\-))|((0086)|(0086\\-)))?1[3|5|7|8]\\d{9}$', 'g')
@@ -748,7 +820,7 @@ export const CaseNewForm = (props) => {
                         </div>
                     </ProForm.Item>
                 </ProForm.Group>
-            </ProForm>
+            </ModalForm>
         </>
     )
 
@@ -756,5 +828,5 @@ export const CaseNewForm = (props) => {
 CaseNewForm.propTypes = {
     tableCategory: PropTypes.array,
     getcasedata: PropTypes.func,
-    onClose: PropTypes.func,
+    caseNumbers:PropTypes.array,
 }

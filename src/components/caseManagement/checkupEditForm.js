@@ -269,6 +269,21 @@ export const CheckupEditForm = (props) => {
         <>
             {contextHolder}
             <ProForm
+                submitter={{
+                    // 配置按钮文本
+                    searchConfig: {
+                        resetText: '重置',
+                        submitText: '保存',
+                    },
+                    // 配置按钮的属性
+                    resetButtonProps: {
+                        style: {
+                            // 隐藏重置按钮
+                            display: 'none',
+                        },
+                    },
+                    submitButtonProps: {},
+                }}
                 formRef={caseFormRef}
                 onFinish={async (values) => {
                     await waitTime(500);
@@ -298,6 +313,12 @@ export const CheckupEditForm = (props) => {
                         width="md"
                         name="checkup_item"
                         label="检查项目"
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入检查项目名称！',
+                            },
+                        ]}
                         placeholder="请输入检查项目"
                     />
                     <ProFormTextArea

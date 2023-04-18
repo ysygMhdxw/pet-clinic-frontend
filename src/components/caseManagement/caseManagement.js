@@ -3,18 +3,14 @@ import api from "../../api/api";
 import React, {useEffect, useRef, useState} from "react";
 import {
     EditableProTable,
-    ModalForm,
+
 } from "@ant-design/pro-components";
-import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import {SearchOutlined} from "@ant-design/icons";
 import {CaseEditForm} from "./caseEditForm";
 import {CaseNewForm} from "./newCaseForm";
 import Highlighter from "react-highlight-words";
 import {CheckUpTable} from "./checkupTable";
 
-
-function random(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-}
 
 const waitTime = (time = 100) => {
     return new Promise((resolve) => {
@@ -153,7 +149,7 @@ export const CaseManagement = () => {
             ),
     });
 
-    const getFixedSearchProps = (dataIndex, columnName,tableTypes) => ({
+    const getFixedSearchProps = (dataIndex, columnName, tableTypes) => ({
         // eslint-disable-next-line no-unused-vars
         filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
             <div
@@ -283,13 +279,13 @@ export const CaseManagement = () => {
                 return index !== 0;
             },
             width: '15%',
-            ...getFixedSearchProps("disease_type", "病例种类",tableBigType)
+            ...getFixedSearchProps("disease_type", "病例种类", tableBigType)
         },
         {
             title: '病种名称',
             key: 'disease_name',
             dataIndex: 'disease_name',
-            ...getFixedSearchProps("disease_name", "病种种类",tableLittleType)
+            ...getFixedSearchProps("disease_name", "病种种类", tableLittleType)
         },
         {
             title: '宠物名称',
@@ -309,15 +305,15 @@ export const CaseManagement = () => {
             width: 300,
             render: (text, record) => [
                 <Tooltip key="tooltip1" title={"修改病例的基本信息，包括主要病症、诊断结果、治疗方案。"}>
-                <a
-                    key="detail"
-                    onClick={() => {
-                        setCaseInfo(record)
-                        setDisplayFlg(3)
-                    }}
-                >
-                    修改基本信息
-                </a>
+                    <a
+                        key="detail"
+                        onClick={() => {
+                            setCaseInfo(record)
+                            setDisplayFlg(3)
+                        }}
+                    >
+                        修改基本信息
+                    </a>
                 </Tooltip>,
                 <Divider
                     key="divider1"
@@ -325,15 +321,15 @@ export const CaseManagement = () => {
                 >
                 </Divider>,
                 <Tooltip key="tooltip2" title={"修改病例的所有检查项目。"}>
-                <a
-                    key="checkup"
-                    onClick={() => {
-                        setCaseInfo(record)
-                        setDisplayFlg(2)
-                    }}
-                >
-                    修改检查信息
-                </a>
+                    <a
+                        key="checkup"
+                        onClick={() => {
+                            setCaseInfo(record)
+                            setDisplayFlg(2)
+                        }}
+                    >
+                        修改检查信息
+                    </a>
                 </Tooltip>,
                 <Divider
                     key="divider2"
@@ -347,7 +343,7 @@ export const CaseManagement = () => {
                     description={"确认删除此条数据？删除后将无法恢复。"}
                     onConfirm={async () => {
                         setCaseData(caseData.filter((item) => item.id !== record.id));
-                        deleteCaseByCaseNumbers(record.case_number);
+                        deleteCaseByCaseNumbers([record.case_number]);
                         await waitTime(500);
                     }
                     }
@@ -374,12 +370,12 @@ export const CaseManagement = () => {
             message.warning('请选择要删除的行！');
             return;
         }
-        try{
+        try {
             const keys = selectedRows.map((row) => row.case_number);
             const newData = caseData.filter((row) => !keys.includes(row.case_number));
             setCaseData(newData);
             deleteCaseByCaseNumbers(keys);
-        }catch(error){
+        } catch (error) {
             console.log(error)
             showError("批量删除失败！")
         }
@@ -388,13 +384,27 @@ export const CaseManagement = () => {
     };
 
     useEffect(() => {
+        console.log("casemanagement useeffect")
         if (displayFlg) {
             getCaseData()
+            getCaseNumbers()
             getTableLittleTypesData()
             getTableBigTypesData()
         }
     }, [displayFlg]);
 
+    const [caseNumbers,setCaseNumbers]=useState([]);
+    async function getCaseNumbers() {
+        try {
+            const res = await api.getAllCases()
+            const data = res.data
+            const caseNumbersList = data.cases.map((caseObj) => caseObj.case_number);
+            setCaseNumbers(caseNumbersList)
+        } catch (error) {
+            console.error(error);
+            showError("不存在病例数据！");
+        }
+    }
 
     async function getCaseData() {
         try {
@@ -408,6 +418,7 @@ export const CaseManagement = () => {
             showError("不存在病例数据！");
         }
     }
+
     async function getTableLittleTypesData() {
         try {
             const responce = await api.getCaseCategories()
@@ -451,12 +462,12 @@ export const CaseManagement = () => {
     }
 
     async function deleteCaseByCaseNumbers(case_numbers) {
-        try{
-            const res = await api.deleteCasesByCaseNumbers([case_numbers])
+        try {
+            const res = await api.deleteCasesByCaseNumbers(case_numbers)
             const data = res.data
             console.log(data)
             success("删除病例基本信息成功！")
-        }catch (error) {
+        } catch (error) {
             showError("删除病例基本信息失败！")
         }
         getCaseData()
@@ -468,25 +479,8 @@ export const CaseManagement = () => {
         console.log(data)
     }
 
-    async function addCase(caseData) {
-        const res = await api.addCase(caseData)
-        const data = res.data
-        console.log(data)
-    }
 
-    //modal Visible
-    // eslint-disable-next-line no-unused-vars
-    const [visible, setVisible] = useState(false);
-
-    function handleVisibleChange(visible) {
-        setVisible(visible);
-    }
-
-    function handleClose() {
-        setVisible(false);
-    }
-
-    if (displayFlg===1) {
+    if (displayFlg === 1) {
         return (
             <>
                 {contextHolder}
@@ -494,28 +488,11 @@ export const CaseManagement = () => {
                     <h1 style={{marginBottom: "1"}}>病例管理</h1>
                     <div style={{display: "flex", margin: "10px"}}>
                         <div style={{marginLeft: "auto"}}>
-                            <ModalForm
-                                onVisibleChange={handleVisibleChange}
-                                submitter={false}
-                                labelWidth="auto"
-                                trigger={
-                                    <Button type="primary">
-                                        <PlusOutlined/>
-                                        新建病例
-                                    </Button>
-                                }
-                                onFinish={async (values) => {
-                                    await waitTime(1000);
-                                    console.log(values)
-                                    addCase({id: random(0, 10000000), ...values})
-                                    console.log(values);
-                                    getCaseData();
-                                    message.success('新建成功');
-                                    return true;
-                                }}
-                            >
-                                <CaseNewForm tableCategory={tableCategory} getcasedata={getCaseData} onClose={handleClose}/>
-                            </ModalForm>
+                            <CaseNewForm
+                                tableCategory={tableCategory}
+                                getcasedata={getCaseData}
+                                caseNumbers={caseNumbers}
+                            />
                         </div>
                         <div style={{marginLeft: "2%"}}>
                             <Button type="primary" onClick={handleBatchDelete}>
@@ -549,7 +526,7 @@ export const CaseManagement = () => {
                             },
                             // eslint-disable-next-line no-unused-vars
                             onDelete: async (rowKey, data, _row) => {
-                                deleteCaseByCaseNumbers(data.case_number)
+                                deleteCaseByCaseNumbers([data.case_number])
                                 await waitTime(500);
                             },
                             onChange: setEditableRowKeys,
@@ -559,27 +536,27 @@ export const CaseManagement = () => {
 
             </>
         )
-    } else if(displayFlg===2){
-        return(
+    } else if (displayFlg === 2) {
+        return (
             <div>
                 <div style={{marginBottom: "5%"}}>
                     <Button type={"primary"} onClick={() => {
                         setDisplayFlg(1)
-                    }}>返回</Button>
+                    }}>返回到病例管理</Button>
                 </div>
-                <CheckUpTable caseNumber={caseInfo.case_number} />
+                <CheckUpTable caseNumber={caseInfo.case_number}/>
             </div>
         )
-    } else if(displayFlg===3){
+    } else if (displayFlg === 3) {
         return (
             <div>
                 {/*<CaseDetail caseInfo={caseInfo}/>*/}
                 <div style={{marginBottom: "5%"}}>
                     <Button type={"primary"} onClick={() => {
                         setDisplayFlg(1)
-                    }}>返回</Button>
+                    }}>返回到病例管理</Button>
                 </div>
-                <CaseEditForm caseNumber={caseInfo.case_number} />
+                <CaseEditForm caseNumber={caseInfo.case_number}/>
             </div>
         )
     }

@@ -35,8 +35,8 @@ export const CheckUpTable = (props) => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
 
-    const [displayFlg,setDisplayFlg] = useState(false);
-    const [checkupItem,setCheckupItem] = useState({});
+    const [displayFlg, setDisplayFlg] = useState(false);
+    const [checkupItem, setCheckupItem] = useState({});
     const handleRowSelection = (selectedRowKeys, selectedRows) => {
         console.log(selectedRows)
         setSelectedRows(selectedRows);
@@ -49,15 +49,15 @@ export const CheckUpTable = (props) => {
         const keys = selectedRows.map((row) => row.id);
         console.log("keys: ", keys)
         try {
-            const res = await api.deleteCheckups(keys)
+            const res = await api.deleteCaseCheckUpByCaseupIds(keys)
             const data = res.data
             console.log(data)
-            getCheckupItemData()
             success("批量删除检查项目成功！")
         } catch (error) {
             console.error(error);
             showError("批量删除检查项目失败，请稍后再试！");
         }
+        getCheckupItemData()
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -198,7 +198,6 @@ export const CheckUpTable = (props) => {
     };
 
 
-
     const [checkupVideo, setCheckupVideo] = useState([]);
     const [checkupPicList, setCheckupPicList] = useState([]);
     const handleCheckupVideoRemove = (file) => {
@@ -325,91 +324,118 @@ export const CheckUpTable = (props) => {
     };
 
     const columns = [
-        {
-            title: '编号',
-            dataIndex: 'id',
-            key: 'id',
-            width: "10%",
-            sorter: (a, b) => a.id - b.id,
-            ...getColumnSearchProps("id", "检查项目编号")
-        },
-        {
-            title: '检查项目',
-            dataIndex: 'checkup_item',
-            key: 'checkup_item',
-            width: "10%",
-            ...getColumnSearchProps("checkup_item", "检查项目")
-        },
-        Table.EXPAND_COLUMN,
-        {
-            title: '病例检查图片',
-            dataIndex: 'checkup_pics',
-            key: 'checkup_pics',
-            render: (pics) => (
-                <div style={{width: "200px", height: "300px", alignContent: "center"}}>
-                    <Carousel>
-                        {pics.map((pic, index) => (
-                            <div key={index} style={{display: "flex", justifyContent: "center", width: "100%"}}>
-                                <img width={"200px"} height={"200px"} src={pic} alt={`checkup_pic_${index}`}
-                                     style={{marginTop: "60px"}}/>
+            {
+                title: '编号',
+                dataIndex: 'id',
+                key: 'id',
+                width: "10%",
+                sorter: (a, b) => a.id - b.id,
+                ...getColumnSearchProps("id", "检查项目编号")
+            },
+            {
+                title: '检查项目',
+                dataIndex: 'checkup_item',
+                key: 'checkup_item',
+                width: "10%",
+                ...getColumnSearchProps("checkup_item", "检查项目")
+            },
+            Table.EXPAND_COLUMN,
+            {
+                title: '病例检查图片',
+                dataIndex: 'checkup_pics',
+                key: 'checkup_pics',
+                render: (pics) => {
+                    console.log(pics)
+                    const allEmpty = pics.every((pic) => pic === '');
+                    if(allEmpty){
+                        return (
+                            <div>
+                                暂无图片
                             </div>
-                        ))}
-                    </Carousel>
-                </div>
+                        )
+                    }
+                    else {
+                        return (
+                            <div style={{width: "200px", height: "300px", alignContent: "center"}}>
+                                <Carousel>
+                                    {pics.map((pic, index) => (
+                                        <div key={index} style={{display: "flex", justifyContent: "center", width: "100%"}}>
+                                            <img width={"200px"} height={"200px"} src={pic} alt={`checkup_pic_${index}`}
+                                                 style={{marginTop: "60px"}}/>
+                                        </div>
+                                    ))}
+                                </Carousel>
+                            </div>
 
-            ),
-            width: "200px"
-        },
-        {
-            title: '病例检查视频',
-            dataIndex: 'checkup_video',
-            key: 'checkup_video',
-            render: (text) => (
-                <video width="320px" height="240px" controls>
-                    <source src={text} type="video/mp4"/>
-                    Your browser does not support the video tag.
-                </video>
-            ),
-            width: "400px"
-        },
-        {
-            title: '操作',
-            valueType: 'option',
-            width: 150,
-            // eslint-disable-next-line no-unused-vars
-            render: (text, record, _, action) => [
-                <a
-                    key="editable"
-                    onClick={() => {
-                        setCheckupItem(record)
-                        setDisplayFlg(true);
-                    }}
-                >
-                    修改
-                </a>,
-                <Popconfirm
-                    key="delete"
-                    placement="top"
-                    title={"删除数据"}
-                    description={"确认删除此条数据？删除后将无法恢复。"}
-                    onConfirm={async () => {
-                        deleteCheckupItemById([record.id], (error) => {
-                            if (error) showError(error);
-                        });
-                        await waitTime(500);
+                        )
                     }
+
+                },
+                width: "200px"
+            },
+            {
+                title: '病例检查视频',
+                dataIndex: 'checkup_video',
+                key: 'checkup_video',
+                render: (text) => {
+                    if (text === "-") {
+                        return (
+                            <div>
+                                暂无视频
+                            </div>
+                        )
+                    } else {
+                        return (
+                            <video width="320px" height="240px" controls>
+                                <source src={text} type="video/mp4"/>
+                                Your browser does not support the video tag.
+                            </video>
+                        )
                     }
-                    okText="Yes"
-                    cancelText="No"
-                >
-                    <a>
-                        删除
-                    </a>
-                </Popconfirm>
-                ,
-            ],
-        },
-    ];
+
+                },
+                width: "400px"
+            },
+            {
+                title: '操作',
+                valueType: 'option',
+                width: 150,
+                // eslint-disable-next-line no-unused-vars
+                render: (text, record, _, action) => [
+                    <a
+                        key="editable"
+                        onClick={() => {
+                            setCheckupItem(record)
+                            setDisplayFlg(true);
+                        }}
+                    >
+                        修改
+                    </a>,
+                    <Popconfirm
+                        key="delete"
+                        placement="top"
+                        title={"删除数据"}
+                        description={"确认删除此条数据？删除后将无法恢复。"}
+                        onConfirm={async () => {
+                            deleteCheckupItemByIds([record.id], (error) => {
+                                if (error) showError(error);
+                            });
+                            await waitTime(500);
+                        }
+                        }
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <a>
+                            删除
+                        </a>
+                    </Popconfirm>
+                    ,
+                ],
+            }
+            ,
+        ]
+    ;
     const [checkupData, setCheckupData] = useState([]);
 
     function transferData(fileType, fileLists) {
@@ -448,17 +474,18 @@ export const CheckUpTable = (props) => {
             showError("不存在病例数据！");
         }
     }
-    async function deleteCheckupItemById(checkupIds) {
+
+    async function deleteCheckupItemByIds(checkupIds) {
         try {
             const res = await api.deleteCaseCheckUpByCaseupIds(checkupIds)
             const data = res.data
             console.log(data)
-            getCheckupItemData()
             success("删除检查项目成功！")
         } catch (error) {
             console.error(error);
             showError("删除检查项目失败！");
         }
+        getCheckupItemData()
     }
 
     async function addCheckupData(checkupdata) {
@@ -475,26 +502,41 @@ export const CheckUpTable = (props) => {
     }
 
 
-
-
     useEffect(() => {
         getCheckupItemData()
     }, [props])
 
-    if(displayFlg){
+    if (displayFlg) {
         return (
             <div>
+                <div style={{marginBottom: "5%"}}>
+                    <Button type={"primary"} onClick={() => {
+                        setDisplayFlg(false)
+                    }}>返回到病例检查表格</Button>
+                </div>
                 <CheckupEditForm checkupItem={checkupItem}/>
             </div>
         )
-    }
-    else {
+    } else {
         return (
             <div>
                 {contextHolder}
                 <div style={{display: "flex", justifyContent: "flex-end", gap: "10px", marginRight: "3%"}}>
                     <div style={{marginLeft: "auto"}}>
                         <ModalForm
+                            submitter={{// 配置按钮文本
+                                searchConfig: {
+                                    resetText: '重置',
+                                    submitText: '提交',
+                                },
+                                // 配置按钮的属性
+                                resetButtonProps: {
+                                    style: {
+                                        // 隐藏重置按钮
+                                        display: 'none',
+                                    },
+                                },
+                                submitButtonProps: {},}}
                             labelWidth="auto"
                             trigger={
                                 <Button type="primary">
@@ -505,7 +547,10 @@ export const CheckUpTable = (props) => {
                             onFinish={async (values) => {
                                 values.checkup_video = checkupVideo.length > 0 ? checkupVideo[0].url : "";
                                 console.log(values)
-                                let tot_data={...values,caseNumber:props.caseNumber,...transferData("checkup",checkupPicList),}
+                                let tot_data = {
+                                    ...values,
+                                    case_number: props.caseNumber, ...transferData("checkup", checkupPicList),
+                                }
                                 addCheckupData(tot_data)
                                 console.log(tot_data)
                                 await waitTime(500);
@@ -517,6 +562,12 @@ export const CheckUpTable = (props) => {
                                     width="md"
                                     name="name"
                                     label="检查项目名称"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: '请输入检查项目名称！',
+                                        },
+                                    ]}
                                     tooltip="最长为 24 位"
                                     placeholder="请输入名称"
                                 />
@@ -599,7 +650,7 @@ export const CheckUpTable = (props) => {
                         },
                         // eslint-disable-next-line no-unused-vars
                         onDelete: async (rowKey, data, _row) => {
-                            deleteCheckupItemById([data.id], (error) => {
+                            deleteCheckupItemByIds([data.id], (error) => {
                                 if (error) showError(error);
                             });
                             await waitTime(500);

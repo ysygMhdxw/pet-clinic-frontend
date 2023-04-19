@@ -318,7 +318,10 @@ export const QuizManagement = (  ) => {
                 label="用时"
                 rules={[{ required: true, message: '请输入用时' }]}
               >
-                <InputNumber />
+                <InputNumber
+                defaultValue={10}
+                min={0}
+                max={200} />
               </Form.Item>
          
         </StepsForm.StepForm>

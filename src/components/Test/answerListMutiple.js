@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Checkbox, Typography, Row} from "antd";
 import propTypes from 'prop-types';
 
@@ -6,11 +6,12 @@ const {Text} = Typography;
 export const AnswerListMutiple = (props) => {
 
     const [userAns, setUserAns] = useState([]);
+    useEffect(()=>{ props.setIsCorrect(JSON.stringify(userAns) == JSON.stringify(correct_ans))},[userAns])
     //console.log(props.multipleAns);
     const onChange = (checkedValues) => {
         //console.log('checked = ', checkedValues);
         setUserAns(checkedValues);
-        props.setIsCorrect(JSON.stringify(userAns) == JSON.stringify(correct_ans));
+       
     };
     const correct_ans = [];
     for (let i = 0; i < 4; i++) {

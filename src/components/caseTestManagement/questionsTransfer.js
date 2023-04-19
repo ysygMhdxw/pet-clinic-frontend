@@ -15,7 +15,7 @@ export const QuestionTransfer= ( props ) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const mockData = props.allQuestions
     const [targetKeys, setTargetKeys] = useState(props.targetQuestionKeys)
-    const [newQuestions, setNewQuestions] = useState([])
+    const [newQuestions, setNewQuestions] = useState(props.allQuestions.filter( item => props.targetQuestionKeys.includes(item.key)) )
     const onChange = (nextTargetKeys) => {
         setTargetKeys(nextTargetKeys);
         console.log(nextTargetKeys)
@@ -23,7 +23,7 @@ export const QuestionTransfer= ( props ) => {
         setNewQuestions(questions)
       };
 
-    //Modal 提交时的处理逻辑，应该加上put方法修改quiz
+    //Modal 提交时的处理逻辑，
     const handleOk = async  () => {
         console.log(newQuestions)
         setConfirmLoading(true);

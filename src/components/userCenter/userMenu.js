@@ -54,29 +54,29 @@ export const UserMenu = (props) => {
             }}>
                 前台管理
             </Menu.Item>
-            {localStorage.getItem("status") === "true" &&  <Menu.Item key="backend" onClick={() => {
+            {localStorage.getItem("status") === "true" && <Menu.Item key="backend" onClick={() => {
                 navigate('/backend');
             }}>
                 后台管理
             </Menu.Item>}
             <Menu.Item key="user-center">用户中心</Menu.Item>
-            <Menu.Item key="logout">
-                <span onClick={handleLogoutClick}>登出</span>
-                <Modal
-                    title="确认退出登录"
-                    open={diaglogVisible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                    okText="确认"
-                    cancelText="取消"
-                    okButtonProps={{danger: true}}
-                >
-                    <p>
-                        <ExclamationCircleOutlined style={{color: 'red', marginRight: 10}}/>
-                        确定要退出登录吗？
-                    </p>
-                </Modal>
+            <Menu.Item key="logout" onClick={handleLogoutClick}>
+                <span>登出</span>
             </Menu.Item>
+            <Modal
+                title="确认退出登录"
+                open={diaglogVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText="确认"
+                cancelText="取消"
+                okButtonProps={{danger: true}}
+            >
+                <p>
+                    <ExclamationCircleOutlined style={{color: 'red', marginRight: 10}}/>
+                    确定要退出登录吗？
+                </p>
+            </Modal>
         </Menu>
     );
     return (
@@ -98,6 +98,6 @@ export const UserMenu = (props) => {
     )
 }
 
-UserMenu.propTypes={
-    setContextVal:PropTypes.func
+UserMenu.propTypes = {
+    setContextVal: PropTypes.func
 }

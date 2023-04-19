@@ -219,10 +219,8 @@ export const VaccineManagement = () => {
             title: '疫苗名称',
             key: 'name',
             dataIndex: 'name',
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             editable: (text, record, index) => {
                 return index !== 0;
@@ -234,6 +232,9 @@ export const VaccineManagement = () => {
             title: '疫苗种类',
             key: 'tag',
             dataIndex: 'tag',
+            formItemProps:  {
+                    rules:  [{required: true, message: '此项为必填项'}]
+            },
             width: '10%',
             ...getColumnSearchProps("tag", "疫苗种类")
         },
@@ -241,6 +242,9 @@ export const VaccineManagement = () => {
             title: '疫苗简介',
             key: 'description',
             dataIndex: 'description',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             ...getColumnSearchProps("description", "疫苗简介")
         },
         {
@@ -248,10 +252,17 @@ export const VaccineManagement = () => {
             key: 'price',
             dataIndex: 'price',
             width: '15%',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             fieldProps: {
                 type: 'number',
                 min: 0,
                 precision:0
+            },
+            render: (value) => {
+                const formattedValue = value.toLocaleString("zh-CN", { minimumFractionDigits: 0 });
+                return formattedValue.replace(/^0+/, "");
             },
             filterIcon: <FilterOutlined/>,
             filterDropdown: priceFilterDropdown,
@@ -406,6 +417,12 @@ export const VaccineManagement = () => {
                                 width="md"
                                 name="name"
                                 label="疫苗名称"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '请输入疫苗名称！',
+                                    },
+                                ]}
                                 tooltip="最长为 24 位"
                                 placeholder="请输入名称"
                             />
@@ -416,6 +433,12 @@ export const VaccineManagement = () => {
                                 name='tag'
                                 width="md"
                                 label="疫苗种类"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '此项为必填项！',
+                                    },
+                                ]}
                                 placeholder="请输入疫苗种类"
                             />
                         </ProForm.Group>
@@ -428,6 +451,12 @@ export const VaccineManagement = () => {
                                     precision: 0
                                 }}
                                 min={0}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '请输入疫苗价格！',
+                                    },
+                                ]}
                                 tooltip="请输入正确格式的金额（单位为元）"
                                 label="疫苗价格（元）"
                                 placeholder="请输入疫苗价格"
@@ -438,6 +467,12 @@ export const VaccineManagement = () => {
                                 name='description'
                                 width="md"
                                 label="疫苗简介"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '请输入疫苗简介！',
+                                    },
+                                ]}
                                 placeholder="请输入疫苗简介"
                             />
                         </ProForm.Group>
@@ -450,11 +485,11 @@ export const VaccineManagement = () => {
                         批量删除
                     </Button>
                 </div>
-                <div>
-                    <Button type="primary">
-                        批量上传
-                    </Button>
-                </div>
+                {/*<div>*/}
+                {/*    <Button type="primary">*/}
+                {/*        批量上传*/}
+                {/*    </Button>*/}
+                {/*</div>*/}
             </div>
 
             <EditableProTable
@@ -482,7 +517,9 @@ export const VaccineManagement = () => {
                     editableKeys,
                     // eslint-disable-next-line no-unused-vars
                     onSave: async (rowKey, data, _row) => {
+                        console.log("data",data)
                         editMedicine(data)
+                        getMedicineData()
                         await waitTime(500);
                     },
                     // eslint-disable-next-line no-unused-vars

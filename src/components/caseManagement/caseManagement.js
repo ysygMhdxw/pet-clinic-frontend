@@ -237,10 +237,8 @@ export const CaseManagement = () => {
             title: '病例编号',
             dataIndex: 'id',
             key: 'id',
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             // 第一行不允许编辑
             editable: (text, record, index) => {
@@ -254,10 +252,8 @@ export const CaseManagement = () => {
             title: '病例标识',
             dataIndex: 'case_number',
             key: 'case_number',
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             // 第一行不允许编辑
             editable: (text, record, index) => {

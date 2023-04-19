@@ -292,6 +292,7 @@ export const CheckupEditForm = (props) => {
                     let tot_values={...values,...transferData("checkup",checkupPicList)}
                     console.log(tot_values)
                     editCheckupData(tot_values)
+                    props.getCheckupItemData()
                     return true
                 }}
                 onReset={false}
@@ -362,4 +363,5 @@ export const CheckupEditForm = (props) => {
 
 CheckupEditForm.propTypes = {
     checkupItem: propTypes.object,
+    getCheckupItemData:propTypes.func,
 };

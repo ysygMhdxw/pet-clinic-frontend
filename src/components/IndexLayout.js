@@ -2,7 +2,6 @@ import {
     BellOutlined,
     BookOutlined,
     ClusterOutlined,
-    ContactsOutlined,
     DesktopOutlined,
     FolderViewOutlined,
     GroupOutlined,
@@ -60,10 +59,10 @@ const backItems = [
     ]),
     getItem('系统管理', '系统管理', <UserOutlined/>, [
         getItem('用户管理', '用户管理', <ReadOutlined/>),
-        getItem('职能学习管理', '职能学习管理', <OneToOneOutlined/>),
+        // getItem('职能学习管理', '职能学习管理', <OneToOneOutlined/>),
         getItem('基本结构和功能管理', '基本结构和功能管理', <TeamOutlined/>, [
             getItem('科室管理', '科室管理', <GroupOutlined/>),
-            getItem('人员管理', '人员管理', <ContactsOutlined/>),
+            // getItem('人员管理', '人员管理', <ContactsOutlined/>),
             getItem('药品管理', '药品管理', <MedicineBoxOutlined/>),
             getItem('疫苗管理', '疫苗管理', <ReadOutlined/>),
             // getItem('档案管理', '档案管理', <DatabaseOutlined/>),

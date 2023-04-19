@@ -515,7 +515,7 @@ export const CheckUpTable = (props) => {
                         setDisplayFlg(false)
                     }}>返回到病例检查表格</Button>
                 </div>
-                <CheckupEditForm checkupItem={checkupItem}/>
+                <CheckupEditForm checkupItem={checkupItem} getCheckupItemData={getCheckupItemData}/>
             </div>
         )
     } else {

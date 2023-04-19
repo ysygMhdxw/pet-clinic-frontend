@@ -11,6 +11,8 @@ const base = {
     //register
     register: "authentication/user/register/",
     editPassword: "authentication/user/",
+    //status
+    getStatus:"authentication/user/status/",
 
     // Case Learning
     getAllCases: "case/",

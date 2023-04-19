@@ -33,6 +33,8 @@ export const UserCenter = () => {
     const handleOk = () => {
         // 删除本地存储中的 token
         localStorage.removeItem('token');
+        localStorage.removeItem('status');
+        localStorage.removeItem('username');
         // 跳转到登录页面
         navigate('/login');
         // 显示提示消息

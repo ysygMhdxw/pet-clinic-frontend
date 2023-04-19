@@ -54,11 +54,11 @@ export const UserMenu = (props) => {
             }}>
                 前台管理
             </Menu.Item>
-            <Menu.Item key="backend" onClick={() => {
+            {localStorage.getItem("status") === "true" &&  <Menu.Item key="backend" onClick={() => {
                 navigate('/backend');
             }}>
                 后台管理
-            </Menu.Item>
+            </Menu.Item>}
             <Menu.Item key="user-center">用户中心</Menu.Item>
             <Menu.Item key="logout">
                 <span onClick={handleLogoutClick}>登出</span>

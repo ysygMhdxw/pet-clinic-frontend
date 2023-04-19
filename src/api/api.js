@@ -11,7 +11,9 @@ export const storeToken = (token) => {
 export const storeUserName = (userName) => {
     localStorage.setItem("username", userName)
 }
-
+export const storeStatus = (status) => {
+    localStorage.setItem("status", status)
+}
 const api = {
     getLogin(params) {
         const url = base.ownUrl + base.login
@@ -24,6 +26,10 @@ const api = {
     editPassword(params) {
         const url = base.ownUrl + base.editPassword
         return Put(url, params)
+    },
+    getStatus(username){
+        const url = `${base.ownUrl}${base.getStatus}${username}/`
+        return httpGet(url)
     },
     //Case Study Management API
     getAllCases() {

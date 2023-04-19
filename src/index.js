@@ -20,7 +20,6 @@ import NotFoundPage from "./pages/404page";
 
 const container = document.getElementById('root');
 const root = createRoot(container);
-
 function isLocalStorageAvailable() {
     try {
         const testKey = 'test';
@@ -44,6 +43,16 @@ function AuthenticatedRoute(props) {
         }
 
     }, [props.isAuthenticated]);
+    useEffect(() => {
+        if (isLocalStorageAvailable()) {
+            const superuser = localStorage.getItem('status');
+            console.log(superuser)
+            if (superuser === 'true') {
+                props.setIsSuperUser(true);
+            }
+        }
+
+    }, [props.isSuperUser]);
     if (!props.isAuthenticated) {
         return <Login setIsAuthenticated={props.setIsAuthenticated} isAuthenticated={props.isAuthenticated}/>
     }
@@ -55,29 +64,47 @@ AuthenticatedRoute.propTypes = {
     path: propTypes.string,
     element: propTypes.object,
     isAuthenticated: propTypes.bool,
-    setIsAuthenticated: propTypes.func
+    setIsAuthenticated: propTypes.func,
+    isSuperUser: propTypes.bool,
+    setIsSuperUser: propTypes.func,
 }
 
 const App = () => {
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isSuperUser, setIsSuperUser] = useState() ;
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/select" element={<AuthenticatedRoute isAuthenticated={isAuthenticated}
                                                                    setIsAuthenticated={setIsAuthenticated}
-                                                                   path="/select" element={<AuthSelection/>}/>}/>
+                                                                   isSuperUser = {isSuperUser}
+                                                                   setIsSuperUser = {setIsSuperUser}
+                                                                   path="/select" element={<AuthSelection
+                                                                                            isSuperUser = {isSuperUser} />}/>}/>
                 <Route path="/frontend" element={<AuthenticatedRoute isAuthenticated={isAuthenticated}
                                                                      setIsAuthenticated={setIsAuthenticated}
+                                                                     isSuperUser = {isSuperUser}
+                                                                   setIsSuperUser = {setIsSuperUser}
                                                                      path="/frontend" element={<Frontend/>}/>}/>
                 <Route path="/backend" element={<AuthenticatedRoute isAuthenticated={isAuthenticated}
                                                                     setIsAuthenticated={setIsAuthenticated}
-                                                                    path="/backend" element={<Backend/>}/>}/>
+                                                                    isSuperUser = {isSuperUser}
+                                                                   setIsSuperUser = {setIsSuperUser}
+                                                                    path="/backend" element={
+                                                                    isSuperUser?
+                                                                    <Backend/>
+                                                                    :
+                                                                    <NotFoundPage />
+                                                                    }/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/login"
-                       element={<Login isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>}/>
+                       element={<Login isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}
+                                       isSuperUser = {isSuperUser} setIsSuperUser={setIsSuperUser}
+                                        />}/>
                 <Route path="/"
-                       element={<Home isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}/>}/>
+                       element={<Home isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated}
+                                      isSuperUser = {isSuperUser} setIsSuperUser = {setIsSuperUser}/>}/>
                 <Route path="*" element={<NotFoundPage/>}/>
             </Routes>
         </BrowserRouter>

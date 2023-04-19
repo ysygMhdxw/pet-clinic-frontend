@@ -1,6 +1,6 @@
 import {LockOutlined, UserOutlined} from '@ant-design/icons';
 import {Button, Form, Input, Layout, Typography, Col, Row, Space, Image, message} from 'antd';
-import api, {storeToken, storeUserName} from "../api/api";
+import api, {storeToken, storeUserName, storeStatus} from "../api/api";
 import {useNavigate} from "react-router-dom";
 import propTypes from "prop-types";
 
@@ -8,6 +8,7 @@ const {Header, Content, Footer} = Layout;
 const {Title} = Typography;
 
 export const Login = (props) => {
+
         const navigate = useNavigate()
         const onFinish = (values) => {
             login(values)
@@ -30,6 +31,7 @@ export const Login = (props) => {
                     storeToken(data.access);
                     storeUserName(values.username);
                     props.setIsAuthenticated(true);
+                    getStatus()
                     navigate('/select');
                     success("登录成功！")
                 } else {
@@ -43,6 +45,21 @@ export const Login = (props) => {
                 } else {
                     showError('网络错误，请检查网络连接');
                 }
+            }
+        }
+
+        async function getStatus(){
+            const res = await api.getStatus(localStorage.getItem('username'))
+            const data = res.data;
+            storeStatus(data.superuser)
+            if(data.superuser){
+                props.setIsSuperUser(true)
+                console.log('set true')
+                }
+            else
+            {
+                props.setIsSuperUser(false)
+                console.log('set false')
             }
         }
 
@@ -152,5 +169,7 @@ export const Login = (props) => {
 ;
 Login.propTypes = {
     isAuthenticated: propTypes.bool,
-    setIsAuthenticated: propTypes.func
+    setIsAuthenticated: propTypes.func,
+    isSuperUser: propTypes.bool,
+    setIsSuperUser: propTypes.func
 };

@@ -7,9 +7,9 @@
 
 ## 测试项目
 
-### npm install -D @playwright/test 安装playwright
-### npx playwright codegen localhost:3000 自动化生成测试脚本
-### npx playwright test 运行test中写的测试脚本
+### `npm install -D @playwright/test` 安装playwright
+### `npx playwright codegen localhost:3000` 自动化生成测试脚本
+### `npx playwright test` 运行test中写的测试脚本
 
 
 ## 项目接口完成情况

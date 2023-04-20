@@ -20,6 +20,9 @@ export const Question = ( props ) => {
     useEffect(()=>{setQuestion(props.questionDetail)},[props.questionDetail])
     useEffect(()=>{},[isCorrect])
     useEffect(()=>{},[value])
+
+    //为了每次换题时清空多选题选项
+    const [selectedOption,setSelectedOption] = useState([])
     
     const questionType = question.question_type;
     switch (questionType){
@@ -62,6 +65,7 @@ export const Question = ( props ) => {
              duration = {props.duration}
              setValue = {setValue}
              setIsCorrect = {setIsCorrect}
+             setSelectedOption = {setSelectedOption}
              />
              :
              < QuestionHeader 
@@ -85,7 +89,9 @@ export const Question = ( props ) => {
                     answers = {answers}
                     multipleAns = {multipleAns}
                     checkView={checkView}
-                    setIsCorrect = {setIsCorrect}/> :
+                    setIsCorrect = {setIsCorrect}
+                    selectedOption = {selectedOption}
+                    setSelectedOption = {setSelectedOption} /> :
                 < AnswerList 
                     answers = {answers}
                     checkView={checkView}

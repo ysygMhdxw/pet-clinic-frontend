@@ -37,6 +37,7 @@ export const ExamHeader = (props) => {
                                               props.setValue(null);
                                               if (props.isCorrect) props.setUserScore(props.userScore + props.score)
                                               props.setIsCorrect(false)
+                                              props.setSelectedOption([])
                                               console.log(props.isCorrect)
                                           }}>
                         下一题
@@ -60,4 +61,5 @@ ExamHeader.propTypes = {
     duration: propTypes.number,
     setValue: propTypes.func,
     setIsCorrect: propTypes.func,
+    setSelectedOption: propTypes.func, 
 }

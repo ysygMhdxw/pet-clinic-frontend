@@ -329,6 +329,10 @@ export const MedicineManagement = () => {
             key: 'price',
             dataIndex: 'price',
             width: '15%',
+            render: (value) => {
+                const formattedValue = value.toLocaleString("zh-CN", { minimumFractionDigits: 0 });
+                return formattedValue.replace(/^0+/, "");
+            },
             fieldProps: {
                 type: 'number',
                 min: 0,
@@ -403,6 +407,12 @@ export const MedicineManagement = () => {
                                 width="md"
                                 name="name"
                                 label="药品名称"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '请输入药品名称！',
+                                    },
+                                ]}
                                 tooltip="最长为 24 位"
                                 placeholder="请输入名称"
                             />
@@ -447,11 +457,11 @@ export const MedicineManagement = () => {
                         批量删除
                     </Button>
                 </div>
-                <div>
-                    <Button type="primary">
-                        批量上传
-                    </Button>
-                </div>
+                {/*<div>*/}
+                {/*    <Button type="primary">*/}
+                {/*        批量上传*/}
+                {/*    </Button>*/}
+                {/*</div>*/}
             </div>
 
             <EditableProTable

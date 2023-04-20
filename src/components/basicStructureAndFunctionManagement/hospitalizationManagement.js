@@ -313,10 +313,8 @@ export const HospitalizationManagement = (props) => {
             title: '住院编号',
             dataIndex: 'id',
             key: 'id',
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             tooltip: "不允许修改",
             // 第一行不允许编辑
@@ -331,10 +329,8 @@ export const HospitalizationManagement = (props) => {
             dataIndex: 'case_id',
             valueType: "select",
             request : async () => props.caseNumberOptions,
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             editable: (text, record, index) => {
                 return index !== 0;
@@ -348,6 +344,9 @@ export const HospitalizationManagement = (props) => {
             dataIndex: 'bg_time',
             width: '15%',
             valueType: 'date',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             editable: true,
             required: true,
             fieldProps: {
@@ -363,6 +362,9 @@ export const HospitalizationManagement = (props) => {
             dataIndex: 'ed_time',
             width: '15%',
             valueType: 'date',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             editable: true,
             required: true,
             fieldProps: {
@@ -377,6 +379,9 @@ export const HospitalizationManagement = (props) => {
             key: 'price',
             dataIndex: 'price',
             width: '15%',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             fieldProps: {
                 type: 'number',
                 min: 0,
@@ -468,6 +473,12 @@ export const HospitalizationManagement = (props) => {
                                 width="md"
                                 name="name"
                                 label="住院名称"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '请输入住院名称！',
+                                    },
+                                ]}
                                 tooltip="最长为 24 位"
                                 placeholder="请输入名称"
                             />
@@ -477,6 +488,12 @@ export const HospitalizationManagement = (props) => {
                                 name='case_id'
                                 width="md"
                                 label="住院病例编号"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '请输入住院病例编号！',
+                                    },
+                                ]}
                                 options={props.caseNumberOptions}
                                 placeholder="请输入住院病例编号"
                             />
@@ -535,11 +552,11 @@ export const HospitalizationManagement = (props) => {
                         批量删除
                     </Button>
                 </div>
-                <div>
-                    <Button type="primary">
-                        批量上传
-                    </Button>
-                </div>
+                {/*<div>*/}
+                {/*    <Button type="primary">*/}
+                {/*        批量上传*/}
+                {/*    </Button>*/}
+                {/*</div>*/}
             </div>
 
             <EditableProTable

@@ -149,10 +149,8 @@ export const UserManagement = () => {
             title: '用户编号',
             dataIndex: 'id',
             key: 'id',
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             // 第一行不允许编辑
             editable:false,
@@ -164,10 +162,8 @@ export const UserManagement = () => {
             title: '用户名称',
             key: 'username',
             dataIndex: 'username',
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             // editable: (text, record, index) => {
             //     return index !== 0;
@@ -179,6 +175,9 @@ export const UserManagement = () => {
             title: '密码',
             key: 'password',
             dataIndex: 'password',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             render: () => {
                 return (
                     <Skeleton active style={{width:"200px"}} paragraph={{ rows: 1 }}/>

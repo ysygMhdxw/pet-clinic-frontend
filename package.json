@@ -58,6 +58,7 @@
   "devDependencies": {
     "eslint": "^8.35.0",
     "eslint-plugin-react": "^7.32.2",
+    "playwright": "^1.32.3",
     "react-router-dom": "^6.9.0"
   },
   "description": "* 登录界面\r * 注册界面\r * 前台3D导览界面\r * 前台职能学习界面\r * 前台病例学习界面\r * 前台测试学习界面",

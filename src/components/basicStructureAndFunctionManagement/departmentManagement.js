@@ -150,10 +150,8 @@ export const DepartmentManagement = () => {
             title: '科室编号',
             dataIndex: 'id',
             key: 'id',
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             // 第一行不允许编辑
             editable:false,
@@ -166,10 +164,8 @@ export const DepartmentManagement = () => {
             title: '科室名称',
             key: 'name',
             dataIndex: 'name',
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             editable: (text, record, index) => {
                 return index !== 0;
@@ -181,12 +177,18 @@ export const DepartmentManagement = () => {
             title: '科室简介',
             key: 'description',
             dataIndex: 'description',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             ...getColumnSearchProps("description","科室简介")
         },
         {
             title: '科室负责人',
             key: 'manager',
             dataIndex: 'manager',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             ...getColumnSearchProps("manager","科室负责人")
         },
         {
@@ -333,6 +335,12 @@ export const DepartmentManagement = () => {
                                 width="md"
                                 name="name"
                                 label="科室名称"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '此项为必填项！',
+                                    },
+                                ]}
                                 tooltip="最长为 24 位"
                                 placeholder="请输入名称"
                             />
@@ -342,6 +350,12 @@ export const DepartmentManagement = () => {
                             <ProFormTextArea
                                 name='description'
                                 width="md"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '此项为必填项！',
+                                    },
+                                ]}
                                 label="科室简介"
                                 placeholder="请输入科室简介"
                             />
@@ -351,6 +365,12 @@ export const DepartmentManagement = () => {
                                 name='manager'
                                 width="md"
                                 label="科室负责人"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '此项为必填项！',
+                                    },
+                                ]}
                                 placeholder="请输入科室负责人"
                                 tooltip={"负责人之间用空格分隔"}
                             />
@@ -363,11 +383,11 @@ export const DepartmentManagement = () => {
                         批量删除
                     </Button>
                 </div>
-                <div>
-                    <Button type="primary">
-                        批量上传
-                    </Button>
-                </div>
+                {/*<div>*/}
+                {/*    <Button type="primary">*/}
+                {/*        批量上传*/}
+                {/*    </Button>*/}
+                {/*</div>*/}
             </div>
 
             <EditableProTable

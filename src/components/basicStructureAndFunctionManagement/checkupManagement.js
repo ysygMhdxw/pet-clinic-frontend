@@ -291,10 +291,8 @@ export const CheckUpManagement = () => {
             title: '检查项目编号',
             dataIndex: 'id',
             key: 'id',
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             tooltip: "不允许修改",
             // 第一行不允许编辑
@@ -318,10 +316,8 @@ export const CheckUpManagement = () => {
             title: '检查项目名称',
             key: 'name',
             dataIndex: 'name',
-            formItemProps: (form, {rowIndex}) => {
-                return {
-                    rules: rowIndex > 1 ? [{required: true, message: '此项为必填项'}] : [],
-                };
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             editable: (text, record, index) => {
                 return index !== 0;
@@ -333,6 +329,9 @@ export const CheckUpManagement = () => {
             title: '检查项目简介',
             key: 'description',
             dataIndex: 'description',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             ...getColumnSearchProps("description", "检查项目简介")
         },
         {
@@ -344,6 +343,9 @@ export const CheckUpManagement = () => {
                 type: 'number',
                 min: 0,
                 precision:0
+            },
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
             },
             filterIcon: <FilterOutlined/>,
             filterDropdown: priceFilterDropdown,
@@ -543,6 +545,12 @@ export const CheckUpManagement = () => {
                                 width="md"
                                 name="name"
                                 label="检查项目名称"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '此项为必填项！',
+                                    },
+                                ]}
                                 tooltip="最长为 24 位"
                                 placeholder="请输入名称"
                             />
@@ -552,6 +560,12 @@ export const CheckUpManagement = () => {
                                 width="md"
                                 name="dept_name"
                                 label="所在科室位置"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '此项为必填项！',
+                                    },
+                                ]}
                                 options={departmentNameOptions}
                                 placeholder="请输入科室位置"
                             />
@@ -561,6 +575,12 @@ export const CheckUpManagement = () => {
                                 name='description'
                                 width="md"
                                 label="检查项目简介"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '此项为必填项！',
+                                    },
+                                ]}
                                 placeholder="请输入检查项目简介"
                             />
                         </ProForm.Group>
@@ -568,6 +588,12 @@ export const CheckUpManagement = () => {
                             <ProFormMoney
                                 name='price'
                                 width="md"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: '此项为必填项！',
+                                    },
+                                ]}
                                 fieldProps={{
                                     moneySymbol: false,
                                     precision: 0
@@ -585,11 +611,11 @@ export const CheckUpManagement = () => {
                         批量删除
                     </Button>
                 </div>
-                <div>
-                    <Button type="primary">
-                        批量上传
-                    </Button>
-                </div>
+                {/*<div>*/}
+                {/*    <Button type="primary">*/}
+                {/*        批量上传*/}
+                {/*    </Button>*/}
+                {/*</div>*/}
             </div>
 
             <EditableProTable

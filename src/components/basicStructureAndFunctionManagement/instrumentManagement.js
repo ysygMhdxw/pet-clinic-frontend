@@ -516,11 +516,11 @@ export const InstrumentManagement = () => {
                         批量删除
                     </Button>
                 </div>
-                <div>
-                    <Button type="primary">
-                        批量上传
-                    </Button>
-                </div>
+                {/*<div>*/}
+                {/*    <Button type="primary">*/}
+                {/*        批量上传*/}
+                {/*    </Button>*/}
+                {/*</div>*/}
             </div>
 
             <EditableProTable

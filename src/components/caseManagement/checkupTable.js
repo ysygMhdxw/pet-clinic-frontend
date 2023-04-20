@@ -578,6 +578,12 @@ export const CheckUpTable = (props) => {
                                     name='checkup_text'
                                     width="md"
                                     label="检查项目简介"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: '此项为必填项！',
+                                        },
+                                    ]}
                                     placeholder="请输入检查项目简介"
                                 />
                                 <div style={{width: "1000px"}}>

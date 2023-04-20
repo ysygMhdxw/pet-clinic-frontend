@@ -18,7 +18,7 @@ import {Content, Footer} from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import propTypes from 'prop-types';
 
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ContextComponents} from './ContextComponents';
 import {UserMenu} from "./userCenter/userMenu";
 
@@ -52,9 +52,9 @@ const frontItems = [
 const backItems = [
     getItem('用户中心', '用户中心', <UserOutlined/>),
     getItem('病例管理', '病例管理', <PieChartOutlined/>),
-    getItem('测试管理', '测试管理', <DesktopOutlined/>,[
-        getItem('题目管理','题目管理',<BookOutlined/>),
-        getItem('考试管理','考试管理', <BellOutlined/>)
+    getItem('测试管理', '测试管理', <DesktopOutlined/>, [
+        getItem('题目管理', '题目管理', <BookOutlined/>),
+        getItem('考试管理', '考试管理', <BellOutlined/>)
     ]),
     getItem('系统管理', '系统管理', <UserOutlined/>, [
         getItem('用户管理', '用户管理', <ReadOutlined/>),
@@ -77,13 +77,19 @@ const backItems = [
 
 export const IndexLayout = (props) => {
     const [collapsed, setCollapsed] = useState(false);
-    const [selectedFrontKeyPath, setSelectedFrontKeysPath] = useState([])
-    const [selectedBackKeyPath, setSelectedBackKeysPath] = useState([])
+    const [selectedFrontKeyPath, setSelectedFrontKeysPath] = useState(["3D导览科室信息"])
+    const [selectedBackKeyPath, setSelectedBackKeysPath] = useState(["病例管理"])
 
-    const [contextVal, setContextVal] = useState("导览展示")
+    const [contextVal, setContextVal] = useState(props.isFrontendFlg ? "3D导览科室信息" : "病例管理")
+
     const {
         token: {colorBgContainer},
     } = theme.useToken();
+
+    useEffect(() => {
+        console.log(selectedBackKeyPath)
+        console.log(selectedFrontKeyPath)
+    })
 
 
     if (props.isFrontendFlg) {
@@ -103,11 +109,16 @@ export const IndexLayout = (props) => {
                             background: 'rgba(255, 255, 255, 0.2)',
                         }}
                     />
-                    <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={frontItems}
-                          onClick={({keyPath}) => {
-                              setSelectedFrontKeysPath(keyPath)
-                              setContextVal(keyPath[0])
-                          }}/>
+                    <Menu
+                        theme="dark"
+                        defaultSelectedKeys={["3D导览科室信息"]}
+                        mode="inline"
+                        items={frontItems}
+                        defaultOpenKeys={["职能学习", "角色扮演", "测试学习"]}
+                        onClick={({keyPath}) => {
+                            setSelectedFrontKeysPath(keyPath)
+                            setContextVal(keyPath[0])
+                        }}/>
                 </Sider>
                 <Layout className="site-layout">
                     <Header
@@ -121,7 +132,7 @@ export const IndexLayout = (props) => {
                                 display: "flex",
                                 paddingRight: "5%",
                             }}>
-                            <div style={{marginLeft:"auto"}}><UserMenu setContextVal={setContextVal}/></div>
+                            <div style={{marginLeft: "auto"}}><UserMenu setContextVal={setContextVal}/></div>
                         </div>
                     </Header>
                     <Content
@@ -181,11 +192,16 @@ export const IndexLayout = (props) => {
                             background: 'rgba(255, 255, 255, 0.2)',
                         }}
                     />
-                    <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={backItems}
-                          onClick={({keyPath}) => {
-                              setSelectedBackKeysPath(keyPath)
-                              setContextVal(keyPath[0])
-                          }}/>
+                    <Menu
+                        theme="dark"
+                        defaultSelectedKeys={["病例管理"]}
+                        mode="inline"
+                        items={backItems}
+                        defaultOpenKeys={["测试管理","系统管理","基本结构和功能管理"]}
+                        onClick={({keyPath}) => {
+                            setSelectedBackKeysPath(keyPath)
+                            setContextVal(keyPath[0])
+                        }}/>
                 </Sider>
                 <Layout className="site-layout">
                     <Header
@@ -199,7 +215,7 @@ export const IndexLayout = (props) => {
                                 display: "flex",
                                 paddingRight: "5%",
                             }}>
-                            <div style={{marginLeft:"auto"}}><UserMenu setContextVal={setContextVal}/></div>
+                            <div style={{marginLeft: "auto"}}><UserMenu setContextVal={setContextVal}/></div>
                         </div>
                     </Header>
                     <Content

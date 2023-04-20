@@ -506,6 +506,18 @@ export const CheckUpTable = (props) => {
         getCheckupItemData()
     }, [props])
 
+    // const [visible, setVisible] = useState(false);
+    // const formRef = useRef(null);
+    //
+    // const handleOpenModal = () => {
+    //     setVisible(true);
+    //     formRef.current && formRef.current.resetFields();
+    // };
+    //
+    // const handleCloseModal = () => {
+    //     setVisible(false);
+    // };
+
     if (displayFlg) {
         return (
             <div>
@@ -525,6 +537,7 @@ export const CheckUpTable = (props) => {
                 <div style={{display: "flex", justifyContent: "flex-end", gap: "10px", marginRight: "3%"}}>
                     <div style={{marginLeft: "auto"}}>
                         <ModalForm
+                            initialValues={{}}
                             submitter={{// 配置按钮文本
                                 searchConfig: {
                                     resetText: '重置',

@@ -34,6 +34,7 @@ export const HospitalizationManagement = (props) => {
     };
 
     const [hospitalizationData, setHospitalizationData] = useState([])
+    const [caseNumbersList, setCaseNumbersList] = useState(props.caseNumberOptions)
     const [editableKeys, setEditableRowKeys] = useState([]);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -254,8 +255,21 @@ export const HospitalizationManagement = (props) => {
         };
     });
 
+    function convertToOptions(arr) {
+        return arr.map((item) => ({
+            value: item.toString(),
+            label: item.toString(),
+        }));
+    }
+
+
     async function getHospitalizationData() {
         try {
+            const res0 = await api.getAllCases()
+            const data0 = res0.data
+            console.log(data0)
+            const caseNumbersList = data0.cases.map((caseObj) => caseObj.id);
+            setCaseNumbersList(convertToOptions(caseNumbersList))
             const res = await api.getHospitalization()
             const data = res.data
             let datas = formattedData(data.hospitalizationlist)
@@ -328,7 +342,7 @@ export const HospitalizationManagement = (props) => {
             key: 'case_id',
             dataIndex: 'case_id',
             valueType: "select",
-            request : async () => props.caseNumberOptions,
+            request : async () => caseNumbersList,
             formItemProps:  {
                 rules:  [{required: true, message: '此项为必填项'}]
             },

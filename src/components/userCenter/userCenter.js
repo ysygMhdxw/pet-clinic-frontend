@@ -4,7 +4,7 @@ import api from "../../api/api";
 import {useNavigate} from "react-router-dom";
 
 export const UserCenter = () => {
-    const [about] = useState('本虚拟宠物医院管理系统，是一个使用 React 和 Ant Design 开发的示例项目。');
+    const [about] = useState('虚拟宠物医院学习系统是一个虚拟宠物医院教学软件，可以使得宠物工作者不去实体医院就能系统地学习各种宠物诊疗专业知识。该软件主要针对相关专业毕业实习医生，能够使得毕业实习生了解宠物医院结构、科室、进行病例学习等。使用者可以通过选择如前台、医助等不同角色进行在线学习及考核等。通过宠物医院虚拟学习系统，宠物工作者能够充分熟悉宠物医院的工作环境、岗位责任及工作流程等，积累临床经验，为成为一名合格的宠物医生和建设符合资质的宠物医院奠定基础。');
     const [showPasswordForm, setShowPasswordForm] = useState(false);
     const [passwordForm] = Form.useForm();
     const [editPasswordForm] = Form.useForm();

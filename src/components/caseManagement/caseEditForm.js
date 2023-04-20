@@ -166,6 +166,54 @@ export const CaseEditForm = (props) => {
     const [symptomPicList, setSymptomPicList] = useState([]);
     const [diagnosisPicList, setDiagnosisPicList] = useState([]);
     const [treatmentPicList, setTreatmentPicList] = useState([]);
+    const petTypes = [
+        { label: '狗', value: '狗' },
+        { label: '猫', value: '猫' },
+        { label: '鸟', value: '鸟' },
+        { label: '鱼', value: '鱼' },
+        { label: '兔子', value: '兔子' },
+        { label: '龟', value: '龟' },
+        { label: '仓鼠', value: '仓鼠' },
+        { label: '蛇', value: '蛇' },
+        { label: '乌龟', value: '乌龟' },
+        { label: '蜥蜴', value: '蜥蜴' },
+        { label: '鹦鹉', value: '鹦鹉' },
+        { label: '狮子', value: '狮子' },
+        { label: '老虎', value: '老虎' },
+        { label: '大象', value: '大象' },
+        { label: '熊猫', value: '熊猫' },
+        { label: '鳄鱼', value: '鳄鱼' },
+        { label: '鹿', value: '鹿' },
+        { label: '猴子', value: '猴子' },
+        { label: '考拉', value: '考拉' },
+        { label: '海豚', value: '海豚' },
+        { label: '企鹅', value: '企鹅' },
+        { label: '蝙蝠', value: '蝙蝠' },
+        { label: '鲸鱼', value: '鲸鱼' },
+        { label: '松鼠', value: '松鼠' },
+        { label: '马', value: '马' },
+        { label: '猪', value: '猪' },
+        { label: '山羊', value: '山羊' },
+        { label: '骆驼', value: '骆驼' },
+        { label: '犀牛', value: '犀牛' },
+        { label: '袋鼠', value: '袋鼠' },
+        { label: '狐狸', value: '狐狸' },
+        { label: '浣熊', value: '浣熊' },
+        { label: '豹子', value: '豹子' },
+        { label: '蚂蚁', value: '蚂蚁' },
+        { label: '蜜蜂', value: '蜜蜂' },
+        { label: '蝴蝶', value: '蝴蝶' },
+        { label: '犰狳', value: '犰狳' },
+        { label: '刺猬', value: '刺猬' },
+        { label: '貂', value: '貂' },
+        { label: '水獭', value: '水獭' },
+        { label: '獾', value: '獾' },
+        { label: '北极熊', value: '北极熊' },
+        { label: '狼', value: '狼' },
+        { label: '浣熊狗', value: '浣熊狗' },
+        { label: '熊', value: '熊' },
+    ];
+
 
 
 
@@ -653,10 +701,11 @@ export const CaseEditForm = (props) => {
                         ]}
                         placeholder="请输入宠物名称"
                     />
-                    <ProFormText
+                    <ProFormSelect
                         width="md"
                         name="pet_species"
                         label="宠物种类"
+                        options={petTypes}
                         rules={[
                             {
                                 required: true,

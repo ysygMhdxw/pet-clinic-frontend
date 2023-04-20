@@ -1,12 +1,13 @@
-import {Button, Form, Select,Input, message, Popconfirm, Checkbox,Row, InputNumber} from "antd";
+import {Button,Space, Form, Select,Input, message, Popconfirm, Checkbox,Row, InputNumber} from "antd";
 const { Option } = Select;
 import api from "../../api/api";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {
     EditableProTable,
     ModalForm
     } from "@ant-design/pro-components";
-import {PlusOutlined} from "@ant-design/icons";
+import {PlusOutlined, SearchOutlined} from "@ant-design/icons";
+import Highlighter from "react-highlight-words";
 
 
 
@@ -18,6 +19,8 @@ const waitTime = (time = 100) => {
     });
 };
 
+
+
 const types = ["single","multi","tof","text"]
 
 export const QuestionManagement = () => {
@@ -25,10 +28,119 @@ export const QuestionManagement = () => {
     const info = (msg) => {
         messageApi.info(msg);
     };
+
     const [form] = Form.useForm();
     const [questionsData, setQuestionsData] = useState([])
     const [editableKeys, setEditableRowKeys] = useState([]);
     // const [dataSource, setDataSource] = useState([]);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+      };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+      };
+
+    // eslint-disable-next-line no-unused-vars
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+          <div
+            style={{
+              padding: 8,
+            }}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
+            <Input
+              ref={searchInput}
+              placeholder={`Search ${dataIndex}`}
+              value={selectedKeys[0]}
+              onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+              onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+              style={{
+                marginBottom: 8,
+                display: 'block',
+              }}
+            />
+            <Space>
+              <Button
+                type="primary"
+                onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                icon={<SearchOutlined />}
+                size="small"
+                style={{
+                  width: 90,
+                }}
+              >
+                搜索
+              </Button>
+              <Button
+                onClick={() => clearFilters && handleReset(clearFilters)}
+                size="small"
+                style={{
+                  width: 90,
+                }}
+              >
+                清空
+              </Button>
+              <Button
+                type="link"
+                size="small"
+                onClick={() => {
+                  confirm({
+                    closeDropdown: false,
+                  });
+                  setSearchText(selectedKeys[0]);
+                  setSearchedColumn(dataIndex);
+                }}
+              >
+                筛选
+              </Button>
+              <Button
+                type="link"
+                size="small"
+                onClick={() => {
+                  close();
+                }}
+              >
+                关闭
+              </Button>
+            </Space>
+          </div>
+        ),
+        filterIcon: (filtered) => (
+          <SearchOutlined
+            style={{
+              color: filtered ? '#1890ff' : undefined,
+            }}
+          />
+        ),
+        onFilter: (value, record) =>
+          record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+          if (visible) {
+            setTimeout(() => searchInput.current?.select(), 100);
+          }
+        },
+        render: (text) =>
+          searchedColumn === dataIndex ? (
+            <Highlighter
+              highlightStyle={{
+                backgroundColor: '#ffc069',
+                padding: 0,
+              }}
+              searchWords={[searchText]}
+              autoEscape
+              textToHighlight={text ? text.toString() : ''}
+            />
+          ) : (
+            text
+          ),
+      });
     const columns = [
         {
             title: '试题编号',
@@ -44,6 +156,7 @@ export const QuestionManagement = () => {
                 return index !== 0;
             },
             width: '10%',
+
         },
         
         {
@@ -70,7 +183,9 @@ export const QuestionManagement = () => {
             title: '试题描述',
             key: 'description',
             dataIndex: 'description',
-            width: '35%'
+            width: '35%',
+            ...getColumnSearchProps('description')
+           
         },
 
         {
@@ -228,11 +343,20 @@ export const QuestionManagement = () => {
                         }
                         form={form}
                         onFinish={async (values) => {
+                            if (values['question_type'] === 'multi' && ((!(values.answerA || values.answerB || values.answerC || values.answerD))))
+                            { 
+                                messageApi.open({
+                                    type: 'error',
+                                    content: '请至少设置一个选项',
+                                  });       
+                            }
+
+                            else{
                             await waitTime(1000);
                             addQuestion(values);
                             getQuestionData();
                             message.success('新建成功');
-                            return true;
+                            return true;}
                         }}
                     >
                         <Form.Item
@@ -274,7 +398,7 @@ export const QuestionManagement = () => {
                     >
                     <Option value="infectious">传染病</Option>
                     <Option value="internal">内科</Option>
-                    <Option value="surgeryf">常用手术</Option>
+                    <Option value="surgery">常用手术</Option>
                     <Option value="parasitic">寄生虫病</Option>
                     <Option value="immunology">免疫</Option>
                     <Option value="obstetric">外产科疾病</Option>
@@ -408,33 +532,29 @@ export const QuestionManagement = () => {
                                         <Form.Item
                                         name="answerA"
                                         valuePropName="checked"
-                                        rules={[{required: true},]}
                                         >
-                                        <Checkbox value="answerA">A</Checkbox>    
+                                        <Checkbox defaultChecked={false} value="answerA">A</Checkbox>    
                                        </Form.Item>
 
                                        <Form.Item
                                         name="answerB"
                                         valuePropName="checked"
-                                        rules={[{required: true},]}
                                         >
-                                        <Checkbox value="answerB">B</Checkbox>    
+                                        <Checkbox defaultChecked={false} value="answerB">B</Checkbox>    
                                        </Form.Item>
 
                                        <Form.Item
                                         name="answerC"
                                         valuePropName="checked"
-                                        rules={[{required: true},]}
                                         >
-                                        <Checkbox value="answerC">C</Checkbox>    
+                                        <Checkbox defaultChecked={false} value="answerC">C</Checkbox>    
                                        </Form.Item>
 
                                        <Form.Item
                                         name="answerD"
                                         valuePropName="checked"
-                                        rules={[{required: true},]}
                                         >
-                                        <Checkbox value="answerD">D</Checkbox>    
+                                        <Checkbox defaultChecked={false} value="answerD">D</Checkbox>    
                                        </Form.Item>
 
 
@@ -486,14 +606,15 @@ export const QuestionManagement = () => {
                 scroll={{
                     x: 960,
                 }}
+                pagination={{
+                    pageSize: 10,
+                    showQuickJumper: true,
+                    // showSizeChanger: true,
+                    // total: 20,
+                }}
                 recordCreatorProps={false}
                 loading={false}
                 columns={columns}
-                request={async () => ({
-                    data: [],
-                    total: 3,
-                    success: true,
-                })}
                 value={questionsData}
                 onChange={setQuestionsData}
                 rowSelection={{

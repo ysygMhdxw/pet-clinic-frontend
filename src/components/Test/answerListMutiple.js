@@ -11,6 +11,7 @@ export const AnswerListMutiple = (props) => {
     const onChange = (checkedValues) => {
         //console.log('checked = ', checkedValues);
         setUserAns(checkedValues);
+        props.setSelectedOption(checkedValues);
        
     };
     const correct_ans = [];
@@ -23,7 +24,7 @@ export const AnswerListMutiple = (props) => {
     return (
         <div>
             <>
-                <Checkbox.Group options={props.answers} onChange={onChange} disabled={props.checkView ? true : false}/>
+                <Checkbox.Group options={props.answers} onChange={onChange} disabled={props.checkView ? true : false} value={props.selectedOption}/>
                 <br/>
                 <br/>
             </>
@@ -55,4 +56,6 @@ AnswerListMutiple.propTypes = {
     checkView: propTypes.bool,
     multipleAns: propTypes.array,
     setIsCorrect: propTypes.func,
+    selectedOption: propTypes.array,
+    setSelectedOption: propTypes.func
 }

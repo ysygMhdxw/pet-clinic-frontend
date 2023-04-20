@@ -1,5 +1,5 @@
 import {Button, Descriptions, Divider, Input, InputNumber, Space} from 'antd';
-import React, { useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {FilterOutlined, SearchOutlined} from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import {ProTable} from "@ant-design/pro-components";
@@ -9,7 +9,7 @@ import {Department3dComponent} from "./department3dComponent";
 
 export const DepartmentDetail = (props) => {
 
-    const departmentInfo=props.departmentInfo
+    const departmentInfo = props.departmentInfo
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
@@ -174,7 +174,6 @@ export const DepartmentDetail = (props) => {
     );
 
 
-
     const instrumentationColumns = [
         {
             title: '器械编号',
@@ -273,6 +272,10 @@ export const DepartmentDetail = (props) => {
         },
     ];
 
+    useEffect(() => {
+        console.log(departmentInfo.checkuplist)
+        console.log(departmentInfo.instrumentationlist)
+    })
     return (
         <div>
             <div style={{marginTop: "2%"}}>
@@ -295,25 +298,29 @@ export const DepartmentDetail = (props) => {
                     <Descriptions.Item label="科室负责人">{departmentInfo.manager}</Descriptions.Item>
                 </Descriptions>
 
-                <div style={{marginTop: "3%"}}>
-                    <ProTable
-                        columns={instrumentationColumns}
-                        dataSource={departmentInfo.instrumentationlist}
-                        search={false}
-                        toolBarRender={false}
-                    />
-                </div>
+                {
+                    departmentInfo.instrumentationlist.length !== 0 ?
+                        <div style={{marginTop: "3%"}}>
+                            <ProTable
+                                columns={instrumentationColumns}
+                                dataSource={departmentInfo.instrumentationlist}
+                                search={false}
+                                toolBarRender={false}
+                            />
+                        </div> : ""
+                }
 
-
-                <div style={{marginTop: "3%"}}>
-                    <ProTable
-                        columns={checkupColumns}
-                        dataSource={departmentInfo.checkuplist}
-                        search={false}
-                        toolBarRender={false}
-                    />
-                </div>
-
+                {
+                    departmentInfo.checkuplist.length !== 0 ?
+                        <div style={{marginTop: "3%"}}>
+                            <ProTable
+                                columns={checkupColumns}
+                                dataSource={departmentInfo.checkuplist}
+                                search={false}
+                                toolBarRender={false}
+                            />
+                        </div> : ""
+                }
             </div>
         </div>
 
@@ -322,5 +329,5 @@ export const DepartmentDetail = (props) => {
 }
 
 DepartmentDetail.propTypes = {
-   departmentInfo: PropTypes.object
+    departmentInfo: PropTypes.object
 };

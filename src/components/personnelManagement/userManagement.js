@@ -1,4 +1,4 @@
-import {Button, Input, message, Popconfirm, Skeleton, Space} from "antd";
+import {Button, Input, message, Popconfirm, Select, Skeleton, Space} from "antd";
 import api from "../../api/api";
 import React, {useEffect, useRef, useState} from "react";
 import {
@@ -41,6 +41,9 @@ export const UserManagement = () => {
 
 
     const [usersData, setUsersData] = useState([])
+    const roleOptions =
+        [{label: "管理员", value: true},
+        {label: "用户", value: false}];
     const [editableKeys, setEditableRowKeys] = useState([]);
 
     const [searchText, setSearchText] = useState('');
@@ -154,6 +157,90 @@ export const UserManagement = () => {
             ),
     });
 
+    const getFixedSearchProps = (dataIndex, columnName) => ({
+        // eslint-disable-next-line no-unused-vars
+        filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters, close}) => (
+            <div
+                style={{
+                    padding: 8,
+                }}
+                onKeyDown={(e) => e.stopPropagation()}
+            >
+                <Select
+                    allowClear
+                    style={{
+                        marginBottom: "10px",
+                        width: '100%',
+                    }}
+                    placeholder={`请选择${columnName}`}
+                    defaultValue={[]}
+                    onChange={(value) => setSelectedKeys(value ? [value] : [])}
+                    options={roleOptions}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined/>}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        查询
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        重置
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        筛选
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            close();
+                        }}
+                    >
+                        关闭
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1890ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) => {
+            // console.log("record", record[dataIndex])
+            return record[dataIndex].toString().includes(value)
+        },
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+    });
+
     const columns = [
         {
             title: '用户编号',
@@ -197,18 +284,8 @@ export const UserManagement = () => {
             request: async () => [
                 {label: "管理员", value: true},
                 {label: "用户", value: false}
-
             ],
-            valueEnum: {
-                true: {
-                    text: '管理员',
-                    status: 'Error',
-                },
-                false: {
-                    text: '用户',
-                    status: 'Success',
-                },
-            },
+            ...getFixedSearchProps("superuser","权限")
         },
         {
             title: '操作',
@@ -230,7 +307,7 @@ export const UserManagement = () => {
                     description={"确认删除此条数据？删除后将无法恢复。"}
                     onConfirm={async () => {
                         setUsersData(usersData.filter((item) => item.id !== record.id));
-                        deleteUserById([record.id],[record.username]);
+                        deleteUserById([record.id], [record.username]);
                         await waitTime(500);
                     }
                     }
@@ -263,12 +340,12 @@ export const UserManagement = () => {
             message.warning('请选择要删除的行！');
             return;
         }
-        const names=selectedRows.map((row)=>row.username);
+        const names = selectedRows.map((row) => row.username);
         const keys = selectedRows.map((row) => row.id);
         const newData = usersData.filter((row) => !keys.includes(row.id));
         setUsersData(newData);
         setSelectedRows([]);
-        deleteUserById(keys,names);
+        deleteUserById(keys, names);
     };
 
     function addPassword(data) {
@@ -296,13 +373,13 @@ export const UserManagement = () => {
 
     }
 
-    async function deleteUserById(userIds,names) {
+    async function deleteUserById(userIds, names) {
         try {
-            if(isLocalStorageAvailable()){
+            if (isLocalStorageAvailable()) {
                 const username = localStorage.getItem('username')
                 console.log(username)
                 console.log(names)
-                if(names.includes(username)){
+                if (names.includes(username)) {
                     showError("不能删除自己！")
                     throw new Error("不能删除自己！")
                 }
@@ -441,7 +518,7 @@ export const UserManagement = () => {
                     editableKeys,
                     // eslint-disable-next-line no-unused-vars
                     onSave: async (rowKey, data, _row) => {
-                        if(data.password===""){
+                        if (data.password === "") {
                             delete data.password;
                         }
                         editUser(data)
@@ -450,7 +527,7 @@ export const UserManagement = () => {
                     // eslint-disable-next-line no-unused-vars
                     onDelete: async (rowKey, data, _row) => {
                         console.log("delete data", data)
-                        deleteUserById([data.id],[data.username])
+                        deleteUserById([data.id], [data.username])
                         await waitTime(500);
                     },
                     onChange: setEditableRowKeys,

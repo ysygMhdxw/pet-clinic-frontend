@@ -19,6 +19,16 @@ const waitTime = (time = 100) => {
     });
 };
 
+function isLocalStorageAvailable() {
+    try {
+        const testKey = 'test';
+        localStorage.setItem(testKey, testKey);
+        localStorage.removeItem(testKey);
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
 
 export const UserManagement = () => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -149,11 +159,11 @@ export const UserManagement = () => {
             title: '用户编号',
             dataIndex: 'id',
             key: 'id',
-            formItemProps:  {
-                rules:  [{required: true, message: '此项为必填项'}]
+            formItemProps: {
+                rules: [{required: true, message: '此项为必填项'}]
             },
             // 第一行不允许编辑
-            editable:false,
+            editable: false,
             width: '15%',
             sorter: (a, b) => a.id - b.id,
             ...getColumnSearchProps("id", "用户编号")
@@ -162,12 +172,10 @@ export const UserManagement = () => {
             title: '用户名称',
             key: 'username',
             dataIndex: 'username',
-            formItemProps:  {
-                rules:  [{required: true, message: '此项为必填项'}]
+            formItemProps: {
+                rules: [{required: true, message: '此项为必填项'}]
             },
-            // editable: (text, record, index) => {
-            //     return index !== 0;
-            // },
+            editable: false,
             width: '15%',
             ...getColumnSearchProps("username", "用户名称")
         },
@@ -175,12 +183,9 @@ export const UserManagement = () => {
             title: '密码',
             key: 'password',
             dataIndex: 'password',
-            formItemProps:  {
-                rules:  [{required: true, message: '此项为必填项'}]
-            },
             render: () => {
                 return (
-                    <Skeleton active style={{width:"200px"}} paragraph={{ rows: 1 }}/>
+                    <Skeleton active style={{width: "200px"}} paragraph={{rows: 1}}/>
                 )
             }
         },
@@ -189,6 +194,11 @@ export const UserManagement = () => {
             key: 'superuser',
             dataIndex: 'superuser',
             valueType: 'select',
+            request: async () => [
+                {label: "管理员", value: true},
+                {label: "用户", value: false}
+
+            ],
             valueEnum: {
                 true: {
                     text: '管理员',
@@ -220,7 +230,7 @@ export const UserManagement = () => {
                     description={"确认删除此条数据？删除后将无法恢复。"}
                     onConfirm={async () => {
                         setUsersData(usersData.filter((item) => item.id !== record.id));
-                        deleteUserById([record.id]);
+                        deleteUserById([record.id],[record.username]);
                         await waitTime(500);
                     }
                     }
@@ -253,12 +263,12 @@ export const UserManagement = () => {
             message.warning('请选择要删除的行！');
             return;
         }
+        const names=selectedRows.map((row)=>row.username);
         const keys = selectedRows.map((row) => row.id);
         const newData = usersData.filter((row) => !keys.includes(row.id));
         setUsersData(newData);
         setSelectedRows([]);
-        deleteUserById(keys);
-        message.success('批量删除成功！');
+        deleteUserById(keys,names);
     };
 
     function addPassword(data) {
@@ -274,7 +284,7 @@ export const UserManagement = () => {
         try {
             const res = await api.getUsers()
             const data = res.data
-            const users=addPassword(data.users)
+            const users = addPassword(data.users)
             setUsersData(users)
             console.log(data.users);
         } catch (error) {
@@ -286,17 +296,26 @@ export const UserManagement = () => {
 
     }
 
-    async function deleteUserById(userIds) {
+    async function deleteUserById(userIds,names) {
         try {
+            if(isLocalStorageAvailable()){
+                const username = localStorage.getItem('username')
+                console.log(username)
+                console.log(names)
+                if(names.includes(username)){
+                    showError("不能删除自己！")
+                    throw new Error("不能删除自己！")
+                }
+            }
             const res = await api.deleteUsers(userIds)
             const data = res.data
             console.log(data)
-            getPersonnelData()
             success("删除用户成功！");
         } catch (error) {
             console.error(error);
             showError("删除用户失败！");
         }
+        getPersonnelData()
     }
 
     async function editUser(user) {
@@ -383,10 +402,10 @@ export const UserManagement = () => {
                         <ProForm.Group>
                             <ProFormSelect
                                 width="md"
-                                request={async () => [
-                                    {label: '管理员', value: true},
-                                    {label: '用户', value: false},
-                                ]}
+                                options={
+                                    [{label: '管理员', value: true},
+                                        {label: '用户', value: false}]
+                                }
                                 name="superuser"
                                 label="新建用户权限"
                             />
@@ -422,13 +441,16 @@ export const UserManagement = () => {
                     editableKeys,
                     // eslint-disable-next-line no-unused-vars
                     onSave: async (rowKey, data, _row) => {
+                        if(data.password===""){
+                            delete data.password;
+                        }
                         editUser(data)
                         await waitTime(500);
                     },
                     // eslint-disable-next-line no-unused-vars
                     onDelete: async (rowKey, data, _row) => {
-                        console.log("delete data",data)
-                        deleteUserById([data.id])
+                        console.log("delete data", data)
+                        deleteUserById([data.id],[data.username])
                         await waitTime(500);
                     },
                     onChange: setEditableRowKeys,

@@ -316,12 +316,18 @@ export const MedicineManagement = () => {
             key: 'tag',
             dataIndex: 'tag',
             width: '10%',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             ...getColumnSearchProps("tag", "药品种类")
         },
         {
             title: '药品简介',
             key: 'description',
             dataIndex: 'description',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             ...getColumnSearchProps("description", "药品简介")
         },
         {
@@ -329,6 +335,9 @@ export const MedicineManagement = () => {
             key: 'price',
             dataIndex: 'price',
             width: '15%',
+            formItemProps:  {
+                rules:  [{required: true, message: '此项为必填项'}]
+            },
             render: (value) => {
                 const formattedValue = value.toLocaleString("zh-CN", { minimumFractionDigits: 0 });
                 return formattedValue.replace(/^0+/, "");

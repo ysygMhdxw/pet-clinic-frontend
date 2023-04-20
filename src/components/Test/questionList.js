@@ -82,7 +82,7 @@ export const QuestionList = (props) => {
                             width: 90,
                         }}
                     >
-                        Search
+                        搜索
                     </Button>
                     <Button
                         onClick={() => clearFilters && handleReset(clearFilters)}
@@ -91,7 +91,7 @@ export const QuestionList = (props) => {
                             width: 90,
                         }}
                     >
-                        Reset
+                        重置
                     </Button>
                     <Button
                         type="link"
@@ -104,7 +104,7 @@ export const QuestionList = (props) => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                        Filter
+                        清空搜索
                     </Button>
                     <Button
                         type="link"
@@ -113,7 +113,7 @@ export const QuestionList = (props) => {
                             close();
                         }}
                     >
-                        close
+                        关闭
                     </Button>
                 </Space>
             </div>
@@ -147,6 +147,7 @@ export const QuestionList = (props) => {
                 text
             ),
     });
+    const [selectValue, setSelectValue] = useState()
     const options = [
         {
             value: '单选题',
@@ -180,7 +181,9 @@ export const QuestionList = (props) => {
                     }}
                     placeholder="Please select"
                     defaultValue={[]}
-                    onChange={(value) => setSelectedKeys(value ? [value] : [])}
+                    value={selectValue}
+                    onChange={(value) => {setSelectedKeys(value ? [value] : [])
+                                          setSelectValue(value)}}
                     options={options}
                 />
                 <Space>
@@ -193,7 +196,7 @@ export const QuestionList = (props) => {
                             width: 90,
                         }}
                     >
-                        Search
+                        搜索
                     </Button>
                     <Button
                         onClick={() => clearFilters && handleReset(clearFilters)}
@@ -202,7 +205,7 @@ export const QuestionList = (props) => {
                             width: 90,
                         }}
                     >
-                        Reset
+                        重置
                     </Button>
                     <Button
                         type="link"
@@ -213,9 +216,10 @@ export const QuestionList = (props) => {
                             });
                             setSearchText(selectedKeys[0]);
                             setSearchedColumn(dataIndex);
+                            setSelectValue()
                         }}
                     >
-                        Filter
+                        清空搜索
                     </Button>
                     <Button
                         type="link"
@@ -224,7 +228,7 @@ export const QuestionList = (props) => {
                             close();
                         }}
                     >
-                        close
+                        关闭
                     </Button>
                 </Space>
             </div>
@@ -277,8 +281,6 @@ export const QuestionList = (props) => {
                 obstetric: {text: '外产科疾病'},
             },
             width: '15%',
-
-            ...getColumnSearchProps('disease_type'),
         },
         {
             title: '题目类型',
@@ -309,7 +311,13 @@ export const QuestionList = (props) => {
 
 
     return (
-        <ProTable columns={columns} dataSource={questionData} search={false}/>
+        <ProTable pagination={{
+            pageSize: 10,
+            showQuickJumper: true,
+            // showSizeChanger: true,
+            // total: 20,
+        }}
+        columns={columns} dataSource={questionData} search={false}/>
     )
 
 }

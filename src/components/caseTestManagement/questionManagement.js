@@ -109,7 +109,7 @@ const validateNumberRange = (type, value) => {
                   width: 90,
                 }}
               >
-                清空
+                清空搜索
               </Button>
               <Button
                 type="link"

@@ -22,6 +22,7 @@ export const CaseDetail = (props) => {
             <Descriptions
                 title={"病例详情信息"}
                 bordered
+                layout="horizontal"
                 column={1}
             >
                 <Descriptions.Item label="病例编号">{caseInfo.id}</Descriptions.Item>
@@ -39,6 +40,7 @@ export const CaseDetail = (props) => {
                 <Descriptions
                     title={"主要病症"}
                     bordered
+                    layout="horizontal"
                     column={1}
                 >
                     <Descriptions.Item label="主要病症">
@@ -60,6 +62,7 @@ export const CaseDetail = (props) => {
                 <Descriptions
                     title={"诊断结果"}
                     bordered
+                    layout="horizontal"
                     column={1}
                 >
                     <Descriptions.Item label="诊断结果">
@@ -81,6 +84,7 @@ export const CaseDetail = (props) => {
                 <Descriptions
                     title={"治疗方案"}
                     bordered
+                    layout="horizontal"
                     column={1}
                 >
                     <Descriptions.Item label="治疗方案信息">

@@ -1,7 +1,8 @@
 import {Select, Steps, Card, Image} from 'antd';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import propTypes from "prop-types";
 import api from "../../api/api";
+import {VideoModal} from "../caseStudy/videoModal";
 
 const {Option} = Select;
 const {Step} = Steps;
@@ -89,8 +90,10 @@ export const RolePlay = (props) => {
                         src={`https://picsum.photos/seed/${selectedJob.process[currentStep].name}/400/300`}
                     />:""
                 }
-
                 </Card>
+            </div>
+            <div>
+                <VideoModal videoUrl={selectedJob.video}/>
             </div>
         </div>
     );

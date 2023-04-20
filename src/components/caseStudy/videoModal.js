@@ -30,14 +30,18 @@ export const VideoModal = ({videoUrl}) => {
             <Button type="primary" onClick={showModal} icon={<VideoCameraOutlined/>}>
                 点击观看视频
             </Button>
-            <Modal title="视频" visible={visible} onCancel={handleCancel} footer={null}>
-                <ReactPlayer
-                    playing={playing} // 控制视频播放状态
-                    onPlay={() => setPlaying(true)} // 更新播放状态
-                    onPause={() => setPlaying(false)} // 更新播放状态
-                    url={videoUrl}
-                    controls
-                    width="100%" height="100%"/>
+            <Modal title="视频" open={visible} onCancel={handleCancel} footer={null}>
+                {videoUrl===""?
+                "暂时没有视频数据":
+                    <ReactPlayer
+                        playing={playing} // 控制视频播放状态
+                        onPlay={() => setPlaying(true)} // 更新播放状态
+                        onPause={() => setPlaying(false)} // 更新播放状态
+                        url={videoUrl}
+                        controls
+                        width="100%" height="100%"/>
+                }
+
             </Modal>
         </div>
     );

@@ -47,7 +47,6 @@ const frontItems = [
     getItem('测试学习', '测试学习', <UserOutlined/>, [
         getItem('做题', '做题', <ReadOutlined/>),
         getItem('考试', '考试', <OneToOneOutlined/>),
-        getItem('比赛', '比赛', <TeamOutlined/>),
     ])
 ];
 const backItems = [

@@ -11,7 +11,6 @@ export const ContextString = {
     testLearning: "测试学习",
     takeQuestions: "做题",
     takeExam: "考试",
-    takeContest: "比赛",
     caseManagement:"病例管理",
     questionManagement:"题目管理",
     quizManagement:"考试管理",

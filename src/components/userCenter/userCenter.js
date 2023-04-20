@@ -45,7 +45,6 @@ export const UserCenter = () => {
             const res = await api.getLogin({
                 username: username,
                 password: values.oldPassword,
-                superuser: false
             });
             const data = res.data;
             if (data.access) {
@@ -75,7 +74,6 @@ export const UserCenter = () => {
                 {
                     username:username,
                     password:value.confirmPassword,
-                    superuser:false
                 }
             )
             const data = res.data;

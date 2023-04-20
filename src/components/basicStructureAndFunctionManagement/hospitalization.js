@@ -15,9 +15,10 @@ export const Hospitalization = () => {
         try {
             const res = await api.getAllCases()
             const data = res.data
+            console.log(data)
             const caseNumbersList = data.cases.map((caseObj) => caseObj.id);
+            console.log("caseNumbersList",caseNumbersList)
             setCaseNumbers(convertToOptions(caseNumbersList))
-
         } catch (error) {
             console.error(error);
             showError("不存在病例数据！");
@@ -28,7 +29,7 @@ export const Hospitalization = () => {
     useEffect(() => {
         getCaseNumbers()
         console.log(caseNumbers)
-    }, []);
+    },[]);
 
 
     function convertToOptions(arr) {

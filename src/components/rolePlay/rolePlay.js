@@ -84,10 +84,10 @@ export const RolePlay = (props) => {
                     </Steps>
                 </div>
                 <Card style={{width: "50%", display: "flex", justifyContent: "center"}}>
-                    { selectedJob.process[currentStep].name?
+                    { selectedJob.process[currentStep].picture?
                     <Image
                         width={500}
-                        src={`https://picsum.photos/seed/${selectedJob.process[currentStep].name}/400/300`}
+                        src={selectedJob.process[currentStep].picture}
                     />:""
                 }
                 </Card>

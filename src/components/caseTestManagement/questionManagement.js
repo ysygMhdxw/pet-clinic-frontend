@@ -46,6 +46,30 @@ export const QuestionManagement = () => {
         setSearchText('');
       };
 
+// 定义校验规则
+const validateNumberRange = (type, value) => {
+    let min, max;
+    if (type === 'single' || type === 'tof') {
+      min = 1;
+      max = 5;
+    } else if (type === 'multi') {
+      min = 1;
+      max = 10;
+    } else if (type === 'text') {
+      min = 10;
+      max = 20;
+    }
+    if (value < min || value > max) {
+        messageApi.open({
+            type: 'error',
+            content: `数字范围必须在${min}到${max}之间`,
+          }); 
+      return false;
+    }
+    return true;
+  };
+
+
     // eslint-disable-next-line no-unused-vars
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -350,13 +374,21 @@ export const QuestionManagement = () => {
                                     content: '请至少设置一个选项',
                                   });       
                             }
+                            else {
+                            if (!validateNumberRange(values['question_type'],values['score']))
+                            {
+                                messageApi.open({
+                                    type: 'error',
+                                    content: `分数范围不合法`,
+                                  });
+                            }
 
                             else{
                             await waitTime(1000);
                             addQuestion(values);
                             getQuestionData();
                             message.success('新建成功');
-                            return true;}
+                            return true;}}
                         }}
                     >
                         <Form.Item
@@ -564,7 +596,16 @@ export const QuestionManagement = () => {
 
                                        </p>
                                         :
-                                        null)
+                                        <Form.Item
+                                        name="answer"
+                                        label="答案"
+                                        rules={[
+                                        {
+                                         required: true,
+                                        },
+                                         ]}>
+                                        <Input.TextArea showCount maxLength={100} />
+                        </Form.Item> )
                                     )
                                 
                             
@@ -584,7 +625,7 @@ export const QuestionManagement = () => {
                             ]}
                         name="score" noStyle
                         >
-                        <InputNumber min={1} max={10} />
+                        <InputNumber min={1} max={20} />
                         </Form.Item>
                         </Form.Item>
 
